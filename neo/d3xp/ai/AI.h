@@ -448,7 +448,7 @@ protected:
 	void					Think( void );
 	void					Activate( idEntity *activator );
 	int						ReactionTo( const idEntity *ent );
-	bool					CheckForEnemy( void );
+	//bool					CheckForEnemy( void );
 	void					EnemyDead( void );
 	virtual bool			CanPlayChatterSounds( void ) const;
 	void					SetChatSound( void );
@@ -511,7 +511,7 @@ protected:
 	// effects
 	const idDeclParticle	*SpawnParticlesOnJoint( particleEmitter_t &pe, const char *particleName, const char *jointName );
 	void					SpawnParticles( const char *keyName );
-	bool					ParticlesActive( void );
+	//bool					ParticlesActive( void );
 
 	// turning
 	bool					FacingIdeal( void );
@@ -732,5 +732,16 @@ private:
 	void				Event_Activate( idEntity *activator );
 	void				Event_MarkUsed( void );
 };
+
+
+class idAI_Vagary : public idAI {
+public:
+	CLASS_PROTOTYPE(idAI_Vagary);
+
+private:
+	void	Event_ChooseObjectToThrow(const idVec3& mins, const idVec3& maxs, float speed, float minDist, float offset);
+	void	Event_ThrowObjectAtEnemy(idEntity* ent, float speed);
+};
+
 
 #endif /* !__AI_H__ */

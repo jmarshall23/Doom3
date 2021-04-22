@@ -236,7 +236,7 @@ private:
 
 	void					FreeBeams();
 	void					Event_RemoveBeams();
-	void					ApplyDamage();
+	//void					ApplyDamage();
 };
 
 /*

@@ -36,11 +36,7 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "../Game_local.h"
 
-#ifdef ID_DEBUG_MEMORY
 #include "GameTypeInfo.h"				// Make sure this is up to date!
-#else
-#include "NoGameTypeInfo.h"
-#endif
 
 // disabled because it's adds about 64MB to state dumps and takes a really long time
 //#define DUMP_GAMELOCAL

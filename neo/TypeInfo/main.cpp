@@ -268,17 +268,8 @@ int main( int argc, char** argv ) {
 
 	generator = new idTypeInfoGen;
 
-	if ( argc > 1 ) {
-		sourcePath = idStr( "../" SOURCE_CODE_BASE_FOLDER "/" ) + argv[1];
-	} else {
-		sourcePath = "../" SOURCE_CODE_BASE_FOLDER "/game";
-	}
-
-	if ( argc > 2 ) {
-		fileName = idStr( "../" SOURCE_CODE_BASE_FOLDER "/" ) + argv[2];
-	} else {
-		fileName = "../" SOURCE_CODE_BASE_FOLDER "/game/gamesys/GameTypeInfo.h";
-	}
+	sourcePath = "d3xp";
+	fileName = "../neo/d3xp/gamesys/GameTypeInfo";
 
 	if ( argc > 3 ) {
 		for ( int i = 3; i < argc; i++ ) {
@@ -287,6 +278,7 @@ int main( int argc, char** argv ) {
 	} else {
 		generator->AddDefine( "__cplusplus" );
 		generator->AddDefine( "GAME_DLL" );		
+		generator->AddDefine("CTF");
 		generator->AddDefine("_D3XP");
 		generator->AddDefine( "ID_TYPEINFO" );
 	}

@@ -96,6 +96,7 @@ FxFader
 ==================
 */
 class FxFader {
+private:
 	enum {
 		FX_STATE_OFF,
 		FX_STATE_RAMPUP,
@@ -167,6 +168,7 @@ FullscreenFX_Helltime
 ==================
 */
 class FullscreenFX_Helltime : public FullscreenFX {
+private:
 	const idMaterial*		acInitMaterials[3];
 	const idMaterial*		acCaptureMaterials[3];
 	const idMaterial*		acDrawMaterials[3];
@@ -192,6 +194,7 @@ FullscreenFX_Multiplayer
 ==================
 */
 class FullscreenFX_Multiplayer : public FullscreenFX {
+private:
 	const idMaterial*		acInitMaterials;
 	const idMaterial*		acCaptureMaterials;
 	const idMaterial*		acDrawMaterials;
@@ -217,6 +220,7 @@ FullscreenFX_Warp
 ==================
 */
 class FullscreenFX_Warp : public FullscreenFX {
+private:
 	const idMaterial*		material;
 	bool					grabberEnabled;
 	int						startWarpTime;
@@ -240,6 +244,7 @@ FullscreenFX_EnviroSuit
 ==================
 */
 class FullscreenFX_EnviroSuit : public FullscreenFX {
+private:
 	const idMaterial*		material;
 
 public:
@@ -254,6 +259,7 @@ FullscreenFX_DoubleVision
 ==================
 */
 class FullscreenFX_DoubleVision : public FullscreenFX {
+private:
 	const idMaterial*		material;
 
 public:
@@ -281,6 +287,7 @@ FullscreenFX_Bloom
 ==================
 */
 class FullscreenFX_Bloom : public FullscreenFX {
+private:
 	const idMaterial*		drawMaterial;
 	const idMaterial*		initMaterial;
 	const idMaterial*		currentMaterial;
@@ -305,6 +312,7 @@ FullscreenFXManager
 ==================
 */
 class FullscreenFXManager {
+private:
 	idList<FullscreenFX*>	fx;
 	bool					highQualityMode;
 	idVec2					shiftScale;

@@ -172,6 +172,12 @@
     <ClCompile Include="d3xp\Trigger.cpp" />
     <ClCompile Include="d3xp\Weapon.cpp" />
     <ClCompile Include="d3xp\WorldSpawn.cpp" />
+    <ClCompile Include="d3xp\gamesys\State.cpp">
+      <Filter>GameSys</Filter>
+    </ClCompile>
+    <ClCompile Include="d3xp\gamesys\GameTypeInfo.cpp">
+      <Filter>GameSys</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="d3xp\ai\AAS.h">
@@ -306,6 +312,15 @@
     <ClInclude Include="d3xp\Trigger.h" />
     <ClInclude Include="d3xp\Weapon.h" />
     <ClInclude Include="d3xp\WorldSpawn.h" />
+    <ClInclude Include="d3xp\gamesys\State.h">
+      <Filter>GameSys</Filter>
+    </ClInclude>
+    <ClInclude Include="d3xp\gamesys\TypeInfo.h">
+      <Filter>GameSys</Filter>
+    </ClInclude>
+    <ClInclude Include="d3xp\gamesys\GameTypeInfo.h">
+      <Filter>GameSys</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="d3xp\Game.def" />

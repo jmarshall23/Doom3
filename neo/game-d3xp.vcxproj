@@ -284,7 +284,9 @@
     <ClCompile Include="d3xp\gamesys\Class.cpp" />
     <ClCompile Include="d3xp\gamesys\DebugGraph.cpp" />
     <ClCompile Include="d3xp\gamesys\Event.cpp" />
+    <ClCompile Include="d3xp\gamesys\GameTypeInfo.cpp" />
     <ClCompile Include="d3xp\gamesys\SaveGame.cpp" />
+    <ClCompile Include="d3xp\gamesys\State.cpp" />
     <ClCompile Include="d3xp\gamesys\SysCmds.cpp" />
     <ClCompile Include="d3xp\gamesys\SysCvar.cpp" />
     <ClCompile Include="d3xp\gamesys\TypeInfo.cpp">
@@ -367,10 +369,13 @@
     <ClInclude Include="d3xp\gamesys\Class.h" />
     <ClInclude Include="d3xp\gamesys\DebugGraph.h" />
     <ClInclude Include="d3xp\gamesys\Event.h" />
+    <ClInclude Include="d3xp\gamesys\GameTypeInfo.h" />
     <ClInclude Include="d3xp\gamesys\NoGameTypeInfo.h" />
     <ClInclude Include="d3xp\gamesys\SaveGame.h" />
+    <ClInclude Include="d3xp\gamesys\State.h" />
     <ClInclude Include="d3xp\gamesys\SysCmds.h" />
     <ClInclude Include="d3xp\gamesys\SysCvar.h" />
+    <ClInclude Include="d3xp\gamesys\TypeInfo.h" />
     <ClInclude Include="d3xp\physics\Clip.h" />
     <ClInclude Include="d3xp\physics\Force.h" />
     <ClInclude Include="d3xp\physics\Force_Constant.h" />

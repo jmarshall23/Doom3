@@ -230,7 +230,7 @@ protected:
 	virtual void			DoneMoving( void );
 	virtual void			BeginMove( idThread *thread = NULL );
 	void					SpawnTrigger( const idVec3 &pos );
-	void					GetLocalTriggerPosition();
+	//void					GetLocalTriggerPosition();
 	void					Event_Touch( idEntity *other, trace_t *trace );
 
 private:

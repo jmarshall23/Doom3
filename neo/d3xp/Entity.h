@@ -547,6 +547,7 @@ private:
 
 #ifdef _D3XP
 class SetTimeState {
+private:
 	bool					activated;
 	bool					previousFast;
 	bool					fast;
