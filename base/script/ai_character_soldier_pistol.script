@@ -1,0 +1,1548 @@
+/***********************************************************************
+
+ai_character_soldier_pistol.script
+
+***********************************************************************/
+#define CHAR_TALK_TRIGGERED			0
+#define CHAR_TALK_PRIMARY			1
+#define CHAR_TALK_SECONDARY			2
+
+#define SOLDIER_RUNDISTANCE					192
+#define SOLDIER_WALKTURN					65
+#define SOLDIER_DODGE_RATE					3
+#define SOLDIER_ATTACK_DELAY_MIN			0.5
+#define SOLDIER_ATTACK_DELAY_MAX			2
+#define SOLDIER_ATTACK_MAX_LENGTH			3
+#define SOLDIER_ATTACK_MIN_LENGTH			1.5
+#define SOLDIER_WAIT_MIN_LENGTH				0.3
+#define SOLDIER_WAIT_MAX_LENGTH				1.2
+#define SOLDIER_CROUCH_ATTACK_MAX_LENGTH	15
+#define SOLDIER_CROUCH_ATTACK_MIN_LENGTH	5
+#define SOLDIER_STAND_ATTACK_MAX_LENGTH		15
+#define SOLDIER_STAND_ATTACK_MIN_LENGTH		5
+#define SOLDIER_ATTACK_MIN_SHOOT_TIME		0.5
+
+#define SOLDIER_FOLLOW_PLAYER_MIN_TIME		3
+#define SOLDIER_FOLLOW_PLAYER_MAX_TIME		6
+#define SOLDIER_CHECK_FOR_NEW_ENEMY_TIME	7
+#define SOLDIER_CHASE_MIN_RANGE				192
+
+#define ATTACK_SOLDIER_CROUCHFIRE			ATTACK_SPECIAL1
+
+// start out with a 50/50 chance of stand vs. crouch attacks.
+float soldier_num_stand_attacks = 1;
+float soldier_num_crouch_attacks = 1;
+
+object character_soldier_pistol : monster_base {
+	boolean		fire;
+	boolean		crouch_fire;
+	boolean		abort_fire;
+	float		nextDodge;
+	float		nextAttack;
+	entity		combat_node;
+
+	float		talkMode;
+	float		talk_secondary_index;
+
+	float		getNewPositionTime;
+
+	float		checkForNewEnemyTime;
+	boolean		helpPlayerFirst;
+
+	void		get_new_enemy();
+
+	void		state_Begin();
+	void		state_Idle();
+	void		state_Combat();
+
+	void		soldier_begin();
+	void		wait_for_enemy();
+	boolean		checkForEnemy( float use_fov );
+
+	// attacks
+	float		check_attacks();
+	void		do_attack( float attack_flags );
+	void		crouch_attack();
+	void		stand_attack();
+	void		combat_dodge_left();
+	void		combat_dodge_right();
+
+	void		combat_attacknodes( entity node );
+
+	void		faceTowardsEntity( entity target, float duration );
+	void		idle_talk();
+
+	float		playHeadAnim( string animname, float blend_frames );
+	void		endHeadAnim( float blend_out );
+
+	void		Anim_Disable();
+	void		Head_Idle();
+
+	void		init();
+	
+	// torso anim states
+	void		Torso_Idle();
+	void		Torso_Pain();
+	void		Torso_RangeAttack();
+	void		Torso_TurretAttack();
+	void		Torso_CrouchAttack();
+	
+	// legs anim states
+	void		Legs_Idle();
+	void		Legs_Walk();
+	void		Legs_Run();
+	void		Legs_DodgeLeft();
+	void		Legs_DodgeRight();
+	void		Legs_StepLeft();
+	void		Legs_StepRight();
+};
+
+/***********************************************************************
+
+	Torso animation control
+
+***********************************************************************/
+void character_soldier_pistol::Anim_Disable() {
+}
+void character_soldier_pistol::Head_Idle() {
+}
+
+void character_soldier_pistol::Torso_Idle() {
+	idleAnim( ANIMCHANNEL_TORSO, "stand" );
+	
+	eachFrame {
+		if ( AI_PAIN ) {
+			Torso_Pain();
+			idleAnim( ANIMCHANNEL_TORSO, "stand" );
+		}
+		if ( fire ) {
+			animState( ANIMCHANNEL_TORSO, "Torso_RangeAttack", 4 );
+		}
+		if ( crouch_fire ) {
+			animState( ANIMCHANNEL_TORSO, "Torso_CrouchAttack", 4 );
+		}
+	}
+}
+
+void character_soldier_pistol::Torso_Pain() {
+	string animname;
+
+	animname = getPainAnim();
+	setBlendFrames( ANIMCHANNEL_TORSO, 2 );
+	playAnim( ANIMCHANNEL_TORSO, animname );
+
+	while( !animDone( ANIMCHANNEL_TORSO, 4 ) ) {
+		waitFrame();
+	}
+	
+	// no pain for 1 second
+	preventPain( 1 );
+	
+	finishAction( "pain" );
+	setBlendFrames( ANIMCHANNEL_TORSO, 4 );
+}
+
+void character_soldier_pistol::Torso_RangeAttack() {
+	float endtime;
+	float mintime;
+	boolean first_shot;
+	
+	setAnimPrefix( "" );
+	abort_fire = false;
+
+	playAnim( ANIMCHANNEL_TORSO, "range_attack" );
+	while( !animDone( ANIMCHANNEL_TORSO, 0 ) ) {
+		if ( AI_PAIN ) {
+			Torso_Pain();
+		}
+		waitFrame();
+	}
+	
+	first_shot = true;
+	while( fire || first_shot ) {
+		mintime = sys.getTime() + SOLDIER_ATTACK_MIN_SHOOT_TIME;
+		endtime = RandomDelay( SOLDIER_ATTACK_MIN_LENGTH, SOLDIER_ATTACK_MAX_LENGTH );
+		while( !abort_fire && ( fire || ( sys.getTime() < mintime ) ) && ( sys.getTime() < endtime ) ) {
+			playAnim( ANIMCHANNEL_TORSO, "range_attack_loop" );
+			while( !animDone( ANIMCHANNEL_TORSO, 0 ) ) {
+				if ( AI_PAIN ) {
+					Torso_Pain();
+				}
+				waitFrame();
+			}
+		}
+
+		first_shot = false;
+
+		if ( !fire ) {
+			break;
+		}
+
+		playCycle( ANIMCHANNEL_TORSO, "range_attack_aim" );
+		endtime = RandomDelay( SOLDIER_WAIT_MIN_LENGTH, SOLDIER_WAIT_MAX_LENGTH );
+		while( fire && ( sys.getTime() < endtime ) ) {
+			if ( AI_PAIN ) {
+				Torso_Pain();
+			}
+			waitFrame();
+		}
+	}
+	
+	playAnim( ANIMCHANNEL_TORSO, "range_attack_end" );
+	while( !animDone( ANIMCHANNEL_TORSO, 4 ) ) {
+		if ( AI_PAIN ) {
+			Torso_Pain();
+		}
+		waitFrame();
+	}
+	
+	finishAction( "range_attack" );
+	animState( ANIMCHANNEL_TORSO, "Torso_Idle", 4 );
+}
+
+void character_soldier_pistol::Torso_TurretAttack() {
+	float endtime;
+	float mintime;
+	boolean first_shot;
+	
+	setAnimPrefix( "" );
+		
+	playAnim( ANIMCHANNEL_TORSO, "range_attack" );
+	while( !animDone( ANIMCHANNEL_TORSO, 0 ) ) {
+		if ( AI_PAIN ) {
+			Torso_Pain();
+		}
+		waitFrame();
+	}
+	
+	first_shot = true;
+	while( first_shot || canHitEnemyFromAnim( "range_attack_loop" ) ) {
+		mintime = sys.getTime() + SOLDIER_ATTACK_MIN_SHOOT_TIME;
+		endtime = RandomDelay( SOLDIER_ATTACK_MIN_LENGTH, SOLDIER_ATTACK_MAX_LENGTH );
+		while( ( sys.getTime() < mintime ) || ( ( sys.getTime() < endtime ) && canHitEnemyFromAnim( "range_attack_loop" ) ) ) {
+			playAnim( ANIMCHANNEL_TORSO, "range_attack_loop" );
+			while( !animDone( ANIMCHANNEL_TORSO, 0 ) ) {
+				if ( AI_PAIN ) {
+					Torso_Pain();
+				}
+				waitFrame();
+			}
+		}
+		first_shot = false;
+
+		playCycle( ANIMCHANNEL_TORSO, "range_attack_aim" );
+		endtime = RandomDelay( SOLDIER_WAIT_MIN_LENGTH, SOLDIER_WAIT_MAX_LENGTH );
+		while( fire && ( sys.getTime() < endtime ) ) {
+			if ( AI_PAIN ) {
+				Torso_Pain();
+			}
+			waitFrame();
+		}
+	}
+	
+	playAnim( ANIMCHANNEL_TORSO, "range_attack_end" );
+	while( !animDone( ANIMCHANNEL_TORSO, 4 ) ) {
+		if ( AI_PAIN ) {
+			Torso_Pain();
+		}
+		waitFrame();
+	}
+	
+	finishAction( "turret_attack" );
+	animState( ANIMCHANNEL_TORSO, "Torso_Idle", 4 );
+}
+
+void character_soldier_pistol::Torso_CrouchAttack() {
+	float endtime;
+	float mintime;
+	boolean first_shot;
+	
+	abort_fire = false;
+	overrideAnim( ANIMCHANNEL_LEGS );
+	
+	setAnimPrefix( "crouch" );
+
+	playAnim( ANIMCHANNEL_TORSO, "range_attack" );
+	while( !animDone( ANIMCHANNEL_TORSO, 0 ) ) {
+		if ( AI_PAIN ) {
+			Torso_Pain();
+		}
+		waitFrame();
+	}
+
+	first_shot = true;
+	while( crouch_fire || first_shot ) {
+		mintime = sys.getTime() + SOLDIER_ATTACK_MIN_SHOOT_TIME;
+		endtime = RandomDelay( SOLDIER_ATTACK_MIN_LENGTH, SOLDIER_ATTACK_MAX_LENGTH );
+		while( !abort_fire && ( crouch_fire || ( sys.getTime() < mintime ) ) && ( sys.getTime() < endtime ) ) {
+			playAnim( ANIMCHANNEL_TORSO, "range_attack_loop" );
+			while( !animDone( ANIMCHANNEL_TORSO, 0 ) ) {
+				if ( AI_PAIN ) {
+					Torso_Pain();
+				}
+				waitFrame();
+			}
+		}
+
+		first_shot = false;
+		if ( !crouch_fire ) {
+			break;
+		}
+
+		playCycle( ANIMCHANNEL_TORSO, "range_attack_aim" );
+		endtime = RandomDelay( SOLDIER_WAIT_MIN_LENGTH, SOLDIER_WAIT_MAX_LENGTH );
+		while( crouch_fire && ( sys.getTime() < endtime ) ) {
+			if ( AI_PAIN ) {
+				Torso_Pain();
+			}
+			waitFrame();
+		}
+	}
+	
+	playAnim( ANIMCHANNEL_TORSO, "range_attack_end" );
+	while( !animDone( ANIMCHANNEL_TORSO, 6 ) ) {
+		if ( AI_PAIN ) {
+			Torso_Pain();
+		}
+		waitFrame();
+	}
+	
+	finishAction( "crouch_attack" );
+	setAnimPrefix( "" );
+	
+	animState( ANIMCHANNEL_TORSO, "Torso_Idle", 6 );
+}
+
+/***********************************************************************
+
+	Legs animation control
+
+***********************************************************************/
+
+void character_soldier_pistol::Legs_Idle() {
+	idleAnim( ANIMCHANNEL_LEGS, "stand" );
+
+	eachFrame {
+		if ( getEnemy() ) {
+			run = true;
+		}
+		if ( run && AI_FORWARD )	{ animState( ANIMCHANNEL_LEGS, "Legs_Run", 8 ); }
+		if ( AI_FORWARD )			{ animState( ANIMCHANNEL_LEGS, "Legs_Walk", 8 ); }
+	}
+}
+
+void character_soldier_pistol::Legs_Walk() {
+	playCycle( ANIMCHANNEL_LEGS, "walk" );
+	
+	eachFrame {
+		if ( getEnemy() ) {
+			run = true;
+		}
+		if ( run && AI_FORWARD )	{ animState( ANIMCHANNEL_LEGS, "Legs_Run", 8 ); }
+		if ( !AI_FORWARD )			{ animState( ANIMCHANNEL_LEGS, "Legs_Idle", 8 ); }
+	}
+}
+
+void character_soldier_pistol::Legs_Run() {
+	playCycle( ANIMCHANNEL_LEGS, "run" );
+	
+	eachFrame {
+		if ( getEnemy() ) {
+			run = true;
+		}
+		if ( !run && AI_FORWARD )	{ animState( ANIMCHANNEL_LEGS, "Legs_Walk", 8 ); }
+		if ( !AI_FORWARD )			{ animState( ANIMCHANNEL_LEGS, "Legs_Idle", 8 ); }
+	}
+}
+
+void character_soldier_pistol::Legs_DodgeLeft() {
+	playAnim( ANIMCHANNEL_LEGS, "evade_left" );
+
+	while( !animDone( ANIMCHANNEL_LEGS, 8 ) ) {
+		waitFrame();
+	}
+	
+	finishAction( "strafe" );
+	animState( ANIMCHANNEL_LEGS, "Legs_Idle", 8 );
+}
+
+void character_soldier_pistol::Legs_DodgeRight() {
+	playAnim( ANIMCHANNEL_LEGS, "evade_right" );
+
+	while( !animDone( ANIMCHANNEL_LEGS, 8 ) ) {
+		waitFrame();
+	}
+
+	finishAction( "strafe" );
+	animState( ANIMCHANNEL_LEGS, "Legs_Idle", 8 );
+}
+
+void character_soldier_pistol::Legs_StepLeft() {
+	playAnim( ANIMCHANNEL_LEGS, "step_left" );
+
+	while( !animDone( ANIMCHANNEL_LEGS, 4 ) ) {
+		waitFrame();
+	}
+	
+	finishAction( "sidestep" );
+	animState( ANIMCHANNEL_LEGS, "Legs_Idle", 4 );
+}
+
+void character_soldier_pistol::Legs_StepRight() {
+	playAnim( ANIMCHANNEL_LEGS, "step_right" );
+
+	while( !animDone( ANIMCHANNEL_LEGS, 4 ) ) {
+		waitFrame();
+	}
+
+	finishAction( "sidestep" );
+	animState( ANIMCHANNEL_LEGS, "Legs_Idle", 4 );
+}
+
+/***********************************************************************
+
+	AI
+
+***********************************************************************/
+
+/*
+=====================
+character_soldier_pistol::init
+=====================
+*/
+void character_soldier_pistol::init() {
+	run_distance	= SOLDIER_RUNDISTANCE;
+	walk_turn		= SOLDIER_WALKTURN;
+
+	getNewPositionTime = 0;
+	checkForNewEnemyTime = 0;
+	helpPlayerFirst = false;
+
+	talkMode = CHAR_TALK_PRIMARY;
+	talk_secondary_index = 1;
+
+	setState( "state_Begin" );
+}
+
+/***********************************************************************
+
+	States
+
+***********************************************************************/
+
+/*
+=====================
+character_soldier_pistol::state_Begin
+=====================
+*/
+void character_soldier_pistol::state_Begin() {
+	fire = false;
+	crouch_fire = false;
+	animState( ANIMCHANNEL_TORSO, "Torso_Idle", 0 );
+	animState( ANIMCHANNEL_LEGS, "Legs_Idle", 0 );
+
+	soldier_begin();
+	setMoveType( MOVETYPE_ANIM );	
+	setState( "state_Idle" );
+}
+
+/*
+=====================
+character_soldier_pistol::state_Idle
+=====================
+*/
+void character_soldier_pistol::state_Idle() {
+	wait_for_enemy();
+
+	nextAttack	= 0;
+	nextDodge	= RandomTime( SOLDIER_DODGE_RATE );
+	checkForNewEnemyTime = RandomTime( SOLDIER_CHECK_FOR_NEW_ENEMY_TIME );
+
+	setState( "state_Combat" );
+}
+
+/*
+=====================
+character_soldier_pistol::state_Combat
+=====================
+*/
+void character_soldier_pistol::state_Combat() {
+	float attack_flags;
+	float range;
+
+	eachFrame {
+		if ( !getEnemy() ) {
+			setState( "state_Idle" );
+			return;
+		}
+
+		faceEnemy();
+		if ( AI_ENEMY_IN_FOV ) {
+			lookAtEnemy( 1 );
+		}
+
+		if ( sys.influenceActive() ) {
+			waitFrame();
+			continue;
+		}
+
+		if ( AI_ENEMY_DEAD ) {
+			// Wait a few seconds to see where the player is headed
+			getNewPositionTime = RandomDelay( SOLDIER_FOLLOW_PLAYER_MIN_TIME, SOLDIER_FOLLOW_PLAYER_MAX_TIME );
+
+			enemy_dead();
+		}
+
+		attack_flags = check_attacks();
+		if ( attack_flags ) {
+			do_attack( attack_flags );
+			continue;
+		}
+
+		range = self.enemyRange();
+		if ( range > SOLDIER_CHASE_MIN_RANGE ) {
+			if ( !combat_chase() ) {
+				locateEnemy();
+				if ( !combat_chase() ) {
+					combat_lost();
+				}
+			}
+		}
+
+		waitFrame();
+	}
+}
+
+/*
+=====================
+character_soldier_pistol::soldier_begin
+=====================
+*/
+void character_soldier_pistol::soldier_begin() {
+	boolean start_active;
+	string	triggerAnim;
+	float	waittime;
+	entity	enemy;
+
+	run	= true;
+	ignore_sight = getIntKey( "no_sight" );
+
+	start_active = false;
+
+	triggerAnim = getKey( "trigger_anim" );
+
+	if ( triggerAnim != "" ) {
+		//
+		// hide until triggered and then play a special animation
+		//
+		checkAnim( ANIMCHANNEL_TORSO, triggerAnim );
+		hide();
+		waitUntil( AI_ACTIVATED );
+		waitUntil( canBecomeSolid() );
+
+		// don't go dormant during trigger_anim anims since they
+		// may end up floating in air during no gravity anims.
+		setNeverDormant( true );
+
+		show();
+		trigger_wakeup_targets();
+		playCustomAnim( triggerAnim, 0, 4 );
+		waitAction( "customAnim" );
+		setNeverDormant( getFloatKey( "neverdormant" ) );
+		locateEnemy();
+		start_active = true;
+	} else if ( getIntKey( "hide" ) ) {
+		//
+		// hide until triggered
+		//
+		hide();
+		waitUntil( AI_ACTIVATED );
+		if ( ( getIntKey( "hide" ) == 1 ) || ambush ) {
+			AI_ACTIVATED = false;
+			clearEnemy();
+		}
+		waitUntil( canBecomeSolid() );
+		show();
+	}
+
+	waittime = getFloatKey( "wait" );
+	if ( waittime > 0 ) {
+		sys.wait( waittime );
+	}
+
+	enemy = getEntityKey( "enemy" );	
+	if ( enemy ) {
+		setEnemy( enemy );
+	}
+
+	if ( !start_active ) {
+		if ( getIntKey( "walk_on_trigger" ) ) {
+			walk_on_trigger();
+		} else if ( getIntKey( "trigger" ) ) {
+			wake_on_trigger();
+		} else {
+			string animname;
+			entity path;
+
+			if ( !getIntKey( "attack_path" ) ) {
+				path = randomPath();
+				if ( path ) {
+					idle_followPathEntities( path );
+				}
+			}
+
+			if ( !getEnemy() && !AI_ACTIVATED && !AI_PAIN ) {
+				// sit in our idle anim till we're activated
+				allowMovement( false );
+				animname = self.getKey( "anim" );
+				playCustomCycle( animname, 4 );
+
+				while( !AI_PAIN && !AI_ACTIVATED ) {
+					if ( checkForEnemy( true ) ) {
+						break;
+					}
+					waitFrame();
+				}
+			}
+
+			allowMovement( true );
+			animState( ANIMCHANNEL_TORSO, "Torso_Idle", 4 );
+
+			trigger_wakeup_targets();
+
+			if ( getIntKey( "attack_path" ) ) {
+				// follow a path and fight player at end
+				path = randomPath();
+				if ( path ) {
+					run = true;
+					ignoreEnemies = true;
+					idle_followPathEntities( path );
+					ignoreEnemies = false;
+				}
+			} 
+		}
+	} else if ( getIntKey( "attack_path" ) ) {
+		// follow a path and fight player at end
+		path = randomPath();
+		if ( path ) {
+			run = true;
+			ignoreEnemies = true;
+			idle_followPathEntities( path );
+			ignoreEnemies = false;
+		}
+	}
+
+	// allow him to see after he's woken up
+	ignore_sight = false;
+
+	// ignore the flashlight from now on
+	wakeOnFlashlight( false );
+}
+
+/*
+=====================
+character_soldier_pistol::wait_for_enemy
+=====================
+*/
+void character_soldier_pistol::wait_for_enemy() {
+	entity obstacle;
+	entity new_node;
+	vector obstacle_pos;
+	vector delta;
+
+	// prevent an infinite loop when in notarget
+	AI_PAIN = false;
+
+	stopMove();
+
+	while( !AI_PAIN && !getEnemy() ) {
+		if ( checkForEnemy( idle_sight_fov ) ) {
+			break;
+		}
+
+		// Respond if the player talks to you
+		if ( AI_TALK ) {
+			idle_talk();
+			continue;
+		}
+
+		// Always look at the player
+		faceEntity( $player1 );
+
+		// Follow the player when not fighting
+		if ( getNewPositionTime < sys.getTime() ) {
+
+			// If there is no enemy, returns the combat node closest to the player.
+			combat_node = getCombatNode();
+			if ( combat_node ) {
+
+				moveToEntity( combat_node );
+				while( !AI_MOVE_DONE ) {
+
+					if ( moveStatus() >= MOVE_STATUS_BLOCKED_BY_OBJECT ) {
+						// kick the object, or just wait for the path to be clear
+						obstacle = getObstacle();
+
+						if ( moveStatus() == MOVE_STATUS_BLOCKED_BY_OBJECT ) {
+							kickObstacles( obstacle, 60 );
+						} else {
+
+							obstacle_pos = obstacle.getOrigin();
+							saveMove();
+							stopMove();
+							while( 1 ) {
+								delta = obstacle_pos - obstacle.getOrigin();
+								delta_z = 0;
+								if ( sys.vecLength( delta ) > 4 ) {
+									restoreMove();
+									if ( moveStatus() < MOVE_STATUS_BLOCKED_BY_OBJECT ) {
+										break;
+									}
+									if ( getObstacle() != obstacle ) {
+										break;
+									}
+									stopMove();
+								}
+								if ( checkForEnemy( idle_sight_fov ) ) {
+									break;
+								}
+								waitFrame();
+							}
+						}
+					}
+
+					if ( checkForEnemy( idle_sight_fov ) ) {
+						break;
+					}
+
+					new_node = getCombatNode();
+					if ( new_node != $null_entity && new_node != combat_node ) {
+						combat_node = new_node;
+						stopMove();
+						moveToEntity( combat_node );
+					}
+
+					// exit out if we can't get there
+					if ( AI_DEST_UNREACHABLE || !combat_node ) {
+						animState( ANIMCHANNEL_TORSO, "Torso_Idle", 4 );
+						break;
+					}
+					waitFrame();
+				}
+
+				// Wait a few seconds after getting to a node before choosing another one,
+				// to keep from ping-ponging back and forth as the player runs around.
+				getNewPositionTime = RandomDelay( SOLDIER_FOLLOW_PLAYER_MIN_TIME, SOLDIER_FOLLOW_PLAYER_MAX_TIME );
+			}
+		}
+
+		waitFrame();
+	}
+}
+
+
+/*
+=====================
+character_soldier_pistol::checkForEnemy
+=====================
+*/
+boolean	character_soldier_pistol::checkForEnemy( float use_fov ) {
+	entity enemy;
+	vector size;
+	float dist;
+
+	if ( AI_PAIN ) {
+		// get out of ambush mode when shot
+		ambush = false;
+	}
+
+	if ( ignoreEnemies ) {
+		// while we're following paths, we only respond to enemies on pain, or when close enough to them
+		if ( stay_on_attackpath ) {
+			// don't exit attack_path when close to enemy
+			return false;
+		}
+
+		enemy = getEnemy();
+		if ( !enemy ) {
+			if ( helpPlayerFirst ) {
+				enemy = closestReachableEnemyOfEntity( $player1 );
+
+				if ( !enemy ) {
+					enemy = findEnemyAI( use_fov );
+				}
+			} else {
+				enemy = findEnemyAI( use_fov );
+			}
+		}
+
+		if ( !enemy ) {
+			return false;
+		}
+
+		size = getSize();
+		dist = ( size_x * 1.414 ) + 16;  // diagonal distance plus 16 units
+		if ( enemyRange() > dist ) {
+			return false;
+		}
+	} else {
+		if ( getEnemy() ) {
+			// we were probably triggered (which sets our enemy)
+			return true;
+		}
+
+		if ( !ignore_sight ) {
+			if ( helpPlayerFirst ) {
+				enemy = closestReachableEnemyOfEntity( $player1 );
+
+				if ( !enemy ) {
+					enemy = findEnemyAI( use_fov );
+				}
+			} else {
+				enemy = findEnemyAI( use_fov );
+			}
+		}
+
+		if ( !enemy ) {
+			return false;
+		}
+	}
+
+	ignoreEnemies = false;
+
+	// once we've woken up, get out of ambush mode
+	ambush = false;
+
+	// don't use the fov for sight anymore
+	idle_sight_fov = false;
+
+	setEnemy( enemy );
+
+/*
+	sys.print( "(" );
+	sys.print( sys.getTime() );
+	sys.print( ") " );
+	sys.print( self.getName() );
+	sys.print( ": new enemy = " );
+	sys.print( enemy.getName() );
+	sys.print( "\n" );
+*/
+
+	return true;
+}
+
+/*
+=====================
+character_soldier_pistol::get_new_enemy
+=====================
+*/
+void character_soldier_pistol::get_new_enemy() {
+	clearEnemy();
+	helpPlayerFirst = !helpPlayerFirst;
+
+/*
+	sys.print( "(" );
+	sys.print( sys.getTime() );
+	sys.print( ") " );
+	sys.print( self.getName() );
+	if ( helpPlayerFirst ) {
+		sys.print( ": getting new enemy from player.\n" );
+	} else {
+		sys.print( ": getting new enemy.\n" );
+	}
+*/
+
+	checkForEnemy( false );
+	checkForNewEnemyTime = RandomTime( SOLDIER_CHECK_FOR_NEW_ENEMY_TIME );
+
+	setState( "state_Combat" );
+}
+
+/*
+=====================
+character_soldier_pistol::faceTowardsEntity
+=====================
+*/
+void character_soldier_pistol::faceTowardsEntity( entity target, float duration ) {
+	vector delta;
+	vector ang1;
+	vector ang2;
+	vector ang3;
+
+	delta = target.getOrigin();
+	delta = delta - getOrigin();
+	ang1 = sys.VecToAngles( delta );
+	ang2 = getAngles();
+	ang3 = anglemod180( ang1 - ang2 );
+	if ( ang3_y < -45 ) {
+		turnTo( ang1_y );
+	} else if ( ang3_y > 45 ) {
+		turnTo( ang1_y );
+	}
+
+	lookAt( target, duration );
+}
+
+/*
+=====================
+character_soldier_pistol::idle_talk
+=====================
+*/
+void character_soldier_pistol::idle_talk() {
+	float	ang;
+	float	talktime;
+	float	endtime;
+	float	talkradius;
+	float	blendin;
+	float	blendout;
+	entity	target;
+	vector	originalAngles;
+	float	currentTime;
+	boolean	no_turn;
+	entity  talkTo;
+	float	channel;
+
+	talkTo = getTalkTarget();
+
+	no_turn = getIntKey( "talk_no_turn" );
+
+	originalAngles = getAngles();
+	stopMove();
+
+	if ( !no_turn ) {
+		faceTowardsEntity( talkTo, 0.1 );
+		sys.wait( 0.5 );
+		// wait for turn anim to finish
+		while( !inAnimState( ANIMCHANNEL_LEGS, "Legs_Idle" ) ) {
+			lookAt( talkTo, 0.1 );
+			waitFrame();
+		}
+	}	
+
+	allowMovement( true );
+
+	talkradius = getFloatKey( "talkradius" );
+	if ( talkMode == CHAR_TALK_TRIGGERED ) {
+		// triggered response
+		blendin = self.getIntKey( "talk0_blendin" );
+		blendout = self.getIntKey( "talk0_blendout" );
+		channel = playHeadAnim( "talk_trigger", blendin );
+		talkMode = CHAR_TALK_PRIMARY;
+	} else if ( talkMode == CHAR_TALK_PRIMARY ) {
+		// primary response
+		blendin = self.getIntKey( "talk1_blendin" );
+		blendout = self.getIntKey( "talk1_blendout" );
+		channel = playHeadAnim( "talk_primary", blendin );
+		talkMode = CHAR_TALK_SECONDARY;
+	} else if ( talkMode == CHAR_TALK_SECONDARY ) {
+		// secondary response
+		blendin = self.getIntKey( "talk2_blendin" );
+		blendout = self.getIntKey( "talk2_blendout" );
+		channel = playHeadAnim( "talk_secondary" + talk_secondary_index, blendin );
+		talk_secondary_index = talk_secondary_index + 1;
+		if ( !hasAnim( ANIMCHANNEL_HEAD, "talk_secondary" + talk_secondary_index ) && !hasAnim( ANIMCHANNEL_LEGS, "talk_secondary" + talk_secondary_index ) ) {
+			talk_secondary_index = 1;
+		}
+	}
+
+	while( !animDone( channel, blendout ) ) {
+		if ( distanceTo( talkTo ) > talkradius ) {
+			// stop talking
+			stopSound( SND_CHANNEL_VOICE, false );
+			//if ( head ) {
+				//head.stopSound( SND_CHANNEL_VOICE, false );
+			//}
+			break;
+		}
+
+		if ( no_turn ) {
+			lookAt( talkTo, 0.1 );
+		} else {
+			faceTowardsEntity( talkTo, 0.1 );
+		}
+		waitFrame();
+	}
+	endHeadAnim( blendout );
+	setTalkTarget( $null_entity );
+
+	talktime = getFloatKey( "talktime" );
+	currentTime = sys.getTime();
+	endtime = currentTime + talktime;
+	while( ( currentTime < endtime ) && ( distanceTo( talkTo ) <= talkradius ) ) {
+
+		if ( no_turn ) {
+			lookAt( talkTo, 0.1 );
+		} else {
+			faceTowardsEntity( talkTo, 0.1 );
+		}
+		if ( AI_TALK ) {
+			return;
+		}
+
+		waitFrame();
+		currentTime = sys.getTime();
+	}
+
+	lookAt( $null_entity, 0 );
+	turnTo( originalAngles_y );
+}
+
+/*
+=====================
+character_soldier_pistol::endHeadAnim
+=====================
+*/
+void character_soldier_pistol::endHeadAnim( float blend_out ) {
+	if ( getHead() ) {
+		stopAnim( ANIMCHANNEL_HEAD, blend_out );
+	}
+	setBlendFrames( ANIMCHANNEL_LEGS, blend_out );
+	idleAnim( ANIMCHANNEL_LEGS, "stand" );
+
+	animState( ANIMCHANNEL_LEGS, "Legs_Idle", blend_out );
+	if ( getHead() ) {
+		animState( ANIMCHANNEL_HEAD, "Head_Idle", blend_out );
+	}
+}
+
+/*
+=====================
+character_soldier_pistol::playHeadAnim
+=====================
+*/
+float character_soldier_pistol::playHeadAnim( string animname, float blend_frames ) {
+	string anim;
+	float headlength;
+	float bodylength;
+
+	animState( ANIMCHANNEL_LEGS, "Anim_Disable", blend_frames );
+	setBlendFrames( ANIMCHANNEL_LEGS, blend_frames );
+	idleAnim( ANIMCHANNEL_LEGS, "stand" );
+	waitFrame();
+
+	anim = chooseAnim( ANIMCHANNEL_HEAD, animname );
+	if ( anim != "" ) {
+		setBlendFrames( ANIMCHANNEL_HEAD, blend_frames );
+		playAnim( ANIMCHANNEL_HEAD, anim );
+		headlength = animLength( ANIMCHANNEL_HEAD, anim );
+
+		anim = chooseAnim( ANIMCHANNEL_LEGS, animname );
+		if ( anim == "" ) {
+			animState( ANIMCHANNEL_LEGS, "Legs_Idle", blend_frames );
+		} else {
+			bodylength = animLength( ANIMCHANNEL_LEGS, anim );
+			if ( bodylength < headlength ) {
+				playCycle( ANIMCHANNEL_LEGS, anim );
+			} else {
+				playAnim( ANIMCHANNEL_LEGS, anim );
+			}
+		}
+
+		return ANIMCHANNEL_HEAD;
+	} else {
+		// play on legs
+		if ( blend_frames >= 0 ) {
+			setBlendFrames( ANIMCHANNEL_LEGS, blend_frames );
+		}
+		anim = chooseAnim( ANIMCHANNEL_LEGS, animname );
+		if ( anim == "" ) {
+			playAnim( ANIMCHANNEL_LEGS, "stand" );
+		} else {
+			playAnim( ANIMCHANNEL_LEGS, animname );
+		}
+		return ANIMCHANNEL_LEGS;
+	}
+}
+
+/***********************************************************************
+
+	attacks
+
+***********************************************************************/
+
+/*
+=====================
+character_soldier_pistol::do_attack
+=====================
+*/
+void character_soldier_pistol::do_attack( float attack_flags ) {
+	if ( attack_flags & ATTACK_DODGE_LEFT ) {
+		combat_dodge_left();
+	} else if ( attack_flags & ATTACK_DODGE_RIGHT ) {
+		combat_dodge_right();
+	} else if ( attack_flags & ATTACK_COMBAT_NODE ) {
+		combat_attacknodes( combat_node );
+	} else if ( attack_flags & ATTACK_SOLDIER_CROUCHFIRE ) {
+		crouch_attack();
+	} else if ( attack_flags & ATTACK_MISSILE ) {
+		stand_attack();
+	}
+}
+
+/*
+=====================
+character_soldier_pistol::combat_attacknodes
+=====================
+*/
+void character_soldier_pistol::combat_attacknodes( entity node ) {
+	vector	ang;
+	vector	pos;
+	float	min_wait;
+	float	max_wait;
+	float	num_shots;
+	float	wait_end;
+	float	current_time;
+	float	count;
+	boolean	exit;
+	boolean	attack;
+	boolean do_melee;
+	boolean dont_wait;
+	string	prefix;
+
+	// run to the combat node
+	run = true;
+	moveToEntity( node );
+	while( !AI_MOVE_DONE ) {
+		if ( AI_ENEMY_IN_FOV ) {
+			lookAtEnemy( 1 );
+		}
+		// exit out if we can't get there or we can do a melee attack
+		do_melee = testMeleeAttack();
+		if ( AI_DEST_UNREACHABLE || do_melee || !enemyInCombatCone( node, false ) || AI_ENEMY_DEAD || !node ) {
+			animState( ANIMCHANNEL_TORSO, "Torso_Idle", 4 );
+			return;
+		}
+		waitFrame();
+	}
+
+	if ( !node ) {
+		// level designers sometimes remove the combat node, so check for it so the thread doesn't get killed
+		animState( ANIMCHANNEL_TORSO, "Torso_Idle", 4 );
+		return;
+	}
+
+	// set our anim prefix
+	prefix = node.getKey( "anim" );
+	if ( prefix == "" ) {
+		sys.error( "Missing 'anim' key on entity '" + node.getName() + "'" );
+	}
+	setAnimPrefix( prefix );
+	checkNodeAnim( node, prefix, "out" );
+	checkNodeAnim( node, prefix, "fire" );
+	checkNodeAnim( node, prefix, "in" );
+	checkNodeAnim( node, prefix, "wait" );
+
+	min_wait = node.getFloatKey( "min_wait" );
+	max_wait = node.getFloatKey( "max_wait" );
+	num_shots = node.getFloatKey( "num_shots" );
+	dont_wait = getIntKey( "wake_on_attackcone" );
+	if ( dont_wait ) {
+		setKey( "wake_on_attackcone", "0" );
+	}
+
+	// face the direction the node points
+	ang = node.getAngles();
+	turnTo( ang_y );
+
+	exit = false;
+	attack = false;
+	pos = node.getOrigin();
+	while( !( !node ) && enemyInCombatCone( node, true ) ) {
+		allowMovement( false );
+
+		// play the wait animation
+		playCustomCycle( "wait", 4 );
+
+		// make sure he's precisely at the node
+		slideTo( pos, 0.5 );
+		current_time = sys.getTime();
+		if ( dont_wait ) {
+			dont_wait = false;
+			wait_end = current_time + 0.5;
+		} else {
+			wait_end = current_time + min_wait + sys.random( max_wait - min_wait );
+		}
+		while( sys.influenceActive() || !AI_MOVE_DONE || !facingIdeal() || ( current_time < wait_end ) ) {
+			if ( AI_ENEMY_IN_FOV ) {
+				lookAtEnemy( 1 );
+			}
+			// exit out if we can do a melee attack or enemy has left the combat cone
+			if ( testMeleeAttack() ) {
+				exit = true;
+				break;
+			}
+			if ( !node || !enemyInCombatCone( node, false ) ) {
+				exit = true;
+				break;
+			}
+			waitFrame();
+			current_time = sys.getTime();
+		}
+
+		if ( exit ) {
+			break;
+		}
+
+		// do our attack
+		allowMovement( true );
+		playCustomAnim( "out", 4, 0 );
+		while( !animDone( ANIMCHANNEL_TORSO, 0 ) ) {
+			if ( AI_ENEMY_IN_FOV ) {
+				lookAtEnemy( 1 );
+			}
+			if ( testMeleeAttack() ) {
+				exit = true;
+				break;
+			}
+			if ( !node || !enemyInCombatCone( node, true ) ) {
+				exit = true;
+				break;
+			}				
+			waitFrame();
+		}
+
+		// If it's time to look for a new enemy, exit attack node
+		if ( checkForNewEnemyTime < sys.getTime() ) {
+			exit = true;
+		}
+
+		if ( exit ) {
+			break;
+		}
+
+		AI_DAMAGE = false;
+		allowMovement( false );
+		count = int( sys.random( num_shots ) ) + 1;
+		while( !AI_DAMAGE && ( count > 0 ) ) {
+			if ( sys.influenceActive() ) {
+				break;
+			}
+			if ( projectileHitPlayer() ) {
+				sys.print( "You're obstructing the target!  I'm taking cover!\n" );
+				break;
+			}
+
+			playCustomAnim( "fire", 0, 0 );
+			while( !animDone( ANIMCHANNEL_TORSO, 0 ) ) {
+				if ( sys.influenceActive() ) {
+					break;
+				}
+				if ( projectileHitPlayer() ) {
+					break;
+				}
+
+				if ( AI_ENEMY_IN_FOV ) {
+					lookAtEnemy( 1 );
+				}
+				if ( testMeleeAttack() ) {
+					exit = true;
+					break;
+				}
+				if ( !node || !enemyInCombatCone( node, true ) ) {
+					exit = true;
+					break;
+				}				
+				waitFrame();
+			}
+			attack = true;
+
+			if ( testMeleeAttack() ) {
+				exit = true;
+				break;
+			}
+			if ( !node || !enemyInCombatCone( node, true ) ) {
+				exit = true;
+				break;
+			}				
+			count--;
+		}
+		AI_DAMAGE = false;
+
+		if ( exit ) {
+			break;
+		}
+
+		allowMovement( true );
+		playCustomAnim( "in", 0, 4 );
+		while( !animDone( ANIMCHANNEL_TORSO, 4 ) ) {
+			if ( AI_ENEMY_IN_FOV ) {
+				lookAtEnemy( 1 );
+			}
+			if ( testMeleeAttack() ) {
+				exit = true;
+				break;
+			}
+			if ( !node || !enemyInCombatCone( node, true ) ) {
+				exit = true;
+				break;
+			}				
+			waitFrame();
+		}
+
+		if ( exit ) {
+			break;
+		}
+	}
+
+	if ( !( !node ) && attack ) {
+		// mark the node as used in case it's single use
+		node.markUsed();
+	}
+
+	allowMovement( true );
+	setAnimPrefix( "" );
+	animState( ANIMCHANNEL_TORSO, "Torso_Idle", 4 );
+	animState( ANIMCHANNEL_LEGS, "Legs_Idle", 4 );
+
+	if ( checkForNewEnemyTime < sys.getTime() ) {
+		get_new_enemy();
+	}
+}
+
+/*
+=====================
+character_soldier_pistol::check_attacks
+=====================
+*/
+float character_soldier_pistol::check_attacks() {
+	float currentTime;
+	float attack_flags;
+	boolean try_attack;
+	
+	attack_flags = 0;
+	
+	currentTime = sys.getTime();
+	if ( AI_PAIN && ( currentTime >= nextDodge ) ) {
+		if ( testAnimMove( "evade_left" ) ) {
+			attack_flags |= ATTACK_DODGE_LEFT;
+		}
+		if ( testAnimMove( "evade_right" ) ) {
+			attack_flags |= ATTACK_DODGE_RIGHT;
+			
+			// if we can dodge either direction, pick one
+			if ( attack_flags & ATTACK_DODGE_LEFT ) {
+				if ( sys.random( 100 ) < 50 ) {
+					attack_flags &= ~ATTACK_DODGE_RIGHT;
+				} else {
+					attack_flags &= ~ATTACK_DODGE_LEFT;
+				}
+			}
+		}
+	}
+
+	combat_node = getCombatNode();
+	if ( combat_node ) {
+		attack_flags |= ATTACK_COMBAT_NODE;
+	}
+
+	if ( AI_ENEMY_IN_FOV && ( ( currentTime >= nextAttack ) ) ) {
+		try_attack = true;
+	} else if ( touches( getEnemy() ) ) {
+		try_attack = true;
+	} else {
+		try_attack = false;
+	}
+
+	if ( try_attack ) {
+		// adjust the likelyhood of a crouch vs. stand attack based on the # of each.
+		if ( sys.random( soldier_num_stand_attacks + soldier_num_crouch_attacks ) < soldier_num_stand_attacks ) {
+			if ( canHitEnemyFromAnim( "crouch_range_attack_loop" ) ) {
+				attack_flags |= ATTACK_SOLDIER_CROUCHFIRE;
+			} else if ( canHitEnemyFromAnim( "range_attack_loop" ) ) {
+				attack_flags |= ATTACK_MISSILE;
+			}
+		} else if ( canHitEnemyFromAnim( "range_attack_loop" ) ) {
+			attack_flags |= ATTACK_MISSILE;
+		}
+	}
+	
+	return attack_flags;
+}
+
+/*
+=====================
+character_soldier_pistol::stand_attack
+=====================
+*/
+void character_soldier_pistol::stand_attack() {
+	float attackTime;
+	float endtime;
+	float left;
+	float right;
+	float attack_flags;
+
+	soldier_num_stand_attacks++;
+
+	faceEnemy();
+
+	fire = true;
+	attackTime = RandomDelay( SOLDIER_STAND_ATTACK_MIN_LENGTH, SOLDIER_STAND_ATTACK_MAX_LENGTH );
+	while( AI_ENEMY_VISIBLE ) {
+		endtime = RandomDelay( 0.5, 1 );
+		while( sys.getTime() < endtime ) {
+			if ( projectileHitPlayer() ) {
+				sys.print( "Down in front!  Sorry!\n" );
+				abort_fire = true;
+				attackTime = 0;
+				break;
+			}
+
+			if ( !canHitEnemyFromAnim( "range_attack_loop" ) ) {
+				break;
+			}
+
+			if ( AI_PAIN ) {
+				attack_flags = check_attacks();
+				if ( attack_flags & ( ATTACK_DODGE_LEFT | ATTACK_DODGE_RIGHT ) ) {
+					fire = false;
+					do_attack( attack_flags );
+					return;
+				}
+			}
+			
+			waitFrame();
+		}
+		
+		if ( sys.getTime() > attackTime ) {
+			break;
+		}
+
+		if ( !AI_ENEMY_VISIBLE || !canHitEnemyFromAnim( "range_attack_loop" ) ) {
+			break;
+		}
+		
+		left  = testAnimMove( "step_left" );
+		right =	testAnimMove( "step_right" );
+		if ( left && right ) {
+			if ( sys.random( 100 ) < 50 ) {
+				left = false;
+			} else {
+				right = false;
+			}
+		}
+		
+		if ( left ) {
+			animState( ANIMCHANNEL_LEGS, "Legs_StepLeft", 4 );
+			while( inAnimState( ANIMCHANNEL_LEGS, "Legs_StepLeft" ) ) {
+				if ( projectileHitPlayer() ) {
+					sys.print( "Down in front!  Sorry!\n" );
+					abort_fire = true;
+					attackTime = 0;
+					break;
+				}
+
+				lookAt( getEnemy(), 1 );
+				waitFrame();
+			}
+		} else if ( right ) {
+			animState( ANIMCHANNEL_LEGS, "Legs_StepRight", 4 );
+			while( inAnimState( ANIMCHANNEL_LEGS, "Legs_StepRight" ) ) {
+				if ( projectileHitPlayer() ) {
+					sys.print( "Down in front!  Sorry!\n" );
+					abort_fire = true;
+					attackTime = 0;
+					break;
+				}
+
+				lookAt( getEnemy(), 1 );
+				waitFrame();
+			}
+		}
+	}
+	
+	fire = false;
+	while( inAnimState( ANIMCHANNEL_TORSO, "Torso_RangeAttack" ) ) {
+		waitFrame();
+	}
+
+	// don't attack for a bit
+	nextAttack = RandomDelay( SOLDIER_ATTACK_DELAY_MIN, SOLDIER_ATTACK_DELAY_MAX );
+
+	// Possibly switch to a more important target or help the player
+	if ( checkForNewEnemyTime < sys.getTime() ) {
+		get_new_enemy();
+	}
+}
+	
+/*
+=====================
+character_soldier_pistol::crouch_attack
+=====================
+*/
+void character_soldier_pistol::crouch_attack() {
+	float attackTime;
+	float attack_flags;
+
+	soldier_num_crouch_attacks++;
+
+	faceEnemy();
+	crouch_fire = true;
+	
+	attackTime = RandomDelay( SOLDIER_CROUCH_ATTACK_MIN_LENGTH, SOLDIER_CROUCH_ATTACK_MAX_LENGTH );
+	while( AI_ENEMY_VISIBLE ) {
+		if ( sys.getTime() > attackTime ) {
+			break;
+		}
+		
+		if ( AI_PAIN ) {
+			attack_flags = check_attacks();
+			if ( attack_flags & ( ATTACK_DODGE_LEFT | ATTACK_DODGE_RIGHT ) ) {
+				crouch_fire = false;
+				setAnimPrefix( "" );
+				do_attack( attack_flags );
+				return;
+			}
+		}
+
+		if ( projectileHitPlayer() ) {
+			sys.print( "Watch out!  Get outta my line of fire!\n" );
+			abort_fire = true;
+			break;
+		}
+		
+		lookAt( getEnemy(), 1 );
+		if ( !canHitEnemyFromAnim( "range_attack_loop" ) ) {
+			break;
+		}
+		waitFrame();
+	}
+	
+	crouch_fire = false;
+	while( inAnimState( ANIMCHANNEL_TORSO, "Torso_CrouchAttack" ) ) {
+		waitFrame();
+	}
+
+	// don't attack for a bit
+	nextAttack = RandomDelay( SOLDIER_ATTACK_DELAY_MIN, SOLDIER_ATTACK_DELAY_MAX );
+
+	// Possibly switch to a more important target or help the player
+	if ( checkForNewEnemyTime < sys.getTime() ) {
+		get_new_enemy();
+	}
+}
+
+/*
+=====================
+character_soldier_pistol::combat_dodge_left
+=====================
+*/
+void character_soldier_pistol::combat_dodge_left() {
+	stopMove();
+	faceEnemy();
+	animState( ANIMCHANNEL_LEGS, "Legs_DodgeLeft", 2 );
+	waitAction( "strafe" );
+	nextDodge = DelayTime( SOLDIER_DODGE_RATE );
+}
+
+/*
+=====================
+character_soldier_pistol::combat_dodge_right
+=====================
+*/
+void character_soldier_pistol::combat_dodge_right() {
+	stopMove();
+	faceEnemy();
+	animState( ANIMCHANNEL_LEGS, "Legs_DodgeRight", 2 );	
+	waitAction( "strafe" );
+	nextDodge = DelayTime( SOLDIER_DODGE_RATE );
+}

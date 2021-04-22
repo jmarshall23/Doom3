@@ -1,0 +1,277 @@
+/***********************************************************************
+
+ai_monster_flying_lostsoul2.script
+
+monster_flying_lostsoul2
+
+***********************************************************************/
+
+#define LOSTSOUL_CHARGE_SPEED	440
+#define LOSTSOUL_NORMAL_SPEED	140
+#define LOSTSOUL_ATTACK_RATE	2
+#define LOSTSOUL_CHARGE_RANGE	768
+
+object monster_flying_lostsoul2 : monster_base {
+	float		nextAttack;
+	float		noMeleeTime;
+
+	//
+	// States
+	//
+	void		state_Inactive();
+	void		state_Idle();
+	void		state_Combat();
+
+	//
+	// actions
+	//
+	void		combat_charge();
+	void		combat_melee();
+	void		combat_chase();
+
+	void		init();
+	
+	// anim states
+	void		Torso_Idle();
+	void		Torso_Fly();
+	void		Torso_Charge();
+	void		Torso_Pain();
+	void		Torso_MeleeAttack();
+};
+
+/***********************************************************************
+
+	Torso animation control
+
+***********************************************************************/
+
+void monster_flying_lostsoul2::Torso_Idle() {
+	playCycle( ANIMCHANNEL_TORSO, "idle" );
+	
+	eachFrame {
+		if ( AI_PAIN ) {
+			animState( ANIMCHANNEL_TORSO, "Torso_Pain", 0 );
+		}
+		if ( AI_FORWARD ) {
+			animState( ANIMCHANNEL_TORSO, "Torso_Fly", 4 );
+		}
+	}
+}
+
+void monster_flying_lostsoul2::Torso_Fly() {
+	playCycle( ANIMCHANNEL_TORSO, "fly" );
+	
+	eachFrame {
+		if ( AI_PAIN ) {
+			animState( ANIMCHANNEL_TORSO, "Torso_Pain", 0 );
+		}
+		if ( !AI_FORWARD ) {
+			animState( ANIMCHANNEL_TORSO, "Torso_Idle", 4 );
+		}
+	}
+}
+
+void monster_flying_lostsoul2::Torso_Charge() {
+	float dist;
+	float endtime;
+	
+	setFlySpeed( LOSTSOUL_CHARGE_SPEED );
+	playCycle( ANIMCHANNEL_TORSO, "charge" );	
+	playSound( "snd_charge", SND_CHANNEL_VOICE );
+	chargeAttack( "melee_lostsoul_charge" );
+	
+	dist = distanceTo( getEnemy() ) + 256;
+	endtime = sys.getTime() + dist / LOSTSOUL_CHARGE_SPEED;
+	while( !AI_MOVE_DONE && !AI_BLOCKED && !AI_PAIN && ( sys.getTime() < endtime ) ) {
+		waitFrame();
+	}
+	
+	attackEnd();
+	stopSound( "snd_charge", SND_CHANNEL_VOICE );
+	setFlySpeed( LOSTSOUL_NORMAL_SPEED );
+	finishAction( "charge_attack" );
+
+	animState( ANIMCHANNEL_TORSO, "Torso_Idle", 4 );
+}
+
+void monster_flying_lostsoul2::Torso_Pain() {
+	string animname;
+	float nextpain;
+	float currenttime;
+	
+	animname = getPainAnim();
+	playAnim( ANIMCHANNEL_TORSO, animname );
+
+	nextpain = sys.getTime() + 0.25;
+	
+	while( !animDone( ANIMCHANNEL_TORSO, 2 ) ) {
+		if ( AI_PAIN ) {
+			currenttime = sys.getTime();
+			if ( currenttime > nextpain ) {
+				animState( ANIMCHANNEL_TORSO, "Torso_Pain", 0 );
+			}
+		}
+		waitFrame();
+	}
+
+	finishAction( "pain" );
+	animState( ANIMCHANNEL_TORSO, "Torso_Idle", 2 );
+}
+
+void monster_flying_lostsoul2::Torso_MeleeAttack() {
+	playAnim( ANIMCHANNEL_TORSO, "melee_attack" );
+
+	while( !animDone( ANIMCHANNEL_TORSO, 4 ) ) {
+		waitFrame();
+	}
+	
+	finishAction( "melee_attack" );
+	animState( ANIMCHANNEL_TORSO, "Torso_Idle", 4 );
+}
+
+/***********************************************************************
+
+	AI
+
+***********************************************************************/
+
+/*
+=====================
+monster_flying_lostsoul2::init
+=====================
+*/
+void monster_flying_lostsoul2::init() {
+	moveTypeFly();
+	monster_init();
+	noMeleeTime		= 0;
+	animState( ANIMCHANNEL_TORSO, "Torso_Idle", 0 );
+	setState( "state_Inactive" );
+}
+
+/*
+=====================
+monster_flying_lostsoul2::state_Inactive
+=====================
+*/
+void monster_flying_lostsoul2::state_Inactive() {
+	monster_begin();
+	setState( "state_Idle" );
+}
+
+/*
+=====================
+monster_flying_lostsoul2::state_Idle
+=====================
+*/
+void monster_flying_lostsoul::state_Idle() {
+	wait_for_enemy();
+
+	nextAttack	= 0;
+	
+	setState( "state_Combat" );
+}
+
+/***********************************************************************
+
+	Combat
+
+***********************************************************************/
+
+/*
+=====================
+monster_flying_lostsoul2::state_Combat
+=====================
+*/
+void monster_flying_lostsoul2::state_Combat() {
+	float currentTime;
+	float range;
+	
+	eachFrame {
+		currentTime = sys.getTime();
+		
+		if ( AI_ENEMY_DEAD ) {
+			enemy_dead();
+			continue;
+		}
+		
+		if ( AI_ENEMY_IN_FOV ) {
+			range = enemyRange();
+			if ( currentTime >= noMeleeTime ) {
+				if ( testMeleeAttack() ) {
+					combat_melee();
+					continue;
+				}
+			}
+			if ( ( range < LOSTSOUL_CHARGE_RANGE ) && ( currentTime >= nextAttack ) ) {
+				if ( testChargeAttack() ) {
+					combat_charge();
+					continue;
+				}
+			}
+		}
+
+		combat_chase();
+	}
+}
+
+/*
+=====================
+monster_flying_lostsoul2::combat_charge
+=====================
+*/
+void monster_flying_lostsoul2::combat_charge() {
+	animState( ANIMCHANNEL_TORSO, "Torso_Charge", 4 );
+	waitAction( "charge_attack" );
+	
+	// don't attack for a bit
+	nextAttack = DelayTime( LOSTSOUL_ATTACK_RATE );
+	
+	// don't allow melee for a bit so that charge attacks don't cause double damage
+	noMeleeTime = sys.getTime() + 1;
+}
+
+/*
+=====================
+monster_flying_lostsoul2::combat_melee
+=====================
+*/
+void monster_flying_lostsoul2::combat_melee() {
+	faceEnemy();
+	animState( ANIMCHANNEL_TORSO, "Torso_MeleeAttack", 4 );
+	waitAction( "melee_attack" );
+}
+
+/*
+=====================
+monster_flying_lostsoul2::combat_chase
+=====================
+*/
+void monster_flying_lostsoul2::combat_chase() {
+	float currentTime;
+	float range;
+	
+	moveToEnemy();
+	
+	while( !AI_MOVE_DONE && !AI_ENEMY_DEAD ) {
+		if ( AI_ENEMY_IN_FOV ) {
+			range = enemyRange();
+			if ( testMeleeAttack() ) {
+				return;
+			}
+			if ( range < LOSTSOUL_CHARGE_RANGE ) {
+				currentTime = sys.getTime();
+				if ( currentTime >= nextAttack ) {
+					if ( canHitEnemy() ) {
+						return;
+					}
+				}
+			}
+		}
+
+		waitFrame();
+	}
+	
+	if ( AI_MOVE_DONE && !AI_ENEMY_VISIBLE ) {
+		combat_wander();
+	}
+}
