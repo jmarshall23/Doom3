@@ -12,6 +12,10 @@ Defines game events available to script.
 
 ***********************************************************************/
 
+// jmarshall
+scriptEvent	float checkForEnemy(float use_fov);
+// jmarshall end
+
 // Removes this entity from the game.
 scriptEvent	void 	remove();
 
@@ -733,75 +737,6 @@ scriptEvent	vector	getJointAngle( float jointnum );
 
 /***********************************************************************
 
-	weapons
-
-***********************************************************************/
-
-scriptEvent	entity	getOwner();
-scriptEvent	void 	nextWeapon();
-scriptEvent	void 	weaponState( string stateFunction, float blendFrames );
-
-// eats the specified amount of ammo
-scriptEvent	void 	useAmmo( float amount );
-
-scriptEvent	void 	addToClip( float amount );
-scriptEvent	float	ammoInClip();
-
-// number of shots left in inventory
-scriptEvent	float	ammoAvailable();
-
-// amount of ammo in inventory. since each shot may use more than 1 ammo, this is different than ammoAvailable()
-scriptEvent	float	totalAmmoCount();
-scriptEvent	float	clipSize();
-scriptEvent float	isInvisible();
-
-// Plays the given animation on the given channel.  Returns false if anim doesn't exist.
-// NOTE: weapons only use ANIMCHANNEL_ALL
-scriptEvent	float	playAnim( float channel, string animName );
-
-// Continuously repeats the given animation on the given channel.  Returns false if anim doesn't exist.
-// NOTE: weapons only use ANIMCHANNEL_ALL
-scriptEvent	float	playCycle( float channel, string animName );
-
-// Returns true if the animation playing on the given channel
-// is completed considering a number of blend frames.
-// NOTE: weapons only use ANIMCHANNEL_ALL
-scriptEvent	float	animDone( float channel, float blendOutFrames );
-
-// Sets the number of frames to blend between animations on the given channel.
-// NOTE: weapons only use ANIMCHANNEL_ALL
-scriptEvent	void 	setBlendFrames( float channel, float blendFrame );
-
-// Returns the number of frames to blend between animations on the given channel.
-// NOTE: weapons only use ANIMCHANNEL_ALL
-scriptEvent	float 	getBlendFrames( float channel );
-
-scriptEvent	void 	weaponReady();
-scriptEvent void	weaponOutOfAmmo();
-scriptEvent	void 	weaponReloading();
-scriptEvent	void 	weaponHolstered();
-scriptEvent	void 	weaponRising();
-scriptEvent	void 	weaponLowering();
-scriptEvent	void 	flashlight( float enable );
-scriptEvent	void 	launchProjectiles( float num_projectiles, float spread, float fuseOffset, float launchPower, float dmgPower );
-scriptEvent entity  createProjectile();
-scriptEvent	float	melee();
-scriptEvent void	allowDrop( float allow ); // disables/enables owner dropping weapon when killed
-scriptEvent float	autoReload();	// ui_autoReload check
-scriptEvent void	netReload();	// network client
-scriptEvent void	netEndReload();	// network client - force end of a reload
-
-// Sets a shader parameter on the muzzleflash/light
-scriptEvent	void 	setLightParm( float parmNum, float value );
-
-// Sets the red/green/blue/alpha shader parms on the muzzleflash/light
-scriptEvent	void 	setLightParms( float parm0, float parm1, float parm2, float parm3 );
-
-// Returns the entity that controls the world model
-scriptEvent	entity	getWorldModel();
-
-/***********************************************************************
-
 	projectiles
 
 ***********************************************************************/
@@ -1095,7 +1030,7 @@ scriptEvent	float	testAnimMove( string animname );
 scriptEvent float	testMoveToPosition( vector position );
 scriptEvent	float	testMeleeAttack();
 scriptEvent	float	testAnimAttack( string animname );
-scriptEvent	void 	shrivel( float time );
+//scriptEvent	void 	shrivel( float time );
 scriptEvent void	preBurn();
 scriptEvent	void 	burn();
 scriptEvent	void 	clearBurn();
@@ -1212,14 +1147,3 @@ scriptEvent float	canReachEnemy();
 // returns the position of the entity within the aas if possible, otherwise just the entity position.
 scriptEvent vector	getReachableEntityPosition( entity ent );
 
-/***********************************************************************
-
-	AI - Vagary
-
-***********************************************************************/
-
-// finds a moveable object to throw at the enemy
-scriptEvent entity	vagary_ChooseObjectToThrow( vector mins, vector maxs, float speed, float minDist, float offset );
-
-// throws object at enemy
-scriptEvent void	vagary_ThrowObjectAtEnemy( entity ent, float speed );

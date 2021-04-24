@@ -56,14 +56,6 @@
 //Events
 #include "script/d3xp_events.script"
 
-//Weapons
-#include "script/weapon_bloodstone_passive.script"
-#include "script/weapon_bloodstone_active1.script"
-#include "script/weapon_bloodstone_active2.script"
-#include "script/weapon_bloodstone_active3.script"
-#include "script/weapon_shotgun_double.script"
-#include "script/weapon_grabber.script"
-
 //Monsters
 #include "script/ai_monster_hunter_helltime.script"
 #include "script/ai_monster_hunter_berserk.script"

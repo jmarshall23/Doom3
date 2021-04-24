@@ -558,6 +558,8 @@ public:
 	virtual const char *	GetCallStackCurStr( int depth ) = 0;
 	virtual void			ShutdownSymbols( void ) = 0;
 
+	virtual int				Milliseconds(void) = 0;
+
 	virtual int				DLL_Load( const char *dllName ) = 0;
 	virtual void *			DLL_GetProcAddress( int dllHandle, const char *procName ) = 0;
 	virtual void			DLL_Unload( int dllHandle ) = 0;

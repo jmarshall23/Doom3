@@ -1888,6 +1888,31 @@ void idEntity::FinishBind( void ) {
 
 /*
 ================
+idEntity::GetEntityKey
+================
+*/
+idEntity* idEntity::GetEntityKey(const char* key)
+{
+	idEntity* ent;
+	const char* entname;
+
+	if (!spawnArgs.GetString(key, NULL, &entname))
+	{
+		idThread::ReturnEntity(NULL);
+		return NULL;
+	}
+
+	ent = gameLocal.FindEntity(entname);
+	if (!ent)
+	{
+		gameLocal.Warning("Couldn't find entity '%s' specified in '%s' key in entity '%s'", entname, key, name.c_str());
+	}
+
+	return ent;
+}
+
+/*
+================
 idEntity::Bind
 
   bind relative to the visual position of the master
@@ -4263,6 +4288,16 @@ void idEntity::Event_SetLinearVelocity( const idVec3 &velocity ) {
 
 /*
 ================
+idEntity::GetOrigin
+================
+*/
+idVec3 idEntity::GetOrigin(void)
+{
+	return GetLocalCoordinates(GetPhysics()->GetOrigin());
+}
+
+/*
+================
 idEntity::Event_GetLinearVelocity
 ================
 */
@@ -4311,6 +4346,20 @@ void idEntity::Event_GetSize( void ) {
 
 /*
 ================
+idEntity::Event_GetSize
+================
+*/
+idVec3 idEntity::GetSize()
+{
+	idBounds bounds;
+
+	bounds = GetPhysics()->GetBounds();
+	return (bounds[1] - bounds[0]);
+}
+
+
+/*
+================
 idEntity::Event_GetMins
 ================
 */
@@ -4325,6 +4374,24 @@ idEntity::Event_GetMaxs
 */
 void idEntity::Event_GetMaxs( void ) {
 	idThread::ReturnVector( GetPhysics()->GetBounds()[1] );
+}
+
+/*
+================
+idEntity::Event_Touches
+================
+*/
+bool idEntity::Touches(idEntity* ent)
+{
+	if (!ent)
+	{
+		return false;
+	}
+
+	const idBounds& myBounds = GetPhysics()->GetAbsBounds();
+	const idBounds& entBounds = ent->GetPhysics()->GetAbsBounds();
+
+	return (myBounds.IntersectsBounds(entBounds));
 }
 
 /*
@@ -4373,6 +4440,34 @@ void idEntity::Event_SetGuiFloat( const char *key, float f ) {
 			renderEntity.gui[ i ]->StateChanged( gameLocal.time );
 		}
 	}
+}
+
+
+/*
+================
+idEntity::GetNextKey
+================
+*/
+idStr idEntity::GetNextKey(const char* prefix, const char* lastMatch)
+{
+	const idKeyValue* kv;
+	const idKeyValue* previous;
+
+	if (*lastMatch)
+	{
+		previous = spawnArgs.FindKey(lastMatch);
+	}
+	else
+	{
+		previous = NULL;
+	}
+
+	kv = spawnArgs.MatchPrefix(prefix, previous);
+	if (!kv)
+	{
+		return "";
+	}
+	return kv->GetKey();
 }
 
 /*

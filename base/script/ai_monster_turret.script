@@ -24,7 +24,6 @@ object monster_turret : monster_base {
 	void		state_Idle();
 	void		state_Combat();
 	void		state_Killed();
-	boolean		checkForEnemy( float use_fov );
 
 	//
 	// actions
@@ -293,7 +292,7 @@ void monster_turret::state_Killed() {
 =====================
 monster_turret::checkForEnemy
 =====================
-*/
+
 boolean	monster_turret::checkForEnemy( float use_fov ) {
 	entity enemy;
 
@@ -312,6 +311,7 @@ boolean	monster_turret::checkForEnemy( float use_fov ) {
 	setEnemy( enemy );
 	return true;
 }
+*/
 
 /***********************************************************************
 

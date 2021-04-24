@@ -180,6 +180,41 @@ public:
 	const char *			GetName( void ) const;
 	virtual void			UpdateChangeableSpawnArgs( const idDict *source );
 
+	idEntity* GetEntityKey(const char* key);
+
+	const char* GetKey(const char* key)
+	{
+		const char* value;
+
+		spawnArgs.GetString(key, "", &value);
+
+		return value;
+	}
+
+	float GetFloat(const char* key)
+	{
+		return spawnArgs.GetFloat(key, "0");
+	}
+
+	int GetInt(const char* key)
+	{
+		return spawnArgs.GetInt(key, "0");
+	}
+
+	int GetIntKey(const char* key)
+	{
+		int value;
+		spawnArgs.GetInt(key, "0", value);
+		return value;
+	}
+
+	float GetFloatKey(const char* key)
+	{
+		float value;
+		spawnArgs.GetFloat(key, "0", value);
+		return value;
+	}
+
 							// clients generate views based on all the player specific options,
 							// cameras have custom code, and everything else just uses the axis orientation
 	virtual renderView_t *	GetRenderView();
@@ -345,6 +380,9 @@ public:
 	idCurve_Spline<idVec3> *GetSpline( void ) const;
 	virtual void			ShowEditingDialog( void );
 
+	float DistanceTo(const idVec3& pos) const;
+	float DistanceTo(idEntity* ent);
+
 	enum {
 		EVENT_STARTSOUNDSHADER,
 		EVENT_STOPSOUNDSHADER,
@@ -366,6 +404,8 @@ public:
 
 	void					ServerSendEvent( int eventId, const idBitMsg *msg, bool saveEvent, int excludeClient ) const;
 	void					ClientSendEvent( int eventId, const idBitMsg *msg ) const;
+
+	virtual void			CallNativeEvent(idStr& name) { };
 
 protected:
 	renderEntity_t			renderEntity;						// used to present a model to the renderer
@@ -406,6 +446,8 @@ private:
 	void					QuitTeam( void );					// leave the current team
 
 	void					UpdatePVSAreas( void );
+public:
+	idVec3					GetOrigin(void);
 
 	// events
 	void					Event_GetName( void );
@@ -454,7 +496,10 @@ private:
 	void					Event_Touches( idEntity *ent );
 	void					Event_SetGuiParm( const char *key, const char *val );
 	void					Event_SetGuiFloat( const char *key, float f );
+	idVec3					GetSize();
+	idStr					GetNextKey(const char* prefix, const char* lastMatch);
 	void					Event_GetNextKey( const char *prefix, const char *lastMatch );
+	bool					Touches(idEntity* ent);
 	void					Event_SetKey( const char *key, const char *value );
 	void					Event_GetKey( const char *key );
 	void					Event_GetIntKey( const char *key );
@@ -479,6 +524,17 @@ private:
 	void					Event_GuiNamedEvent(int guiNum, const char *event);
 #endif
 };
+
+
+ID_INLINE float idEntity::DistanceTo( idEntity* ent )
+{
+	return DistanceTo( ent->GetPhysics()->GetOrigin() );
+}
+
+ID_INLINE float idEntity::DistanceTo( const idVec3& pos ) const
+{
+	return ( pos - GetPhysics()->GetOrigin() ).LengthFast();
+}
 
 /*
 ===============================================================================
@@ -534,7 +590,7 @@ protected:
 	idAnimator				animator;
 	damageEffect_t *		damageEffects;
 
-private:
+public:
 	void					Event_GetJointHandle( const char *jointname );
 	void 					Event_ClearAllJoints( void );
 	void 					Event_ClearJoint( jointHandle_t jointnum );

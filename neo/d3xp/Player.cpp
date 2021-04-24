@@ -3387,18 +3387,18 @@ void idPlayer::FireWeapon( void ) {
 				SelectWeapon( previousWeapon, false );
 			}
 #ifdef _D3XP
-			if( (weapon_bloodstone >= 0) && (currentWeapon == weapon_bloodstone) && inventory.weapons & ( 1 << weapon_bloodstone_active1 ) && weapon.GetEntity()->GetStatus() == WP_READY) {
-				// tell it to switch to the previous weapon. Only do this once to prevent
-				// weapon toggling messing up the previous weapon
-				if(idealWeapon == weapon_bloodstone) {
-					if(previousWeapon == weapon_bloodstone || previousWeapon == -1) {
-						NextBestWeapon();
-					} else {
-						//Since this is a toggle weapon just select itself and it will toggle to the last weapon
-						SelectWeapon( weapon_bloodstone, false );
-					}
-				}
-			}
+			//if( (weapon_bloodstone >= 0) && (currentWeapon == weapon_bloodstone) && inventory.weapons & ( 1 << weapon_bloodstone_active1 ) && weapon.GetEntity()->GetStatus() == WP_READY) {
+			//	// tell it to switch to the previous weapon. Only do this once to prevent
+			//	// weapon toggling messing up the previous weapon
+			//	if(idealWeapon == weapon_bloodstone) {
+			//		if(previousWeapon == weapon_bloodstone || previousWeapon == -1) {
+			//			NextBestWeapon();
+			//		} else {
+			//			//Since this is a toggle weapon just select itself and it will toggle to the last weapon
+			//			SelectWeapon( weapon_bloodstone, false );
+			//		}
+			//	}
+			//}
 #endif
 		} else {
 			NextBestWeapon();

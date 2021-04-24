@@ -39,6 +39,7 @@ typedef struct prstack_s {
 } prstack_t;
 
 class idInterpreter {
+	friend class idThread;
 private:
 	prstack_t			callStack[ MAX_STACK_DEPTH ];
 	int 				callStackDepth;

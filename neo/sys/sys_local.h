@@ -53,6 +53,8 @@ public:
 
 	virtual void			FPU_EnableExceptions( int exceptions );
 
+	virtual int				Milliseconds(void) { return Sys_Milliseconds(); }
+
 	virtual void			GetCallStack( address_t *callStack, const int callStackSize );
 	virtual const char *	GetCallStackStr( const address_t *callStack, const int callStackSize );
 	virtual const char *	GetCallStackCurStr( int depth );

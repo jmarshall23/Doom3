@@ -50,16 +50,16 @@ scriptEvent void	setSteeringSpeed( float _steer );
 scriptEvent void	setWaypoint( entity _waypoint );
 
 //Weapon
-scriptEvent	void 	launchProjectilesEllipse( float num_projectiles, float spreada, float spreadb, float fuseOffset, float power );
-scriptEvent void	launchPowerup( string powerup, float duration, float useAmmo );
+//scriptEvent	void 	launchProjectilesEllipse( float num_projectiles, float spreada, float spreadb, float fuseOffset, float power );
+//scriptEvent void	launchPowerup( string powerup, float duration, float useAmmo );
 
-scriptEvent void	startWeaponSmoke();
-scriptEvent void	stopWeaponSmoke();
-scriptEvent void	startWeaponParticle( string name );
-scriptEvent void	stopWeaponParticle( string name );
-scriptEvent void	startWeaponLight( string name );
-scriptEvent void	stopWeaponLight( string name );
-scriptEvent void	ejectBrass();
+//scriptEvent void	startWeaponSmoke();
+//scriptEvent void	stopWeaponSmoke();
+//scriptEvent void	startWeaponParticle( string name );
+//scriptEvent void	stopWeaponParticle( string name );
+//scriptEvent void	startWeaponLight( string name );
+//scriptEvent void	stopWeaponLight( string name );
+//scriptEvent void	ejectBrass();
 
 scriptEvent void	grabberGrabDistance( float dist );
 

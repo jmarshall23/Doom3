@@ -54,6 +54,9 @@ int idEventLoop::JournalLevel( void ) const { return 0; }
 	printf( post );					\
 	va_end( argptr )
 
+int Sys_Milliseconds(void) {
+	return 0;
+}
 
 class idCommonLocal : public idCommon {
 public:

@@ -58,7 +58,7 @@ Required by game code for networking.  Implemented in subclasses.
 =====================
 */
 void weapon_base::NetCatchup() {
-	weaponState( "Idle", 0 );
+
 }
 
 /*
@@ -91,11 +91,7 @@ Code is called is only guaranteed to execute for one frame, so any code should e
 =====================
 */
 void weapon_base::UpdateSkin() {
-	if ( isInvisible() ) {
-		setSkin( getKey( "skin_invisible" ) );
-	} else {
-		setSkin( "" );
-	}
+
 }
 
 /*

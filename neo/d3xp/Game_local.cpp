@@ -1289,6 +1289,8 @@ void idGameLocal::InitFromNewMap( const char *mapName, idRenderWorld *renderWorl
 	gameRenderWorld = renderWorld;
 	gameSoundWorld = soundWorld;
 
+	delayRemoveEntities.Clear();
+
 	LoadMap( mapName, randseed );
 
 	InitScriptForMap();
@@ -2394,6 +2396,17 @@ gameReturn_t idGameLocal::RunFrame( const usercmd_t *clientCmds ) {
 	slow.Get( time, previousTime, msec, framenum, realClientTime );
 	msec = slowmoMsec;
 #endif
+
+// jmarshall
+	for (int i = 0; i < delayRemoveEntities.Num(); i++)
+	{
+		if (gameLocal.time > delayRemoveEntities[i].removeTime)
+		{
+			delayRemoveEntities[i].entity->PostEventMS(&EV_Remove, 0);
+			delayRemoveEntities.RemoveIndex(i);
+		}
+	}
+// jmarshall end
 
 	if ( !isMultiplayer && g_stopTime.GetBool() ) {
 		// clear any debug lines from a previous frame
@@ -4963,4 +4976,146 @@ idGameLocal::GetMapLoadingGUI
 ===============
 */
 void idGameLocal::GetMapLoadingGUI( char gui[ MAX_STRING_CHARS ] ) { }
+
+/*
+==================
+Random
+==================
+*/
+float idGameLocal::Random(float range)
+{
+	float result;
+
+	result = gameLocal.random.RandomFloat();
+	return range * result;
+}
+
+
+/*
+==================
+RandomDelay
+==================
+*/
+float idGameLocal::RandomDelay(float min, float max)
+{
+	float t;
+
+	t = SysScriptTime();
+	t += min + Random(max - min);
+
+	return t;
+}
+
+/*
+==================
+DelayTime
+==================
+*/
+float idGameLocal::DelayTime(float delay)
+{
+	float t;
+
+	t = SysScriptTime();
+	t += delay;
+	t += Random(2) - 1;
+
+	return t;
+}
+
+
+/*
+==================
+RandomTime
+==================
+*/
+float idGameLocal::RandomTime(float delay)
+{
+	float t;
+	float result;
+
+	t = SysScriptTime();
+
+	result = gameLocal.random.RandomFloat();
+	t += delay * result;
+
+	return t;
+}
+
+/*
+===============
+idGameLocal::InfluenceActive
+===============
+*/
+bool idGameLocal::InfluenceActive(void) const
+{
+	idPlayer* player;
+
+	player = gameLocal.GetLocalPlayer();
+	if (player != NULL && player->GetInfluenceLevel())
+	{
+		return true;
+	}
+
+	return false;
+}
+
+
+/*
+================
+idGameLocal::GetEntity
+================
+*/
+idEntity* idGameLocal::GetEntity(const char* name)
+{
+	int			entnum;
+	idEntity* ent;
+
+	assert(name);
+
+	if (name[0] == '*')
+	{
+		entnum = atoi(&name[1]);
+		if ((entnum < 0) || (entnum >= MAX_GENTITIES))
+		{
+			Error("Entity number in string out of range.");
+			return NULL;
+		}
+		return entities[entnum];
+	}
+	else
+	{
+		ent = gameLocal.FindEntity(name);
+		return ent;
+	}
+}
+
+// jmarshall
+/*
+===============
+idGameLocal::DelayRemoveEntity
+===============
+*/
+void idGameLocal::DelayRemoveEntity(idEntity* entity, int delay)
+{
+	rvmGameDelayRemoveEntry_t entry;
+	entry.entity = entity;
+	entry.removeTime = gameLocal.time + delay;
+	delayRemoveEntities.Append(entry);
+}
+
+/*
+================
+idThread::Event_Spawn
+================
+*/
+idEntity* idGameLocal::Spawn(const char* classname)
+{
+	idEntity* ent;
+	idDict dict;
+
+	dict.Set("classname", classname);
+	gameLocal.SpawnEntityDef(dict, &ent);
+	return ent;
+}
+// jmarshall end
 

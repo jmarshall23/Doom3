@@ -76,8 +76,7 @@ object char_sentry : character {
 	void		flashlight_off();
 	void		flashlight_on();
 	void		ignore( entity ignore_ent );
-	boolean		checkForEnemy( float use_fov );
-	
+
 	float		checkDestinationDistance();
 	void		updatePlayerPositionThread();
 
@@ -550,7 +549,6 @@ void char_sentry::ignore( entity ignore_ent ) {
 =====================
 char_sentry::checkForEnemy
 =====================
-*/
 boolean	char_sentry::checkForEnemy( float use_fov ) {
 	entity enemy;
 	entity ent;
@@ -586,6 +584,7 @@ boolean	char_sentry::checkForEnemy( float use_fov ) {
 
 	return false;
 }
+*/
 
 /*
 =====================
@@ -693,6 +692,8 @@ char_sentry::path_sentry_shutdown
 */
 void char_sentry::path_sentry_shutdown() {
 	vector ang;
+	string triggername;
+	entity triggerent;
 
 	stopMove();
 
@@ -707,8 +708,17 @@ void char_sentry::path_sentry_shutdown() {
 		sys.terminate( playerPositionThread );
 		playerPositionThread = 0;
 	}
-
 	waitAction( "fold" );
+	
+	// trigger any entities the path had targeted
+	triggername = current_path.getKey( "trigger" );
+	if ( triggername != "" ) {
+		triggerent = sys.getEntity( triggername );
+		if ( triggerent ) {
+			triggerent.activate( self );
+		}
+	}
+	
 	while( !AI_ACTIVATED ) {
 		waitFrame();
 	}

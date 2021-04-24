@@ -107,6 +107,7 @@ private:
 	//
 	// script callable Events
 	//
+public:
 	void						Event_TerminateThread( int num );
 	void						Event_Pause( void );
 	void						Event_Wait( float time );
@@ -258,6 +259,14 @@ public:
 	int 						GetThreadNum( void );
 	void						SetThreadName( const char *name );
 	const char					*GetThreadName( void );
+	
+	void						PushBool(bool value);
+	void						PushString(const char* string);
+	void						PushEntity(const idEntity* ent);
+	void						PushVec3(const idVec3& value);
+	void						PushFloat(float value);
+	void						PushInt(int value);
+	void						ClearStack();
 
 	void						Error( const char *fmt, ... ) const id_attribute((format(printf,2,3)));
 	void						Warning( const char *fmt, ... ) const id_attribute((format(printf,2,3)));

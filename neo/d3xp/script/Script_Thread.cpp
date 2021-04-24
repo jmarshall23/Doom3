@@ -1921,3 +1921,80 @@ void idThread::Event_InfluenceActive( void ) {
 		idThread::ReturnInt( false );
 	}
 }
+
+
+// abahr: added helper functions
+/*
+================
+idThread::ClearStack
+================
+*/
+void idThread::ClearStack()
+{
+	interpreter.Reset();
+}
+
+/*
+================
+idThread::PushInt
+================
+*/
+void idThread::PushInt(int value)
+{
+	interpreter.Push(value);
+}
+
+/*
+================
+idThread::PushFloat
+================
+*/
+void idThread::PushFloat(float value)
+{
+	interpreter.Push(*(int*)&value);
+}
+
+/*
+================
+idThread::PushVec3
+================
+*/
+void idThread::PushVec3(const idVec3& value)
+{
+	for (int ix = 0; ix < value.GetDimension(); ++ix)
+	{
+		PushFloat(value[ix]);
+	}
+}
+
+/*
+================
+idThread::PushEntity
+================
+*/
+void idThread::PushEntity(const idEntity* ent)
+{
+	assert(ent);
+
+	PushInt(ent->entityNumber + 1);
+}
+
+/*
+================
+idThread::PushString
+================
+*/
+void idThread::PushString(const char* string)
+{
+	interpreter.PushString(string);
+}
+
+/*
+================
+idThread::PushBool
+================
+*/
+void idThread::PushBool(bool value)
+{
+	PushInt((int)value);
+}

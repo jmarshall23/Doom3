@@ -3560,7 +3560,7 @@ void idHarvestable::Event_Touch( idEntity *other, trace_t *trace ) {
 				idWeapon* weap = (idWeapon*)thePlayer->weapon.GetEntity();
 				if(weap) {
 					//weap->PostEventMS(&EV_Weapon_State, 0, "Charge", 8);
-					weap->ProcessEvent(&EV_Weapon_State, "Charge", 8);
+					//weap->ProcessEvent(&EV_Weapon_State, "Charge", 8);
 				}
 
 				BeginBurn();

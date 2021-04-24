@@ -206,9 +206,9 @@ public:
 	bool					InAnimState( int channel, const char *name ) const;
 	const char *			WaitState( void ) const;
 	void					SetWaitState( const char *_waitstate );
-	bool					AnimDone( int channel, int blendFrames ) const;
+	bool					AnimDone(int channel, int blendFrames);
 	virtual void			SpawnGibs( const idVec3 &dir, const char *damageDefName );
-
+	idAnimState&			GetAnimStateVar(int channel);
 #ifdef _D3XP
 	idEntity*				GetHeadEntity() { return head.GetEntity(); };
 #endif
@@ -266,6 +266,8 @@ protected:
 
 	int						painTime;
 
+	rvStateThread			stateThread;
+
 	idList<idAttachInfo>	attachments;
 
 #ifdef _D3XP
@@ -280,7 +282,7 @@ protected:
 							// copies animation from body to head joints
 	void					CopyJointsFromBodyToHead( void );
 
-private:
+public:
 	void					SyncAnimChannels( int channel, int syncToChannel, int blendFrames );
 	void					FinishSetup( void );
 	void					SetupHead( void );
@@ -315,6 +317,8 @@ private:
 	void					Event_AnimDone( int channel, int blendFrames );
 	void					Event_HasAnim( int channel, const char *name );
 	void					Event_CheckAnim( int channel, const char *animname );
+	float					AnimLength(int channel, const char* animname);
+	idStr					ChooseAnim(int channel, const char* animname);
 	void					Event_ChooseAnim( int channel, const char *animname );
 	void					Event_AnimLength( int channel, const char *animname );
 	void					Event_AnimDistance( int channel, const char *animname );

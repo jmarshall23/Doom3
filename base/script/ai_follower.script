@@ -4,25 +4,10 @@ ai_follower.script
 
 ***********************************************************************/
 
-#define FOLLOW_MAXDIST	120
-#define FOLLOW_MINDIST	80
-#define FOLLOW_RUNDIST	180
-
 object follower : ai {
 	string		customAnim;
 	boolean		inCustomAnim;
 	float		customBlendOut;
-	boolean		run;
-	
-	//
-	// States
-	//
-	void		state_Idle();
-	void		state_Killed();
-	void		state_Follow();
-	void		getCloser();
-
-	void		init();
 	
 	void		playCustomCycle( string animname, float blendTime );
 	void		playCustomAnim( string animname, float blendIn, float blendOut );
@@ -244,36 +229,6 @@ void follower::Legs_TurnRight() {
 	animState( ANIMCHANNEL_LEGS, "Legs_Idle", 4 );
 }
 
-/***********************************************************************
-
-	AI
-
-***********************************************************************/
-
-/*
-=====================
-follower::init
-=====================
-*/
-void follower::init() {
-	inCustomAnim = false;
-	run = false;
-	
-	float mod;
-	mod = getIntKey( "head_look" );
-	setBoneMod( mod );
-	
-	setTalkState( TALK_OK );
-
-	self.setKey( "conversationNext", "" );
-	
-	setKey( "wander", "1" );
-	
-	animState( ANIMCHANNEL_TORSO, "Torso_Idle", 0 );
-	animState( ANIMCHANNEL_LEGS, "Legs_Idle", 0 );
-	setState( "state_Idle" );
-}
-
 /*
 =====================
 follower::playCustomCycle
@@ -294,94 +249,4 @@ void follower::playCustomAnim( string animname, float blendIn, float blendOut ) 
 	customAnim = animname;
 	inCustomAnim = true;
 	animState( ANIMCHANNEL_TORSO, "Torso_CustomAnim", blendIn );
-}
-
-/***********************************************************************
-
-	States
-
-***********************************************************************/
-
-/*
-=====================
-follower::state_Idle
-=====================
-*/
-void follower::state_Idle() {
-	stopMove();
-	setTalkTarget( $null_entity );
-	while( 1 ) {
-		if ( AI_TALK ) {
-			setState( "state_Follow" );
-		}
-		waitFrame();
-	}
-}
-
-/*
-=====================
-follower::state_Killed
-=====================
-*/
-void follower::state_Killed() {
-	stopMove();
-	animState( ANIMCHANNEL_TORSO, "Torso_Death", 0 );
-	animState( ANIMCHANNEL_LEGS, "Legs_Death", 0 );
-
-	waitAction( "dead" );
-	stopThinking();
-}
-
-/*
-=====================
-follower::state_Follow
-=====================
-*/
-void follower::state_Follow() {
-	entity leader;
-
-	leader = getTalkTarget();
-	if ( !leader ) {
-		leader = $player1;
-	}
-	setTalkTarget( $null_entity );
-	while( 1 ) {
-		lookAt( leader, 0.1 );
-		if ( AI_TALK ) {
-			setState( "state_Idle" );
-		}
-		if ( distanceTo( leader ) > FOLLOW_MAXDIST ) {
-			getCloser();
-		} else {
-			faceEntity( leader );
-		}
-		waitFrame();
-	}
-}
-
-void follower::getCloser() {
-	entity leader;
-
-	leader = getTalkTarget();
-	if ( !leader ) {
-		leader = $player1;
-	}
-	setTalkTarget( $null_entity );
-	run = false;
-	moveToEntity( leader );
-	while( !AI_DEST_UNREACHABLE && !AI_MOVE_DONE && ( distanceTo( leader ) > FOLLOW_MINDIST ) ) {
-		lookAt( leader, 0.1 );
-		if ( distanceTo( leader ) > FOLLOW_RUNDIST ) {
-			run = true;
-		}
-		if ( distanceTo( leader ) < FOLLOW_MAXDIST ) {
-			run = false;
-		}
-		if ( AI_TALK ) {
-			setState( "state_Idle" );
-		}
-			
-		waitFrame();
-	}
-	stopMove();
 }

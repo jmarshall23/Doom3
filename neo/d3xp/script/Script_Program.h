@@ -258,8 +258,11 @@ ID_INLINE idScriptVariable<type, etype, returnType>::operator returnType() const
 	if ( data ) {
 		return ( const returnType )*data;
 	} else {
+// jmarshall
 		// reasonably safe value
-		return ( const returnType )0;
+		//return ( const returnType )0;
+		assert(!"No data!");
+// jmarshall end
 	}
 }
 

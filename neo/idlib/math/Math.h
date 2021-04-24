@@ -102,6 +102,66 @@ template<class T> ID_INLINE T	Sign( T f ) { return ( f > 0 ) ? 1 : ( ( f < 0 ) ?
 template<class T> ID_INLINE T	Square( T x ) { return x * x; }
 template<class T> ID_INLINE T	Cube( T x ) { return x * x * x; }
 
+/*
+================================================================================================
+
+	floating point sign bit tests
+
+================================================================================================
+*/
+
+#define IEEE_FLT_SIGNBITSET( a )	(reinterpret_cast<const unsigned int &>(a) >> IEEE_FLT_SIGN_BIT)
+#define IEEE_FLT_SIGNBITNOTSET( a )	((~reinterpret_cast<const unsigned int &>(a)) >> IEEE_FLT_SIGN_BIT)
+#define IEEE_FLT_ISNOTZERO( a )		(reinterpret_cast<const unsigned int &>(a) & ~(1u<<IEEE_FLT_SIGN_BIT))
+
+/*
+================================================================================================
+
+	two-complements integer bit layouts
+
+================================================================================================
+*/
+
+#define INT8_SIGN_BIT		7
+#define INT16_SIGN_BIT		15
+#define INT32_SIGN_BIT		31
+#define INT64_SIGN_BIT		63
+
+#define INT8_SIGN_MASK		( 1 << INT8_SIGN_BIT )
+#define INT16_SIGN_MASK		( 1 << INT16_SIGN_BIT )
+#define INT32_SIGN_MASK		( 1UL << INT32_SIGN_BIT )
+#define INT64_SIGN_MASK		( 1ULL << INT64_SIGN_BIT )
+
+/*
+================================================================================================
+
+	integer sign bit tests
+
+================================================================================================
+*/
+
+// If this was ever compiled on a system that had 64 bit unsigned ints,
+// it would fail.
+#define OLD_INT32_SIGNBITSET(i)		(static_cast<const unsigned int>(i) >> INT32_SIGN_BIT)
+#define OLD_INT32_SIGNBITNOTSET(i)	((~static_cast<const unsigned int>(i)) >> INT32_SIGN_BIT)
+
+// Unfortunately, /analyze can't figure out that these always return
+// either 0 or 1, so this extra wrapper is needed to avoid the static
+// alaysis warning.
+
+ID_INLINE int INT32_SIGNBITSET(int i)
+{
+	int	r = OLD_INT32_SIGNBITSET(i);
+	assert(r == 0 || r == 1);
+	return r;
+}
+
+ID_INLINE int INT32_SIGNBITNOTSET(int i)
+{
+	int	r = OLD_INT32_SIGNBITNOTSET(i);
+	assert(r == 0 || r == 1);
+	return r;
+}
 
 class idMath {
 public:
@@ -927,5 +987,43 @@ ID_INLINE int idMath::FloatHash( const float *array, const int numFloats ) {
 	}
 	return hash;
 }
+
+
+// RAVEN BEGIN
+// jscott: fast and reliable random routines
+
+// This is the VC libc version of rand() without multiple seeds per thread or 12 levels
+// of subroutine calls.
+// Both calls have been designed to minimise the inherent number of float <--> int 
+// conversions and the additional math required to get the desired value.
+// eg the typical tint = (rand() * 255) / 32768
+// becomes tint = rvRandom::irand( 0, 255 )
+
+class rvRandom {
+private:
+	static	unsigned long	mSeed;
+public:
+	rvRandom(void) { mSeed = 0x89abcdef; }
+
+	// for a non seed based init
+	static	int				Init(void);
+
+	// Init the seed to a unique number
+	static	void			Init(unsigned long seed) { mSeed = seed; }
+
+	// Returns a float min <= x < max (exclusive; will get max - 0.00001; but never max)
+	static	float			flrand(float min, float max);
+
+	// Returns a float min <= 0 < 1.0
+	static	float			flrand();
+
+	static	float			flrand(const idVec2& v);
+
+	// Returns an integer min <= x <= max (ie inclusive)
+	static	int				irand(int min, int max);
+};
+
+// RAVEN END
+
 
 #endif /* !__MATH_MATH_H__ */

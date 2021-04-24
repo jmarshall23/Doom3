@@ -770,7 +770,7 @@ private:
 #endif
 
 	void					UseVehicle( void );
-
+public:
 	void					Event_GetButtons( void );
 	void					Event_GetMove( void );
 	void					Event_GetViewAngles( void );

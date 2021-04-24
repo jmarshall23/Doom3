@@ -60,6 +60,7 @@ extern idSoundWorld *				gameSoundWorld;
 
 // the "gameversion" client command will print this plus compile date
 #define	GAME_VERSION		"baseDOOM-1"
+#define GAME_FRAMETIME	0.016		// 16 milliseconds
 
 // classes used by idGameLocal
 class idEntity;
@@ -262,6 +263,12 @@ enum slowmoState_t {
 	SLOWMO_STATE_RAMPDOWN
 };
 #endif
+
+struct rvmGameDelayRemoveEntry_t
+{
+	int removeTime;
+	idEntity* entity;
+};
 
 //============================================================================
 
@@ -527,7 +534,26 @@ public:
 	void					SetGibTime( int _time ) { nextGibTime = _time; };
 	int						GetGibTime() { return nextGibTime; };
 
+	void					DelayRemoveEntity(idEntity* entity, int delay);
+	idEntity*				Spawn(const char* classname);
 
+	float					SysScriptTime(void) const
+	{
+		return MS2SEC(realClientTime);
+	}
+	float					SysScriptFrameTime(void) const
+	{
+		return MS2SEC(time - previousTime);
+	}
+
+	float					Random(float range);
+	float					RandomDelay(float min, float max);
+	float					RandomTime(float delay);
+	float					DelayTime(float delay);
+
+	bool					InfluenceActive(void) const;
+
+	idEntity*				GetEntity(const char* name);
 
 private:
 	const static int		INITIAL_SPAWN_COUNT = 1;
@@ -631,6 +657,8 @@ private:
 	void					GetShakeSounds( const idDict *dict );
 
 	void					UpdateLagometer( int aheadOfServer, int dupeUsercmds );
+
+	idList<rvmGameDelayRemoveEntry_t> delayRemoveEntities;
 };
 
 //============================================================================
@@ -799,6 +827,21 @@ const int	CINEMATIC_SKIP_DELAY	= SEC2MS( 2.0f );
 #include "Fx.h"
 #include "SecurityCamera.h"
 #include "BrittleFracture.h"
+
+#include "weapons/Weapon_fist.h"
+#include "weapons/Weapon_pistol.h"
+#include "weapons/Weapon_flashlight.h"
+#include "weapons/Weapon_pda.h"
+#include "weapons/Weapon_shotgun.h"
+#include "weapons/Weapon_double_shotgun.h"
+#include "weapons/Weapon_machinegun.h"
+#include "weapons/Weapon_plasmagun.h"
+#include "weapons/Weapon_chaingun.h"
+#include "weapons/Weapon_rocketlauncher.h"
+#include "weapons/Weapon_bfg.h"
+#include "weapons/Weapon_handgrenade.h"
+#include "weapons/Weapon_chainsaw.h"
+#include "weapons/Weapon_grabber.h"
 
 #include "ai/AI.h"
 #include "anim/Anim_Testmodel.h"

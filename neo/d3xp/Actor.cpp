@@ -1361,10 +1361,17 @@ idActor::SetState
 =====================
 */
 void idActor::SetState( const char *statename ) {
-	const function_t *newState;
+	const function_t* newState;
 
-	newState = GetScriptFunction( statename );
-	SetState( newState );
+	if (HasNativeFunction(statename))
+	{
+		stateThread.SetState(statename);
+	}
+	else
+	{
+		newState = GetScriptFunction(statename);
+		SetState(newState);
+	}
 }
 
 /*
@@ -2237,7 +2244,17 @@ void idActor::Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &dir
 		gameLocal.Error( "Unknown damageDef '%s'", damageDefName );
 	}
 
-	int	damage = damageDef->GetInt( "damage" ) * damageScale;
+	//int	damage = damageDef->GetInt( "damage" ) * damageScale;
+	int minDamage = damageDef->GetInt("minDamage", "-1");
+	int maxDamage = damageDef->GetInt("maxDamage", "-1");
+	int damage = -1;
+	if (minDamage == -1 || maxDamage == -1) {
+		int damageBase = damageDef->GetInt("damage");
+		minDamage = damageBase - (damageBase * 0.2f);
+		maxDamage = damageBase + (damageBase * 0.2f);
+	}
+
+	damage = rvRandom::irand(minDamage, maxDamage) * damageScale;
 	damage = GetDamageForLocation( damage, location );
 
 	// inform the attacker that they hit someone
@@ -3156,6 +3173,95 @@ void idActor::Event_CheckAnim( int channel, const char *animname ) {
 	}
 }
 
+
+/*
+================
+idActor::ChooseAnim
+================
+*/
+idStr idActor::ChooseAnim(int channel, const char* animname)
+{
+	int anim;
+
+	anim = GetAnim(channel, animname);
+	if (anim)
+	{
+		if (channel == ANIMCHANNEL_HEAD)
+		{
+			if (head.GetEntity())
+			{
+				return head.GetEntity()->GetAnimator()->AnimFullName(anim);
+			}
+		}
+		else
+		{
+			return animator.AnimFullName(anim);
+		}
+	}
+
+	return "";
+}
+
+/*
+================
+idActor::AnimDone
+================
+*/
+bool idActor::AnimDone(int channel, int blendFrames)
+{
+	return GetAnimStateVar(channel).AnimDone(blendFrames);
+}
+
+/*
+=====================
+idActor::GetAnimStateVar
+=====================
+*/
+idAnimState& idActor::GetAnimStateVar(int channel)
+{
+	switch (channel)
+	{
+	case ANIMCHANNEL_LEGS:
+		return legsAnim;
+	case ANIMCHANNEL_TORSO:
+		return torsoAnim;
+	case ANIMCHANNEL_HEAD:
+		return headAnim;
+	default:
+		gameLocal.Error("idActor::GetAnimState: Unknown anim channel");
+		return torsoAnim;
+	}
+}
+
+/*
+================
+idActor::Event_AnimLength
+================
+*/
+float idActor::AnimLength(int channel, const char* animname)
+{
+	int anim;
+
+	anim = GetAnim(channel, animname);
+	if (anim)
+	{
+		if (channel == ANIMCHANNEL_HEAD)
+		{
+			if (head.GetEntity())
+			{
+				return (MS2SEC(head.GetEntity()->GetAnimator()->AnimLength(anim)));
+			}
+		}
+		else
+		{
+			return (MS2SEC(animator.AnimLength(anim)));
+		}
+	}
+
+	return (0.0f);
+}
+
+
 /*
 ================
 idActor::Event_ChooseAnim
@@ -3314,6 +3420,12 @@ idActor::Event_SetState
 =====================
 */
 void idActor::Event_SetState( const char *name ) {
+	if (HasNativeFunction(name))
+	{
+		stateThread.SetState(name);
+		return;
+	}
+
 	idealState = GetScriptFunction( name );
 	if ( idealState == state ) {
 		state = NULL;
