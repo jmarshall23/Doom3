@@ -38,6 +38,7 @@ If you have questions concerning this license or the applicable additional terms
 */
 
 // these library functions should not be used for cross platform compatibility
+#ifndef ID_MAYAIMPORT
 #define strcmp			idStr::Cmp		// use_idStr_Cmp
 #define strncmp			use_idStr_Cmpn
 
@@ -71,6 +72,7 @@ If you have questions concerning this license or the applicable additional terms
 #define _snprintf		use_idStr_snPrintf
 #define vsnprintf		use_idStr_vsnPrintf
 #define _vsnprintf		use_idStr_vsnPrintf
+#endif
 
 class idVec4;
 

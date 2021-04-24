@@ -29,7 +29,9 @@ If you have questions concerning this license or the applicable additional terms
 #include "precompiled.h"
 #pragma hdrstop
 
-#include "Maya5.0/maya.h"
+#define FLT_EPSILON 1.19209290E-07F
+
+#include "maya.h"
 //#include "Maya6.0/maya.h"			// must also change include directory in project from "MayaImport\Maya4.5\include" to "MayaImport\Maya6.0\include" (requires MSDev 7.1)
 #include "exporter.h"
 #include "maya_main.h"

@@ -31,6 +31,10 @@ If you have questions concerning this license or the applicable additional terms
 
 #ifdef __cplusplus
 
+#ifdef ID_X64
+	#undef _USE_32BIT_TIME_T
+#endif
+
 //-----------------------------------------------------
 
 #define ID_TIME_T time_t

@@ -30,13 +30,15 @@ If you have questions concerning this license or the applicable additional terms
 #pragma hdrstop
 
 #include "Simd_Generic.h"
+
+#ifndef ID_X64
 #include "Simd_MMX.h"
 #include "Simd_3DNow.h"
 #include "Simd_SSE.h"
 #include "Simd_SSE2.h"
 #include "Simd_SSE3.h"
 #include "Simd_AltiVec.h"
-
+#endif
 
 idSIMDProcessor	*	processor = NULL;			// pointer to SIMD processor
 idSIMDProcessor *	generic = NULL;				// pointer to generic SIMD implementation
@@ -65,7 +67,9 @@ void idSIMD::InitProcessor( const char *module, bool forceGeneric ) {
 	idSIMDProcessor *newProcessor;
 
 	cpuid = idLib::sys->GetProcessorId();
-
+#if ID_X64
+	newProcessor = generic;
+#else
 	if ( forceGeneric ) {
 
 		newProcessor = generic;
@@ -93,7 +97,7 @@ void idSIMD::InitProcessor( const char *module, bool forceGeneric ) {
 
 		newProcessor = processor;
 	}
-
+#endif
 	if ( newProcessor != SIMDProcessor ) {
 		SIMDProcessor = newProcessor;
 		idLib::common->Printf( "%s using %s for SIMD processing\n", module, SIMDProcessor->GetName() );
@@ -150,22 +154,20 @@ long baseClocks = 0;
 long saved_ebx = 0;
 
 #define StartRecordTime( start )			\
-	__asm mov saved_ebx, ebx				\
-	__asm xor eax, eax						\
-	__asm cpuid								\
-	__asm rdtsc								\
-	__asm mov start, eax					\
-	__asm xor eax, eax						\
-	__asm cpuid
+	{										\
+		LARGE_INTEGER li;					\
+		QueryPerformanceCounter( &li );		\
+		start = (double ) li.LowPart + (double) 0xFFFFFFFF * li.HighPart;	\
+		start *= 64; /* 50 MHz */			\
+	}
 
 #define StopRecordTime( end )				\
-	__asm xor eax, eax						\
-	__asm cpuid								\
-	__asm rdtsc								\
-	__asm mov end, eax						\
-	__asm mov ebx, saved_ebx				\
-	__asm xor eax, eax						\
-	__asm cpuid
+	{										\
+		LARGE_INTEGER li;					\
+		QueryPerformanceCounter( &li );		\
+		end = (double ) li.LowPart + (double) 0xFFFFFFFF * li.HighPart;	\
+		end *= 64; /* 50 MHz */				\
+	}
 
 #elif MACOS_X
 
@@ -4100,7 +4102,7 @@ idSIMD::Test_f
 ============
 */
 void idSIMD::Test_f( const idCmdArgs &args ) {
-
+#ifndef ID_X64
 #ifdef _WIN32
 	SetThreadPriority( GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL );
 #endif /* _WIN32 */
@@ -4222,4 +4224,6 @@ void idSIMD::Test_f( const idCmdArgs &args ) {
 #ifdef _WIN32
 	SetThreadPriority( GetCurrentThread(), THREAD_PRIORITY_NORMAL );
 #endif /* _WIN32 */
+
+#endif
 }
