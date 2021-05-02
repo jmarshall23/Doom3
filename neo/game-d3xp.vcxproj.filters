@@ -22,6 +22,9 @@
     <Filter Include="Weapons">
       <UniqueIdentifier>{0c8b8d6a-183a-492f-9787-e6aa151d7a02}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Player">
+      <UniqueIdentifier>{27183d79-50c9-4b46-af3e-33c1bff04e6e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="d3xp\anim\Anim.cpp">
@@ -141,9 +144,6 @@
     <ClCompile Include="d3xp\Moveable.cpp" />
     <ClCompile Include="d3xp\Mover.cpp" />
     <ClCompile Include="d3xp\MultiplayerGame.cpp" />
-    <ClCompile Include="d3xp\Player.cpp" />
-    <ClCompile Include="d3xp\PlayerIcon.cpp" />
-    <ClCompile Include="d3xp\PlayerView.cpp" />
     <ClCompile Include="idlib\precompiled.cpp" />
     <ClCompile Include="d3xp\Projectile.cpp" />
     <ClCompile Include="d3xp\Pvs.cpp" />
@@ -286,6 +286,15 @@
     <ClCompile Include="d3xp\weapons\Weapon_shotgun.cpp">
       <Filter>Weapons</Filter>
     </ClCompile>
+    <ClCompile Include="d3xp\player\Player.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
+    <ClCompile Include="d3xp\player\PlayerIcon.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
+    <ClCompile Include="d3xp\player\PlayerView.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="d3xp\anim\Anim.h">
@@ -399,9 +408,6 @@
     <ClInclude Include="d3xp\Moveable.h" />
     <ClInclude Include="d3xp\Mover.h" />
     <ClInclude Include="d3xp\MultiplayerGame.h" />
-    <ClInclude Include="d3xp\Player.h" />
-    <ClInclude Include="d3xp\PlayerIcon.h" />
-    <ClInclude Include="d3xp\PlayerView.h" />
     <ClInclude Include="d3xp\Projectile.h" />
     <ClInclude Include="d3xp\Pvs.h" />
     <ClInclude Include="d3xp\SecurityCamera.h" />
@@ -521,6 +527,15 @@
     </ClInclude>
     <ClInclude Include="d3xp\PredictedValue.h" />
     <ClInclude Include="d3xp\PredictedValue_impl.h" />
+    <ClInclude Include="d3xp\player\Player.h">
+      <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="d3xp\player\PlayerIcon.h">
+      <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="d3xp\player\PlayerView.h">
+      <Filter>Player</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="d3xp\Game.def" />

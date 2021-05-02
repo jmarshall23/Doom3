@@ -336,6 +336,9 @@
     <ClCompile Include="d3xp\physics\Physics_Static.cpp" />
     <ClCompile Include="d3xp\physics\Physics_StaticMulti.cpp" />
     <ClCompile Include="d3xp\physics\Push.cpp" />
+    <ClCompile Include="d3xp\player\Player.cpp" />
+    <ClCompile Include="d3xp\player\PlayerIcon.cpp" />
+    <ClCompile Include="d3xp\player\PlayerView.cpp" />
     <ClCompile Include="d3xp\script\Script_Compiler.cpp" />
     <ClCompile Include="d3xp\script\Script_Interpreter.cpp" />
     <ClCompile Include="d3xp\script\Script_Program.cpp" />
@@ -358,9 +361,6 @@
     <ClCompile Include="d3xp\Moveable.cpp" />
     <ClCompile Include="d3xp\Mover.cpp" />
     <ClCompile Include="d3xp\MultiplayerGame.cpp" />
-    <ClCompile Include="d3xp\Player.cpp" />
-    <ClCompile Include="d3xp\PlayerIcon.cpp" />
-    <ClCompile Include="d3xp\PlayerView.cpp" />
     <ClCompile Include="d3xp\weapons\Weapon_bfg.cpp" />
     <ClCompile Include="d3xp\weapons\Weapon_chaingun.cpp" />
     <ClCompile Include="d3xp\weapons\Weapon_chainsaw.cpp" />
@@ -444,6 +444,9 @@
     <ClInclude Include="d3xp\physics\Physics_Static.h" />
     <ClInclude Include="d3xp\physics\Physics_StaticMulti.h" />
     <ClInclude Include="d3xp\physics\Push.h" />
+    <ClInclude Include="d3xp\player\Player.h" />
+    <ClInclude Include="d3xp\player\PlayerIcon.h" />
+    <ClInclude Include="d3xp\player\PlayerView.h" />
     <ClInclude Include="d3xp\PredictedValue.h" />
     <ClInclude Include="d3xp\PredictedValue_impl.h" />
     <ClInclude Include="d3xp\script\Script_Compiler.h" />
@@ -468,9 +471,6 @@
     <ClInclude Include="d3xp\Moveable.h" />
     <ClInclude Include="d3xp\Mover.h" />
     <ClInclude Include="d3xp\MultiplayerGame.h" />
-    <ClInclude Include="d3xp\Player.h" />
-    <ClInclude Include="d3xp\PlayerIcon.h" />
-    <ClInclude Include="d3xp\PlayerView.h" />
     <ClInclude Include="d3xp\Projectile.h" />
     <ClInclude Include="d3xp\Pvs.h" />
     <ClInclude Include="d3xp\SecurityCamera.h" />
