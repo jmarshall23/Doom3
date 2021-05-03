@@ -5402,6 +5402,99 @@ intptr_t idPlayer::Invoke(const char *functionName, void *param1) {
 		Event_StartWarp();
 		return 0;
 	};
+	if(functionNameHash == 123239) { // Wait_Alive
+		return (intptr_t)Wait_Alive((stateParms_t *)param1);
+	};
+	if(functionNameHash == 187566) { // Wait_ReloadAnim
+		return (intptr_t)Wait_ReloadAnim((stateParms_t *)param1);
+	};
+	if(functionNameHash == 124942) { // Torso_Idle
+		return (intptr_t)Torso_Idle((stateParms_t *)param1);
+	};
+	if(functionNameHash == 191804) { // Torso_IdleThink
+		return (intptr_t)Torso_IdleThink((stateParms_t *)param1);
+	};
+	if(functionNameHash == 185567) { // Torso_Teleport
+		return (intptr_t)Torso_Teleport((stateParms_t *)param1);
+	};
+	if(functionNameHash == 222094) { // Torso_RaiseWeapon
+		return (intptr_t)Torso_RaiseWeapon((stateParms_t *)param1);
+	};
+	if(functionNameHash == 224771) { // Torso_LowerWeapon
+		return (intptr_t)Torso_LowerWeapon((stateParms_t *)param1);
+	};
+	if(functionNameHash == 125959) { // Torso_Fire
+		return (intptr_t)Torso_Fire((stateParms_t *)param1);
+	};
+	if(functionNameHash == 221897) { // Torso_Fire_Windup
+		return (intptr_t)Torso_Fire_Windup((stateParms_t *)param1);
+	};
+	if(functionNameHash == 152986) { // Torso_Reload
+		return (intptr_t)Torso_Reload((stateParms_t *)param1);
+	};
+	if(functionNameHash == 126210) { // Torso_Pain
+		return (intptr_t)Torso_Pain((stateParms_t *)param1);
+	};
+	if(functionNameHash == 122918) { // Torso_Dead
+		return (intptr_t)Torso_Dead((stateParms_t *)param1);
+	};
+	if(functionNameHash == 140906) { // Torso_Emote
+		return (intptr_t)Torso_Emote((stateParms_t *)param1);
+	};
+	if(functionNameHash == 107329) { // Legs_Idle
+		return (intptr_t)Legs_Idle((stateParms_t *)param1);
+	};
+	if(functionNameHash == 205114) { // Legs_Run_Forward
+		return (intptr_t)Legs_Run_Forward((stateParms_t *)param1);
+	};
+	if(functionNameHash == 215293) { // Legs_Run_Backward
+		return (intptr_t)Legs_Run_Backward((stateParms_t *)param1);
+	};
+	if(functionNameHash == 161273) { // Legs_Run_Left
+		return (intptr_t)Legs_Run_Left((stateParms_t *)param1);
+	};
+	if(functionNameHash == 176427) { // Legs_Run_Right
+		return (intptr_t)Legs_Run_Right((stateParms_t *)param1);
+	};
+	if(functionNameHash == 217391) { // Legs_Walk_Forward
+		return (intptr_t)Legs_Walk_Forward((stateParms_t *)param1);
+	};
+	if(functionNameHash == 227644) { // Legs_Walk_Backward
+		return (intptr_t)Legs_Walk_Backward((stateParms_t *)param1);
+	};
+	if(functionNameHash == 173220) { // Legs_Walk_Left
+		return (intptr_t)Legs_Walk_Left((stateParms_t *)param1);
+	};
+	if(functionNameHash == 188489) { // Legs_Walk_Right
+		return (intptr_t)Legs_Walk_Right((stateParms_t *)param1);
+	};
+	if(functionNameHash == 136833) { // Legs_Crouch
+		return (intptr_t)Legs_Crouch((stateParms_t *)param1);
+	};
+	if(functionNameHash == 166379) { // Legs_Uncrouch
+		return (intptr_t)Legs_Uncrouch((stateParms_t *)param1);
+	};
+	if(functionNameHash == 199844) { // Legs_Crouch_Idle
+		return (intptr_t)Legs_Crouch_Idle((stateParms_t *)param1);
+	};
+	if(functionNameHash == 246412) { // Legs_Crouch_Forward
+		return (intptr_t)Legs_Crouch_Forward((stateParms_t *)param1);
+	};
+	if(functionNameHash == 256813) { // Legs_Crouch_Backward
+		return (intptr_t)Legs_Crouch_Backward((stateParms_t *)param1);
+	};
+	if(functionNameHash == 111101) { // Legs_Jump
+		return (intptr_t)Legs_Jump((stateParms_t *)param1);
+	};
+	if(functionNameHash == 107471) { // Legs_Fall
+		return (intptr_t)Legs_Fall((stateParms_t *)param1);
+	};
+	if(functionNameHash == 107451) { // Legs_Land
+		return (intptr_t)Legs_Land((stateParms_t *)param1);
+	};
+	if(functionNameHash == 105321) { // Legs_Dead
+		return (intptr_t)Legs_Dead((stateParms_t *)param1);
+	};
 	return __super::Invoke(functionName, param1);
 
 };
@@ -5757,6 +5850,99 @@ bool idPlayer::HasNativeFunction(const char *functionName) {
 		return true;
 	};
 	if(functionNameHash == 194887) { // Event_StartWarp
+		return true;
+	};
+	if(functionNameHash == 123239) { // Wait_Alive
+		return true;
+	};
+	if(functionNameHash == 187566) { // Wait_ReloadAnim
+		return true;
+	};
+	if(functionNameHash == 124942) { // Torso_Idle
+		return true;
+	};
+	if(functionNameHash == 191804) { // Torso_IdleThink
+		return true;
+	};
+	if(functionNameHash == 185567) { // Torso_Teleport
+		return true;
+	};
+	if(functionNameHash == 222094) { // Torso_RaiseWeapon
+		return true;
+	};
+	if(functionNameHash == 224771) { // Torso_LowerWeapon
+		return true;
+	};
+	if(functionNameHash == 125959) { // Torso_Fire
+		return true;
+	};
+	if(functionNameHash == 221897) { // Torso_Fire_Windup
+		return true;
+	};
+	if(functionNameHash == 152986) { // Torso_Reload
+		return true;
+	};
+	if(functionNameHash == 126210) { // Torso_Pain
+		return true;
+	};
+	if(functionNameHash == 122918) { // Torso_Dead
+		return true;
+	};
+	if(functionNameHash == 140906) { // Torso_Emote
+		return true;
+	};
+	if(functionNameHash == 107329) { // Legs_Idle
+		return true;
+	};
+	if(functionNameHash == 205114) { // Legs_Run_Forward
+		return true;
+	};
+	if(functionNameHash == 215293) { // Legs_Run_Backward
+		return true;
+	};
+	if(functionNameHash == 161273) { // Legs_Run_Left
+		return true;
+	};
+	if(functionNameHash == 176427) { // Legs_Run_Right
+		return true;
+	};
+	if(functionNameHash == 217391) { // Legs_Walk_Forward
+		return true;
+	};
+	if(functionNameHash == 227644) { // Legs_Walk_Backward
+		return true;
+	};
+	if(functionNameHash == 173220) { // Legs_Walk_Left
+		return true;
+	};
+	if(functionNameHash == 188489) { // Legs_Walk_Right
+		return true;
+	};
+	if(functionNameHash == 136833) { // Legs_Crouch
+		return true;
+	};
+	if(functionNameHash == 166379) { // Legs_Uncrouch
+		return true;
+	};
+	if(functionNameHash == 199844) { // Legs_Crouch_Idle
+		return true;
+	};
+	if(functionNameHash == 246412) { // Legs_Crouch_Forward
+		return true;
+	};
+	if(functionNameHash == 256813) { // Legs_Crouch_Backward
+		return true;
+	};
+	if(functionNameHash == 111101) { // Legs_Jump
+		return true;
+	};
+	if(functionNameHash == 107471) { // Legs_Fall
+		return true;
+	};
+	if(functionNameHash == 107451) { // Legs_Land
+		return true;
+	};
+	if(functionNameHash == 105321) { // Legs_Dead
 		return true;
 	};
 	return __super::HasNativeFunction(functionName);

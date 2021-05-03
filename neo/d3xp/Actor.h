@@ -61,40 +61,52 @@ class idDeclParticle;
 
 class idAnimState {
 public:
+
 	bool					idleAnim;
-	idStr					state;
 	int						animBlendFrames;
 	int						lastAnimBlendFrames;		// allows override anims to blend based on the last transition time
 
 public:
-							idAnimState();
-							~idAnimState();
+	idAnimState();
+	~idAnimState();
 
-	void					Save( idSaveGame *savefile ) const;
-	void					Restore( idRestoreGame *savefile );
+	void					Save(idSaveGame* savefile) const;
+	void					Restore(idRestoreGame* savefile);
 
-	void					Init( idActor *owner, idAnimator *_animator, int animchannel );
-	void					Shutdown( void );
-	void					SetState( const char *name, int blendFrames );
-	void					StopAnim( int frames );
-	void					PlayAnim( int anim );
-	void					CycleAnim( int anim );
-	void					BecomeIdle( void );
-	bool					UpdateState( void );
-	bool					Disabled( void ) const;
-	void					Enable( int blendFrames );
-	void					Disable( void );
-	bool					AnimDone( int blendFrames ) const;
-	bool					IsIdle( void ) const;
-	animFlags_t				GetAnimFlags( void ) const;
+	void					Init(idEntity* owner, idAnimator* _animator, int animchannel);
+	void					Shutdown(void);
+	void					SetState(const char* name, int blendFrames, int flags = 0);
+	void					PostState(const char* name, int blendFrames = 0, int delay = 0, int flags = 0);
+	void					StopAnim(int frames);
+	void					PlayAnim(int anim);
+	void					CycleAnim(int anim);
+	void					BecomeIdle(void);
+	bool					UpdateState(void);
+	bool					Disabled(void) const;
+	void					Enable(int blendFrames);
+	void					Disable(void);
+	bool					AnimDone(int blendFrames) const;
+	bool					IsIdle(void) const;
+	animFlags_t				GetAnimFlags(void) const;
 
+	rvStateThread&			GetStateThread(void);
+
+	idAnimator* GetAnimator(void) const { return animator; };
 private:
-	idActor *				self;
-	idAnimator *			animator;
-	idThread *				thread;
+	// RAVEN BEGIN
+	// bdube: converted self to entity ptr so any entity can use it
+	idEntity*				self;
+	// RAVEN END
+	idAnimator*				animator;
 	int						channel;
 	bool					disabled;
+
+	rvStateThread			stateThread;
 };
+
+ID_INLINE rvStateThread& idAnimState::GetStateThread(void) {
+	return stateThread;
+}
 
 class idAttachInfo {
 public:
@@ -138,6 +150,10 @@ public:
 	void					SetupBody( void );
 
 	void					CheckBlink( void );
+
+	void SetAnimState(int channel, const char* statename, int blendFrames, int flags);
+	void PostAnimState(int channel, const char* statename, int blendFrames, int delay = 0, int flags = 0);
+	void StopAnimState(int channel);
 
 	virtual bool			GetPhysicsToVisualTransform( idVec3 &origin, idMat3 &axis );
 	virtual bool			GetPhysicsToSoundTransform( idVec3 &origin, idMat3 &axis );
@@ -197,12 +213,14 @@ public:
 	virtual void			Teleport( const idVec3 &origin, const idAngles &angles, idEntity *destination );
 
 	virtual	renderView_t *	GetRenderView();	
+
+	bool					HasAnim(int channel, const char* animname, bool forcePrefix);
 	
 							// animation state control
 	int						GetAnim( int channel, const char *name );
 	void					UpdateAnimState( void );
 	void					SetAnimState( int channel, const char *name, int blendFrames );
-	const char *			GetAnimState( int channel ) const;
+	idAnimState&			GetAnimState(int channel);
 	bool					InAnimState( int channel, const char *name ) const;
 	const char *			WaitState( void ) const;
 	void					SetWaitState( const char *_waitstate );
@@ -302,8 +320,8 @@ public:
 	void					Event_EnablePain( void );
 	void					Event_GetPainAnim( void );
 	void					Event_StopAnim( int channel, int frames );
-	void					Event_PlayAnim( int channel, const char *name );
-	void					Event_PlayCycle( int channel, const char *name );
+	void					Event_PlayAnim( int channel, const char *name, int blendFrames = 0 );
+	void					Event_PlayCycle( int channel, const char *name, int blendFrames = 0 );
 	void					Event_IdleAnim( int channel, const char *name );
 	void					Event_SetSyncedAnimWeight( int channel, int anim, float weight );
 	void					Event_OverrideAnim( int channel );

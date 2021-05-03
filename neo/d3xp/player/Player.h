@@ -802,6 +802,42 @@ public:
 	void					Event_ToggleBloom( int on );
 	void					Event_SetBloomParms( float speed, float intensity );
 #endif
+	bool					IsLegsIdle(bool crouching) const;
+
+	stateResult_t			Wait_Alive(stateParms_t* parms);
+	stateResult_t			Wait_ReloadAnim(stateParms_t* parms);
+
+	stateResult_t			Torso_Idle(stateParms_t* parms);
+	stateResult_t			Torso_IdleThink(stateParms_t* parms);
+	stateResult_t			Torso_Teleport(stateParms_t* parms);
+	stateResult_t			Torso_RaiseWeapon(stateParms_t* parms);
+	stateResult_t			Torso_LowerWeapon(stateParms_t* parms);
+	stateResult_t			Torso_Fire(stateParms_t* parms);
+	stateResult_t			Torso_Fire_Windup(stateParms_t* parms);
+
+	stateResult_t			Torso_Reload(stateParms_t* parms);
+	stateResult_t			Torso_Pain(stateParms_t* parms);
+	stateResult_t			Torso_Dead(stateParms_t* parms);
+	stateResult_t			Torso_Emote(stateParms_t* parms);
+
+	stateResult_t			Legs_Idle(stateParms_t* parms);
+	stateResult_t			Legs_Run_Forward(stateParms_t* parms);
+	stateResult_t			Legs_Run_Backward(stateParms_t* parms);
+	stateResult_t			Legs_Run_Left(stateParms_t* parms);
+	stateResult_t			Legs_Run_Right(stateParms_t* parms);
+	stateResult_t			Legs_Walk_Forward(stateParms_t* parms);
+	stateResult_t			Legs_Walk_Backward(stateParms_t* parms);
+	stateResult_t			Legs_Walk_Left(stateParms_t* parms);
+	stateResult_t			Legs_Walk_Right(stateParms_t* parms);
+	stateResult_t			Legs_Crouch(stateParms_t* parms);
+	stateResult_t			Legs_Uncrouch(stateParms_t* parms);
+	stateResult_t			Legs_Crouch_Idle(stateParms_t* parms);
+	stateResult_t			Legs_Crouch_Forward(stateParms_t* parms);
+	stateResult_t			Legs_Crouch_Backward(stateParms_t* parms);
+	stateResult_t			Legs_Jump(stateParms_t* parms);
+	stateResult_t			Legs_Fall(stateParms_t* parms);
+	stateResult_t			Legs_Land(stateParms_t* parms);
+	stateResult_t			Legs_Dead(stateParms_t* parms);
 };
 
 ID_INLINE bool idPlayer::IsReady( void ) {

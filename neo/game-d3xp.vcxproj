@@ -288,6 +288,7 @@
     <ClCompile Include="d3xp\anim\Anim.cpp" />
     <ClCompile Include="d3xp\anim\Anim_Blend.cpp" />
     <ClCompile Include="d3xp\anim\Anim_Import.cpp" />
+    <ClCompile Include="d3xp\anim\Anim_State.cpp" />
     <ClCompile Include="d3xp\anim\Anim_Testmodel.cpp" />
     <ClCompile Include="d3xp\gamesys\Class.cpp" />
     <ClCompile Include="d3xp\gamesys\DebugGraph.cpp" />
@@ -338,6 +339,7 @@
     <ClCompile Include="d3xp\physics\Push.cpp" />
     <ClCompile Include="d3xp\player\Player.cpp" />
     <ClCompile Include="d3xp\player\PlayerIcon.cpp" />
+    <ClCompile Include="d3xp\player\Player_Anim.cpp" />
     <ClCompile Include="d3xp\player\PlayerView.cpp" />
     <ClCompile Include="d3xp\script\Script_Compiler.cpp" />
     <ClCompile Include="d3xp\script\Script_Interpreter.cpp" />

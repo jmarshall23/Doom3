@@ -3384,14 +3384,13 @@ static classVariableInfo_t idPortalSky_typeInfo[] = {
 
 static classVariableInfo_t idAnimState_typeInfo[] = {
 	{ ": bool", "idleAnim", (intptr_t)(&((idAnimState *)0)->idleAnim), sizeof( ((idAnimState *)0)->idleAnim ) },
-	{ "idStr", "state", (intptr_t)(&((idAnimState *)0)->state), sizeof( ((idAnimState *)0)->state ) },
 	{ "int", "animBlendFrames", (intptr_t)(&((idAnimState *)0)->animBlendFrames), sizeof( ((idAnimState *)0)->animBlendFrames ) },
 	{ "int", "lastAnimBlendFrames", (intptr_t)(&((idAnimState *)0)->lastAnimBlendFrames), sizeof( ((idAnimState *)0)->lastAnimBlendFrames ) },
-	{ ": idActor *", "self", (intptr_t)(&((idAnimState *)0)->self), sizeof( ((idAnimState *)0)->self ) },
+	{ ": idEntity *", "self", (intptr_t)(&((idAnimState *)0)->self), sizeof( ((idAnimState *)0)->self ) },
 	{ "idAnimator *", "animator", (intptr_t)(&((idAnimState *)0)->animator), sizeof( ((idAnimState *)0)->animator ) },
-	{ "idThread *", "thread", (intptr_t)(&((idAnimState *)0)->thread), sizeof( ((idAnimState *)0)->thread ) },
 	{ "int", "channel", (intptr_t)(&((idAnimState *)0)->channel), sizeof( ((idAnimState *)0)->channel ) },
 	{ "bool", "disabled", (intptr_t)(&((idAnimState *)0)->disabled), sizeof( ((idAnimState *)0)->disabled ) },
+	{ "rvStateThread", "stateThread", (intptr_t)(&((idAnimState *)0)->stateThread), sizeof( ((idAnimState *)0)->stateThread ) },
 	{ NULL, 0 }
 };
 

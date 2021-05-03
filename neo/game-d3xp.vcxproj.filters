@@ -295,6 +295,12 @@
     <ClCompile Include="d3xp\player\PlayerView.cpp">
       <Filter>Player</Filter>
     </ClCompile>
+    <ClCompile Include="d3xp\anim\Anim_State.cpp">
+      <Filter>Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="d3xp\player\Player_Anim.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="d3xp\anim\Anim.h">

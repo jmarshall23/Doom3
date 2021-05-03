@@ -18,7 +18,7 @@ typedef enum
 
 #define MAX_STATE_CALLS		50
 
-#define SRESULT_STAGE(x)	((stateResult_t)((int)SRESULT_SETSTAGE + (int)(x)))
+#define SRESULT_STAGE(x)	parms->stage = x; return SRESULT_WAIT; //((stateResult_t)((int)SRESULT_SETSTAGE + (int)(x)))
 #define SRESULT_DELAY(x)	((stateResult_t)((int)SRESULT_SETDELAY + (int)(x)))
 
 struct stateParms_t
@@ -117,6 +117,8 @@ public:
 	stateResult_t	SetState( const char* state, int blendFrames = 0, int delay = 0, int flags = 0 );
 	stateCall_t*	GetState( void ) const;
 	bool			CurrentStateIs( const char* name ) const;
+
+	idStr			CurrentState(void) const { if (IsIdle()) { return ""; } return GetState()->state; }
 
 	stateResult_t	Execute( void );
 

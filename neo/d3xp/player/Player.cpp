@@ -1969,6 +1969,10 @@ void idPlayer::Spawn( void ) {
 	bloomSpeed				= 1;
 	bloomIntensity			= -0.01f;
 #endif
+
+	// Start in idle
+	SetAnimState(ANIMCHANNEL_TORSO, "Torso_Idle", 0);
+	SetAnimState(ANIMCHANNEL_LEGS, "Legs_Idle", 0);
 }
 
 /*
