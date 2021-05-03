@@ -359,8 +359,8 @@ public:
 #endif
 
 protected:
-	stateResult_t			State_Wait_TorsoAnim(stateParms_t* parms);
-	stateResult_t			State_Wait_LegsAnim(stateParms_t* parms);
+	stateResult_t			Wait_TorsoAnim(stateParms_t* parms);
+	stateResult_t			Wait_LegsAnim(stateParms_t* parms);
 };
 
 #endif /* !__GAME_ACTOR_H__ */

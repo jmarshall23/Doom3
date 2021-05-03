@@ -26,7 +26,7 @@ stateResult_t idAI::Torso_Idle(stateParms_t* parms) {
 	case STAGE_INIT:
 		Event_IdleAnim(ANIMCHANNEL_TORSO, "idle");
 		parms->stage = STAGE_WAIT;
-		break;
+		return SRESULT_WAIT;
 
 	case STAGE_WAIT:
 		if (AI_PAIN)

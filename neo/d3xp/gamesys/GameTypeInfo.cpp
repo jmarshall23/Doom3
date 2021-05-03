@@ -3445,12 +3445,12 @@ intptr_t idActor::Invoke(const char *functionName, void *param1) {
 		Event_GetWaitState();
 		return 0;
 	};
-	if(functionNameHash == 261264) { // State_Wait_TorsoAnim
-		State_Wait_TorsoAnim((stateParms_t *)param1);
+	if(functionNameHash == 178831) { // Wait_TorsoAnim
+		Wait_TorsoAnim((stateParms_t *)param1);
 		return 0;
 	};
-	if(functionNameHash == 242199) { // State_Wait_LegsAnim
-		return (intptr_t)State_Wait_LegsAnim((stateParms_t *)param1);
+	if(functionNameHash == 160606) { // Wait_LegsAnim
+		return (intptr_t)Wait_LegsAnim((stateParms_t *)param1);
 	};
 	return __super::Invoke(functionName, param1);
 
@@ -3605,10 +3605,10 @@ bool idActor::HasNativeFunction(const char *functionName) {
 	if(functionNameHash == 231666) { // Event_GetWaitState
 		return true;
 	};
-	if(functionNameHash == 261264) { // State_Wait_TorsoAnim
+	if(functionNameHash == 178831) { // Wait_TorsoAnim
 		return true;
 	};
-	if(functionNameHash == 242199) { // State_Wait_LegsAnim
+	if(functionNameHash == 160606) { // Wait_LegsAnim
 		return true;
 	};
 	return __super::HasNativeFunction(functionName);

@@ -2382,12 +2382,12 @@ void idActor::Event_GetPainAnim( void ) {
 
 /*
 ================
-idActor::State_Wait_LegsAnim
+idActor::Wait_LegsAnim
 
 Stop a state thread until the animation running on the legs channel is finished
 ================
 */
-stateResult_t idActor::State_Wait_LegsAnim(stateParms_t* parms) {
+stateResult_t idActor::Wait_LegsAnim(stateParms_t* parms) {
 	if (!AnimDone(ANIMCHANNEL_LEGS, 3)) {
 		return SRESULT_WAIT;
 	}
@@ -2396,12 +2396,12 @@ stateResult_t idActor::State_Wait_LegsAnim(stateParms_t* parms) {
 
 /*
 ================
-idActor::State_Wait_TorsoAnim
+idActor::Wait_TorsoAnim
 
 Stop a state thread until the animation running on the torso channel is finished
 ================
 */
-stateResult_t idActor::State_Wait_TorsoAnim(stateParms_t* parms) {
+stateResult_t idActor::Wait_TorsoAnim(stateParms_t* parms) {
 	if (!AnimDone(ANIMCHANNEL_TORSO, 3)) {
 		return SRESULT_WAIT;
 	}
