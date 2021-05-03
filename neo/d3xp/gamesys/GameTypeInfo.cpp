@@ -8733,9 +8733,6 @@ intptr_t idAI::Invoke(const char *functionName, void *param1) {
 		Think();
 		return 0;
 	};
-	if(functionNameHash == 282905) { // ConstructScriptObject
-		return (intptr_t)ConstructScriptObject();
-	};
 	if(functionNameHash == 88222) { // AI_Begin
 		AI_Begin();
 		return 0;
@@ -9304,9 +9301,6 @@ bool idAI::HasNativeFunction(const char *functionName) {
 		return true;
 	};
 	if(functionNameHash == 61762) { // Think
-		return true;
-	};
-	if(functionNameHash == 282905) { // ConstructScriptObject
 		return true;
 	};
 	if(functionNameHash == 88222) { // AI_Begin
@@ -10471,6 +10465,9 @@ intptr_t rvmMonsterZombieCommandoTentacle::Invoke(const char *functionName, void
 		tentacle_attack_start();
 		return 0;
 	};
+	if(functionNameHash == 262850) { // Torso_TentacleAttack
+		return (intptr_t)Torso_TentacleAttack((stateParms_t *)param1);
+	};
 	return __super::Invoke(functionName, param1);
 
 };
@@ -10502,6 +10499,9 @@ bool rvmMonsterZombieCommandoTentacle::HasNativeFunction(const char *functionNam
 		return true;
 	};
 	if(functionNameHash == 287526) { // tentacle_attack_start
+		return true;
+	};
+	if(functionNameHash == 262850) { // Torso_TentacleAttack
 		return true;
 	};
 	return __super::HasNativeFunction(functionName);

@@ -266,25 +266,25 @@ public:
 	int						lastSndHitTime;			// MP hit sound - != lastHitTime because we throttle
 	int						lastSavingThrowTime;	// for the "free miss" effect
 
-	idScriptBool			AI_FORWARD;
-	idScriptBool			AI_BACKWARD;
-	idScriptBool			AI_STRAFE_LEFT;
-	idScriptBool			AI_STRAFE_RIGHT;
-	idScriptBool			AI_ATTACK_HELD;
-	idScriptBool			AI_WEAPON_FIRED;
-	idScriptBool			AI_JUMP;
-	idScriptBool			AI_CROUCH;
-	idScriptBool			AI_ONGROUND;
-	idScriptBool			AI_ONLADDER;
-	idScriptBool			AI_DEAD;
-	idScriptBool			AI_RUN;
-	idScriptBool			AI_PAIN;
-	idScriptBool			AI_HARDLANDING;
-	idScriptBool			AI_SOFTLANDING;
-	idScriptBool			AI_RELOAD;
-	idScriptBool			AI_TELEPORT;
-	idScriptBool			AI_TURN_LEFT;
-	idScriptBool			AI_TURN_RIGHT;
+	bool					AI_FORWARD;
+	bool					AI_BACKWARD;
+	bool					AI_STRAFE_LEFT;
+	bool					AI_STRAFE_RIGHT;
+	bool					AI_ATTACK_HELD;
+	bool					AI_WEAPON_FIRED;
+	bool					AI_JUMP;
+	bool					AI_CROUCH;
+	bool					AI_ONGROUND;
+	bool					AI_ONLADDER;
+	bool					AI_DEAD;
+	bool					AI_RUN;
+	bool					AI_PAIN;
+	bool					AI_HARDLANDING;
+	bool					AI_SOFTLANDING;
+	bool					AI_RELOAD;
+	bool					AI_TELEPORT;
+	bool					AI_TURN_LEFT;
+	bool					AI_TURN_RIGHT;
 
 	// inventory
 	idInventory				inventory;

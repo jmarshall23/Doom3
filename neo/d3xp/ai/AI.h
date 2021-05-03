@@ -295,11 +295,11 @@ private:
 	void					idle_followPathEntities( idEntity* pathnode );
 protected:
 
-	idScriptBool			ambush;
-	idScriptBool			ignoreEnemies;			// used to disable enemy checks during attack_path
-	idScriptBool			stay_on_attackpath;		// used to disable enemy checks during attack_path
-	idScriptBool			ignore_sight;
-	idScriptBool			idle_sight_fov;
+	bool					ambush;
+	bool					ignoreEnemies;			// used to disable enemy checks during attack_path
+	bool					stay_on_attackpath;		// used to disable enemy checks during attack_path
+	bool					ignore_sight;
+	bool					idle_sight_fov;
 
 	// navigation
 	idAAS* 					aas;
@@ -429,31 +429,31 @@ protected:
 	idEntityPtr<idHarvestable>	harvestEnt;
 
 	// script variables
-	idScriptBool			AI_TALK;
-	idScriptBool			AI_DAMAGE;
-	idScriptBool			AI_PAIN;
-	idScriptFloat			AI_SPECIAL_DAMAGE;
-	idScriptBool			AI_DEAD;
-	idScriptBool			AI_RUN;
-	idScriptBool			blocked; // its stupid they had two block states.
-	idScriptBool			AI_ATTACKING;
-	idScriptBool			AI_ENEMY_VISIBLE;
-	idScriptBool			AI_ENEMY_IN_FOV;
-	idScriptBool			AI_ENEMY_DEAD;
-	idScriptBool			AI_MOVE_DONE;
-	idScriptBool			AI_ONGROUND;
-	idScriptBool			AI_ACTIVATED;
-	idScriptBool			AI_FORWARD;
-	idScriptBool			AI_JUMP;
-	idScriptBool			AI_ENEMY_REACHABLE;
-	idScriptBool			AI_BLOCKED;
-	idScriptBool			AI_OBSTACLE_IN_PATH;
-	idScriptBool			AI_DEST_UNREACHABLE;
-	idScriptBool			AI_HIT_ENEMY;
-	idScriptBool			AI_PUSHED;
+	bool					AI_TALK;
+	bool					AI_DAMAGE;
+	bool					AI_PAIN;
+	float					AI_SPECIAL_DAMAGE;
+	bool					AI_DEAD;
+	bool					AI_RUN;
+	bool					blocked; // its stupid they had two block states.
+	bool					AI_ATTACKING;
+	bool					AI_ENEMY_VISIBLE;
+	bool					AI_ENEMY_IN_FOV;
+	bool					AI_ENEMY_DEAD;
+	bool					AI_MOVE_DONE;
+	bool					AI_ONGROUND;
+	bool					AI_ACTIVATED;
+	bool					AI_FORWARD;
+	bool					AI_JUMP;
+	bool					AI_ENEMY_REACHABLE;
+	bool					AI_BLOCKED;
+	bool					AI_OBSTACLE_IN_PATH;
+	bool					AI_DEST_UNREACHABLE;
+	bool					AI_HIT_ENEMY;
+	bool					AI_PUSHED;
 
-	idScriptFloat			run_distance;
-	idScriptFloat			walk_turn;
+	float					run_distance;
+	float					walk_turn;
 
 	//
 	// ai/ai.cpp
@@ -466,7 +466,6 @@ protected:
 public:
 	int						ReactionTo( const idEntity* ent );
 
-	virtual idThread*		ConstructScriptObject();
 protected:
 	virtual void			AI_Begin( void ) { };
 	virtual int				check_attacks()
@@ -811,7 +810,7 @@ protected:
 	stateResult_t	Legs_Walk(stateParms_t* parms);
 	stateResult_t	Legs_Run(stateParms_t* parms);
 
-	idScriptBool can_run;
+	bool			 can_run;
 };
 
 class idCombatNode : public idEntity

@@ -149,8 +149,8 @@ idAI::~idAI
 idAI::~idAI()
 {
 	delete projectileClipModel;
-	DeconstructScriptObject();
-	scriptObject.Free();
+	//DeconstructScriptObject();
+//	scriptObject.Free();
 	if( worldMuzzleFlashHandle != -1 )
 	{
 		gameRenderWorld->FreeLightDef( worldMuzzleFlashHandle );
@@ -978,7 +978,7 @@ void idAI::Spawn()
 	StopMove( MOVE_STATUS_DONE );
 
 	// Only AI that derives off of ai_monster_base can support native AI.
-	supportsNative = scriptObject.GetFunction( "supports_native" ) != NULL;
+	supportsNative = true; // scriptObject.GetFunction("supports_native") != NULL;
 
 	if( supportsNative )
 	{
@@ -1404,34 +1404,34 @@ idAI::LinkScriptVariables
 */
 void idAI::LinkScriptVariables()
 {
-	run_distance.LinkTo( scriptObject, "run_distance" );
-	walk_turn.LinkTo( scriptObject, "walk_turn" );
-	ambush.LinkTo( scriptObject, "ambush" );
-	ignoreEnemies.LinkTo( scriptObject, "ignoreEnemies" );
-	stay_on_attackpath.LinkTo( scriptObject, "stay_on_attackpath" );
-	ignore_sight.LinkTo( scriptObject, "ignore_sight" );
-	idle_sight_fov.LinkTo( scriptObject, "idle_sight_fov" );
-	AI_TALK.LinkTo(	scriptObject, "AI_TALK" );
-	AI_DAMAGE.LinkTo(	scriptObject, "AI_DAMAGE" );
-	AI_PAIN.LinkTo(	scriptObject, "AI_PAIN" );
-	AI_SPECIAL_DAMAGE.LinkTo(	scriptObject, "AI_SPECIAL_DAMAGE" );
-	AI_DEAD.LinkTo(	scriptObject, "AI_DEAD" );
-	AI_RUN.LinkTo(	scriptObject, "run" );
-	blocked.LinkTo( scriptObject, "blocked" );
-	AI_ATTACKING.LinkTo( scriptObject, "AI_ATTACKING" );
-	AI_ENEMY_VISIBLE.LinkTo(	scriptObject, "AI_ENEMY_VISIBLE" );
-	AI_ENEMY_IN_FOV.LinkTo(	scriptObject, "AI_ENEMY_IN_FOV" );
-	AI_ENEMY_DEAD.LinkTo(	scriptObject, "AI_ENEMY_DEAD" );
-	AI_MOVE_DONE.LinkTo(	scriptObject, "AI_MOVE_DONE" );
-	AI_ONGROUND.LinkTo(	scriptObject, "AI_ONGROUND" );
-	AI_ACTIVATED.LinkTo(	scriptObject, "AI_ACTIVATED" );
-	AI_FORWARD.LinkTo(	scriptObject, "AI_FORWARD" );
-	AI_JUMP.LinkTo(	scriptObject, "AI_JUMP" );
-	AI_BLOCKED.LinkTo(	scriptObject, "AI_BLOCKED" );
-	AI_DEST_UNREACHABLE.LinkTo( scriptObject, "AI_DEST_UNREACHABLE" );
-	AI_HIT_ENEMY.LinkTo(	scriptObject, "AI_HIT_ENEMY" );
-	AI_OBSTACLE_IN_PATH.LinkTo(	scriptObject, "AI_OBSTACLE_IN_PATH" );
-	AI_PUSHED.LinkTo(	scriptObject, "AI_PUSHED" );
+	run_distance = false;
+	walk_turn = false;
+	ambush = false;
+	ignoreEnemies = false;
+	stay_on_attackpath = false;
+	ignore_sight = false;
+	idle_sight_fov = false;
+	AI_TALK = false;
+	AI_DAMAGE = false;
+	AI_PAIN = false;
+	AI_SPECIAL_DAMAGE = false;
+	AI_DEAD = false;
+	AI_RUN = false;
+	blocked = false;
+	AI_ATTACKING = false;
+	AI_ENEMY_VISIBLE = false;
+	AI_ENEMY_IN_FOV = false;
+	AI_ENEMY_DEAD = false;
+	AI_MOVE_DONE = false;
+	AI_ONGROUND = false;
+	AI_ACTIVATED = false;
+	AI_FORWARD = false;
+	AI_JUMP = false;
+	AI_BLOCKED = false;
+	AI_DEST_UNREACHABLE = false;
+	AI_HIT_ENEMY = false;
+	AI_OBSTACLE_IN_PATH = false;
+	AI_PUSHED = false;
 }
 
 /*
@@ -2198,12 +2198,12 @@ idAI::PlayCustomAnim
 */
 void idAI::PlayCustomAnim( idStr animname, float blendIn, float blendOut )
 {
-	scriptThread->ClearStack();
-	scriptThread->PushEntity( this );
-	scriptThread->PushString( animname );
-	scriptThread->PushFloat( blendIn );
-	scriptThread->PushFloat( blendOut );
-	scriptThread->CallFunction( scriptObject.GetFunction( "playCustomAnim" ), false );
+	//scriptThread->ClearStack();
+	//scriptThread->PushEntity( this );
+	//scriptThread->PushString( animname );
+	//scriptThread->PushFloat( blendIn );
+	//scriptThread->PushFloat( blendOut );
+	//scriptThread->CallFunction( scriptObject.GetFunction( "playCustomAnim" ), false );
 }
 /*
 ================
@@ -2212,11 +2212,11 @@ idAI::PlayCustomCycle
 */
 void idAI::PlayCustomCycle( idStr animname, float blendTime )
 {
-	scriptThread->ClearStack();
-	scriptThread->PushEntity( this );
-	scriptThread->PushString( animname );
-	scriptThread->PushFloat( blendTime );
-	scriptThread->CallFunction( scriptObject.GetFunction( "playCustomCycle" ), false );
+	//scriptThread->ClearStack();
+	//scriptThread->PushEntity( this );
+	//scriptThread->PushString( animname );
+	//scriptThread->PushFloat( blendTime );
+	//scriptThread->CallFunction( scriptObject.GetFunction( "playCustomCycle" ), false );
 }
 
 /*
@@ -3566,58 +3566,25 @@ void idAI::TriggerParticles( const char* jointName )
 
 /*
 ================
-idActor::ConstructScriptObject
-
-Called during idEntity::Spawn.  Calls the constructor on the script object.
-Can be overridden by subclasses when a thread doesn't need to be allocated.
-================
-*/
-idThread* idAI::ConstructScriptObject()
-{
-	// make sure we have a scriptObject
-	if( !scriptObject.HasObject() )
-	{
-		gameLocal.Error( "No scriptobject set on '%s'.  Check the '%s' entityDef.", name.c_str(), GetEntityDefName() );
-	}
-
-	if( !scriptThread )
-	{
-		// create script thread
-		scriptThread = new idThread();
-		scriptThread->ManualDelete();
-		scriptThread->ManualControl();
-		scriptThread->SetThreadName( name.c_str() );
-	}
-	else
-	{
-		scriptThread->EndThread();
-	}
-
-	return scriptThread;
-}
-
-/*
-================
 CallConstructor
 ================
 */
 void idAI::CallConstructor( void )
 {
-	const function_t* constructor;
+	//const function_t* constructor;
+	//
+	//// call script object's constructor
+	//constructor = scriptObject.GetConstructor();
+	//if( constructor )
+	//{
+	//	//gameLocal.Error( "Missing constructor on '%s' for entity '%s'", scriptObject.GetTypeName(), name.c_str() );
+	//	// init the script object's data
+	//	scriptObject.ClearObject();
+	//
+	//	// just set the current function on the script.  we'll execute in the subclasses.
+	//	scriptThread->CallFunction( this, constructor, true );
+	//}
 
-	// call script object's constructor
-	constructor = scriptObject.GetConstructor();
-	if( constructor )
-	{
-		//gameLocal.Error( "Missing constructor on '%s' for entity '%s'", scriptObject.GetTypeName(), name.c_str() );
-		// init the script object's data
-		scriptObject.ClearObject();
-
-		// just set the current function on the script.  we'll execute in the subclasses.
-		scriptThread->CallFunction( this, constructor, true );
-	}
-
-	can_run.LinkTo(scriptObject, "can_run");
 	can_run = GetAnim(ANIMCHANNEL_LEGS, "run");
 
 	AI_Begin();

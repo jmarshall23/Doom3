@@ -345,14 +345,14 @@ monster_base::wait_for_enemy
 */
 stateResult_t idAI::wait_for_enemy( stateParms_t* parms )
 {
-	if( parms->stage == 0 )
+	if( parms->substage == 0 )
 	{
 		// prevent an infinite loop when in notarget
 		AI_PAIN = false;
 
 		Event_StopMove();
 
-		parms->stage = 1;
+		parms->substage = 1;
 
 		return SRESULT_WAIT;
 	}

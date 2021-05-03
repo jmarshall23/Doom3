@@ -372,11 +372,12 @@ void idActor::FinishSetup( void ) {
 
 	// setup script object
 	if ( spawnArgs.GetString( "scriptobject", NULL, &scriptObjectName ) ) {
-		if ( !scriptObject.SetType( scriptObjectName ) ) {
-			gameLocal.Error( "Script object '%s' not found on entity '%s'.", scriptObjectName, name.c_str() );
-		}
-
-		ConstructScriptObject();
+		//if ( !scriptObject.SetType( scriptObjectName ) ) {
+		//	gameLocal.Warning( "Script object '%s' not found on entity '%s'.", scriptObjectName, name.c_str() );
+		//}
+		//
+		//ConstructScriptObject();
+		gameLocal.Warning("%s still has legacy script object defined in def\n", name.c_str());
 	}
 
 	SetupBody();
@@ -1084,11 +1085,11 @@ void idActor::SetState( const char *statename ) {
 	{
 		stateThread.SetState(statename);
 	}
-	else
-	{
-		newState = GetScriptFunction(statename);
-		SetState(newState);
-	}
+	//else
+	//{
+	//	newState = GetScriptFunction(statename);
+	//	SetState(newState);
+	//}
 }
 
 /*
@@ -1097,35 +1098,35 @@ idActor::UpdateScript
 =====================
 */
 void idActor::UpdateScript( void ) {
-	int	i;
-
-	if ( ai_debugScript.GetInteger() == entityNumber ) {
-		scriptThread->EnableDebugInfo();
-	} else {
-		scriptThread->DisableDebugInfo();
-	}
-
-	// a series of state changes can happen in a single frame.
-	// this loop limits them in case we've entered an infinite loop.
-	for( i = 0; i < 20; i++ ) {
-		if ( idealState != state ) {
-			SetState( idealState );
-		}
-
-		// don't call script until it's done waiting
-		if ( scriptThread->IsWaiting() ) {
-			break;
-		}
-        
-		scriptThread->Execute();
-		if ( idealState == state ) {
-			break;
-		}
-	}
-
-	if ( i == 20 ) {
-		scriptThread->Warning( "idActor::UpdateScript: exited loop to prevent lockup" );
-	}
+	//int	i;
+	//
+	//if ( ai_debugScript.GetInteger() == entityNumber ) {
+	//	scriptThread->EnableDebugInfo();
+	//} else {
+	//	scriptThread->DisableDebugInfo();
+	//}
+	//
+	//// a series of state changes can happen in a single frame.
+	//// this loop limits them in case we've entered an infinite loop.
+	//for( i = 0; i < 20; i++ ) {
+	//	if ( idealState != state ) {
+	//		SetState( idealState );
+	//	}
+	//
+	//	// don't call script until it's done waiting
+	//	if ( scriptThread->IsWaiting() ) {
+	//		break;
+	//	}
+    //    
+	//	scriptThread->Execute();
+	//	if ( idealState == state ) {
+	//		break;
+	//	}
+	//}
+	//
+	//if ( i == 20 ) {
+	//	scriptThread->Warning( "idActor::UpdateScript: exited loop to prevent lockup" );
+	//}
 }
 
 /***********************************************************************

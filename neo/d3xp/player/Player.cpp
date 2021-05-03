@@ -1414,25 +1414,25 @@ set up conditions for animation
 ==============
 */
 void idPlayer::LinkScriptVariables( void ) {
-	AI_FORWARD.LinkTo(			scriptObject, "AI_FORWARD" );
-	AI_BACKWARD.LinkTo(			scriptObject, "AI_BACKWARD" );
-	AI_STRAFE_LEFT.LinkTo(		scriptObject, "AI_STRAFE_LEFT" );
-	AI_STRAFE_RIGHT.LinkTo(		scriptObject, "AI_STRAFE_RIGHT" );
-	AI_ATTACK_HELD.LinkTo(		scriptObject, "AI_ATTACK_HELD" );
-	AI_WEAPON_FIRED.LinkTo(		scriptObject, "AI_WEAPON_FIRED" );
-	AI_JUMP.LinkTo(				scriptObject, "AI_JUMP" );
-	AI_DEAD.LinkTo(				scriptObject, "AI_DEAD" );
-	AI_CROUCH.LinkTo(			scriptObject, "AI_CROUCH" );
-	AI_ONGROUND.LinkTo(			scriptObject, "AI_ONGROUND" );
-	AI_ONLADDER.LinkTo(			scriptObject, "AI_ONLADDER" );
-	AI_HARDLANDING.LinkTo(		scriptObject, "AI_HARDLANDING" );
-	AI_SOFTLANDING.LinkTo(		scriptObject, "AI_SOFTLANDING" );
-	AI_RUN.LinkTo(				scriptObject, "AI_RUN" );
-	AI_PAIN.LinkTo(				scriptObject, "AI_PAIN" );
-	AI_RELOAD.LinkTo(			scriptObject, "AI_RELOAD" );
-	AI_TELEPORT.LinkTo(			scriptObject, "AI_TELEPORT" );
-	AI_TURN_LEFT.LinkTo(		scriptObject, "AI_TURN_LEFT" );
-	AI_TURN_RIGHT.LinkTo(		scriptObject, "AI_TURN_RIGHT" );
+	AI_FORWARD = false;
+	AI_BACKWARD = false;
+	AI_STRAFE_LEFT = false;
+	AI_STRAFE_RIGHT = false;
+	AI_ATTACK_HELD = false;
+	AI_WEAPON_FIRED = false;
+	AI_JUMP = false;
+	AI_DEAD = false;
+	AI_CROUCH = false;
+	AI_ONGROUND = false;
+	AI_ONLADDER = false;
+	AI_HARDLANDING = false;
+	AI_SOFTLANDING = false;
+	AI_RUN = false;
+	AI_PAIN = false;
+	AI_RELOAD = false;
+	AI_TELEPORT = false;
+	AI_TURN_LEFT = false;
+	AI_TURN_RIGHT = false;
 }
 
 /*
@@ -1674,10 +1674,10 @@ void idPlayer::Init( void ) {
 	AI_TURN_RIGHT	= false;
 
 	// reset the script object
-	ConstructScriptObject();
+	//ConstructScriptObject();
 
 	// execute the script so the script object's constructor takes effect immediately
-	scriptThread->Execute();
+	//scriptThread->Execute();
 	
 	forceScoreBoard		= false;
 	forcedReady			= false;

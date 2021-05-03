@@ -24,4 +24,6 @@ private:
 	float						nextAttack;
 	float						nextNoFOVAttack;
 	boolean						tentacleDamage;
+
+	stateResult_t				Torso_TentacleAttack(stateParms_t* parms);
 };

@@ -37,6 +37,8 @@ void rvmMonsterZombieCommandoTentacle::AI_Begin( void )
 	run_distance = ZCT_RUNDISTANCE;
 	walk_turn = ZCT_WALKTURN;
 
+	can_run = true;
+
 	Event_SetState( "state_Begin" );
 }
 
@@ -239,4 +241,44 @@ Called from md5Anim frame via TypeInfoGen invoke
 void rvmMonsterZombieCommandoTentacle::tentacle_attack_end()
 {
 	tentacleDamage = false;
+}
+
+/*
+================================================
+
+Animation States
+
+================================================
+*/
+
+/*
+===================
+rvmMonsterZombieCommandoTentacle::Torso_TentacleAttack
+===================
+*/
+stateResult_t rvmMonsterZombieCommandoTentacle::Torso_TentacleAttack(stateParms_t* parms) {
+	enum {
+		STAGE_INIT = 0,
+		STAGE_WAIT,
+	};
+
+	switch (parms->stage) {
+	case STAGE_INIT:
+		Event_DisablePain();
+		Event_FaceEnemy();
+		Event_PlayAnim(ANIMCHANNEL_TORSO, "range_attack");
+		parms->stage = STAGE_WAIT;
+		return SRESULT_WAIT;
+
+	case STAGE_WAIT:
+		if (AnimDone(ANIMCHANNEL_TORSO, 4))
+		{
+			Event_FinishAction("tentacle_attack");
+			Event_AnimState(ANIMCHANNEL_TORSO, "Torso_Idle", 4);
+			return SRESULT_DONE;
+		}
+		return SRESULT_WAIT;
+	}
+
+	return SRESULT_DONE;
 }
