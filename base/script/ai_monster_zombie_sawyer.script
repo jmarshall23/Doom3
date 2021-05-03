@@ -9,7 +9,7 @@ monster_zombie_sawyer
 #define SAWYER_SMOKE_PARTICLES	0
 #define SAWYER_BLOOD_PARTICLES	1
 
-object monster_zombie_sawyer : monster_zombie_base {
+object monster_zombie_sawyer : monster_zombie {
 	boolean		attack;
 
 	void		state_Begin();

@@ -5058,6 +5058,7 @@ static classVariableInfo_t idAI_typeInfo[] = {
 	{ "bool", "supportsNative", (intptr_t)(&((idAI *)0)->supportsNative), sizeof( ((idAI *)0)->supportsNative ) },
 	{ "idStr", "lastStateName", (intptr_t)(&((idAI *)0)->lastStateName), sizeof( ((idAI *)0)->lastStateName ) },
 	{ "stateParms_t", "storedState", (intptr_t)(&((idAI *)0)->storedState), sizeof( ((idAI *)0)->storedState ) },
+	{ "idScriptBool", "can_run", (intptr_t)(&((idAI *)0)->can_run), sizeof( ((idAI *)0)->can_run ) },
 	{ NULL, 0 }
 };
 
@@ -5135,7 +5136,6 @@ static classVariableInfo_t rvmMonsterFlyingCacodemon_typeInfo[] = {
 };
 
 static classVariableInfo_t rvmMonsterZombie_typeInfo[] = {
-	{ ": idScriptBool", "can_run", (intptr_t)(&((rvmMonsterZombie *)0)->can_run), sizeof( ((rvmMonsterZombie *)0)->can_run ) },
 	{ NULL, 0 }
 };
 

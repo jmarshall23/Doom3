@@ -4,7 +4,7 @@ ai_monster_zombie_bernie.script
 
 ***********************************************************************/
 
-object monster_zombie_bernie : monster_zombie_base {	
+object monster_zombie_bernie : monster_zombie {	
 	// torso anim states
 	void		Torso_Idle();
 	void		Torso_Pain();

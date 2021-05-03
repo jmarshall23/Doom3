@@ -3445,6 +3445,13 @@ intptr_t idActor::Invoke(const char *functionName, void *param1) {
 		Event_GetWaitState();
 		return 0;
 	};
+	if(functionNameHash == 261264) { // State_Wait_TorsoAnim
+		State_Wait_TorsoAnim((stateParms_t *)param1);
+		return 0;
+	};
+	if(functionNameHash == 242199) { // State_Wait_LegsAnim
+		return (intptr_t)State_Wait_LegsAnim((stateParms_t *)param1);
+	};
 	return __super::Invoke(functionName, param1);
 
 };
@@ -3596,6 +3603,12 @@ bool idActor::HasNativeFunction(const char *functionName) {
 		return true;
 	};
 	if(functionNameHash == 231666) { // Event_GetWaitState
+		return true;
+	};
+	if(functionNameHash == 261264) { // State_Wait_TorsoAnim
+		return true;
+	};
+	if(functionNameHash == 242199) { // State_Wait_LegsAnim
 		return true;
 	};
 	return __super::HasNativeFunction(functionName);
@@ -9235,6 +9248,31 @@ intptr_t idAI::Invoke(const char *functionName, void *param1) {
 		Event_CanReachEnemy();
 		return 0;
 	};
+	if(functionNameHash == 141535) { // Torso_Sight
+		Torso_Sight((stateParms_t *)param1);
+		return 0;
+	};
+	if(functionNameHash == 138382) { // Torso_Death
+		return (intptr_t)Torso_Death((stateParms_t *)param1);
+	};
+	if(functionNameHash == 124942) { // Torso_Idle
+		return (intptr_t)Torso_Idle((stateParms_t *)param1);
+	};
+	if(functionNameHash == 218167) { // Torso_MeleeAttack
+		return (intptr_t)Torso_MeleeAttack((stateParms_t *)param1);
+	};
+	if(functionNameHash == 126210) { // Torso_Pain
+		return (intptr_t)Torso_Pain((stateParms_t *)param1);
+	};
+	if(functionNameHash == 107329) { // Legs_Idle
+		return (intptr_t)Legs_Idle((stateParms_t *)param1);
+	};
+	if(functionNameHash == 109452) { // Legs_Walk
+		return (intptr_t)Legs_Walk((stateParms_t *)param1);
+	};
+	if(functionNameHash == 97995) { // Legs_Run
+		return (intptr_t)Legs_Run((stateParms_t *)param1);
+	};
 	return __super::Invoke(functionName, param1);
 
 };
@@ -9677,6 +9715,30 @@ bool idAI::HasNativeFunction(const char *functionName) {
 		return true;
 	};
 	if(functionNameHash == 240412) { // Event_CanReachEnemy
+		return true;
+	};
+	if(functionNameHash == 141535) { // Torso_Sight
+		return true;
+	};
+	if(functionNameHash == 138382) { // Torso_Death
+		return true;
+	};
+	if(functionNameHash == 124942) { // Torso_Idle
+		return true;
+	};
+	if(functionNameHash == 218167) { // Torso_MeleeAttack
+		return true;
+	};
+	if(functionNameHash == 126210) { // Torso_Pain
+		return true;
+	};
+	if(functionNameHash == 107329) { // Legs_Idle
+		return true;
+	};
+	if(functionNameHash == 109452) { // Legs_Walk
+		return true;
+	};
+	if(functionNameHash == 97995) { // Legs_Run
 		return true;
 	};
 	return __super::HasNativeFunction(functionName);

@@ -1441,7 +1441,7 @@ idAI::UpdateAIScript
 */
 void idAI::UpdateAIScript()
 {
-	UpdateScript();
+	//UpdateScript();
 
 	// clear the hit enemy flag so we catch the next time we hit someone
 	AI_HIT_ENEMY = false;
@@ -3616,6 +3616,9 @@ void idAI::CallConstructor( void )
 		// just set the current function on the script.  we'll execute in the subclasses.
 		scriptThread->CallFunction( this, constructor, true );
 	}
+
+	can_run.LinkTo(scriptObject, "can_run");
+	can_run = GetAnim(ANIMCHANNEL_LEGS, "run");
 
 	AI_Begin();
 }

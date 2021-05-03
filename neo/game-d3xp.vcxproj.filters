@@ -226,9 +226,6 @@
     <ClCompile Include="d3xp\monsters\Monster_zombie.cpp">
       <Filter>Monsters</Filter>
     </ClCompile>
-    <ClCompile Include="d3xp\monsters\Monster_zombie_bernie.cpp">
-      <Filter>Monsters</Filter>
-    </ClCompile>
     <ClCompile Include="d3xp\monsters\Monster_zombie_commando_cgun.cpp">
       <Filter>Monsters</Filter>
     </ClCompile>
@@ -300,6 +297,12 @@
     </ClCompile>
     <ClCompile Include="d3xp\player\Player_Anim.cpp">
       <Filter>Player</Filter>
+    </ClCompile>
+    <ClCompile Include="d3xp\ai\AI_anim.cpp">
+      <Filter>AI</Filter>
+    </ClCompile>
+    <ClCompile Include="d3xp\monsters\Monster_zombie_bernie.cpp">
+      <Filter>Monsters</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

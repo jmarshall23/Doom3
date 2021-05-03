@@ -19,7 +19,6 @@ float global_flashlight_intensity = 1.0;
 
 // ai
 #include "script/ai_monster_base.script"
-#include "script/ai_monster_zombie_base.script"
 #include "script/ai_monster_demon_archvile.script"
 #include "script/ai_monster_demon_cherub.script"
 #include "script/ai_monster_demon_hellknight.script"

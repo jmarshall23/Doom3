@@ -16,6 +16,7 @@ private:
 	stateResult_t				state_Begin( stateParms_t* parms );
 	stateResult_t				state_Idle( stateParms_t* parms );
 	stateResult_t				combat_melee( stateParms_t* parms );
+
 private:
-	idScriptBool can_run;
+	
 };

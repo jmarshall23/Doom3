@@ -6,7 +6,7 @@ monster_zombie_morgue
 
 ***********************************************************************/
 
-object monster_zombie_morgue : monster_zombie_base {
+object monster_zombie_morgue : monster_zombie {
 	// torso anim states
 	void		Torso_Idle();
 	void		Torso_Pain();

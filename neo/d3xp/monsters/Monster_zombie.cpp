@@ -19,7 +19,7 @@ rvmMonsterZombie::Init
 */
 void rvmMonsterZombie::Init( void )
 {
-	can_run.LinkTo( scriptObject, "can_run" );
+	
 }
 
 /*
@@ -31,8 +31,6 @@ void rvmMonsterZombie::AI_Begin( void )
 {
 	run_distance = ZOMBIE_RUNDISTANCE;
 	walk_turn = ZOMBIE_WALKTURN;
-
-	can_run = GetAnim( ANIMCHANNEL_LEGS, "run" );
 
 	Event_SetState( "state_Begin" );
 }
@@ -136,3 +134,14 @@ void rvmMonsterZombie::do_attack( int attack_flags )
 		SetState( "combat_melee" );
 	}
 }
+
+/*
+================================================
+
+Zombie Animation Code
+
+================================================
+*/
+
+#define ZOMBIE_RUNDISTANCE		192
+#define ZOMBIE_WALKTURN			65

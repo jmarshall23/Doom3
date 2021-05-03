@@ -800,6 +800,18 @@ private:
 
 	idStr					lastStateName;
 	stateParms_t			storedState;
+protected:
+	stateResult_t	Torso_Sight(stateParms_t* parms);
+	stateResult_t   Torso_Death(stateParms_t* parms);
+	stateResult_t	Torso_Idle(stateParms_t* parms);
+	stateResult_t	Torso_MeleeAttack(stateParms_t* parms);
+	stateResult_t	Torso_Pain(stateParms_t* parms);
+
+	stateResult_t	Legs_Idle(stateParms_t* parms);
+	stateResult_t	Legs_Walk(stateParms_t* parms);
+	stateResult_t	Legs_Run(stateParms_t* parms);
+
+	idScriptBool can_run;
 };
 
 class idCombatNode : public idEntity
