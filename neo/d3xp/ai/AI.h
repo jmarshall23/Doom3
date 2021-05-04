@@ -812,6 +812,7 @@ protected:
 	stateResult_t	Legs_Run(stateParms_t* parms);
 
 	bool			 can_run;
+	bool			 canSwitchToIdleFromRange;
 };
 
 class idCombatNode : public idEntity

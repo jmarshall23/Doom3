@@ -28,8 +28,11 @@ rvmMonsterDemonImp::Init
 */
 void rvmMonsterDemonImp::Init( void )
 {
-	jumpVelocity.LinkTo( scriptObject, "jumpVelocity" );
-	range_attack_anim.LinkTo( scriptObject, "range_attack_anim" );
+	//jumpVelocity.LinkTo( scriptObject, "jumpVelocity" );
+	//range_attack_anim.LinkTo( scriptObject, "range_attack_anim" );
+	range_attack_anim = "";
+	jumpVelocity.Zero();
+	//canSwitchToIdleFromRange = true;
 }
 
 /*
@@ -375,4 +378,158 @@ stateResult_t rvmMonsterDemonImp::combat_dodge_right( stateParms_t* parms )
 	}
 
 	nextDodge = gameLocal.DelayTime( IMP_DODGE_RATE );
+}
+
+/*
+================================================
+
+Animation States
+
+================================================
+*/
+
+/*
+===================
+rvmMonsterDemonImp::Torso_LeapAttack
+===================
+*/
+stateResult_t rvmMonsterDemonImp::Torso_LeapAttack(stateParms_t* parms) {
+	enum {
+		STAGE_INIT = 0,
+		STAGE_WAIT,
+		STAGE_WAITGROUND,
+		STAGE_FINISH
+	};
+
+	switch (parms->stage) {
+	case STAGE_INIT:
+		Event_OverrideAnim(ANIMCHANNEL_LEGS);
+		Event_DisablePain();
+		Event_PlayAnim(ANIMCHANNEL_TORSO, "jump_start");
+		parms->stage = STAGE_WAIT;
+		return SRESULT_WAIT;
+
+	case STAGE_WAIT:
+		if (AnimDone(ANIMCHANNEL_TORSO, 2))
+		{
+			Event_SetBlendFrames(ANIMCHANNEL_TORSO, 2);
+			Event_BeginAttack("melee_impLeapAttack");
+			Event_PlayCycle(ANIMCHANNEL_TORSO, "jump_loop");
+			parms->stage = STAGE_WAITGROUND;
+		}
+		return SRESULT_WAIT;
+
+	case STAGE_WAITGROUND:
+		if (AI_ONGROUND)
+		{
+			Event_EndAttack();
+			Event_PlayAnim(ANIMCHANNEL_TORSO, "jump_end");
+			parms->stage = STAGE_FINISH;
+		}
+		return SRESULT_WAIT;
+
+	case STAGE_FINISH:
+		if (AnimDone(ANIMCHANNEL_TORSO, 4))
+		{
+			Event_FinishAction("leap_attack");
+			Event_AnimState(ANIMCHANNEL_TORSO, "Torso_Idle", 4);
+			return SRESULT_DONE;
+		}
+		return SRESULT_WAIT;
+	}
+
+	return SRESULT_DONE;
+}
+
+/*
+===================
+rvmMonsterDemonImp::Legs_Idle
+===================
+*/
+stateResult_t rvmMonsterDemonImp::Legs_Idle(stateParms_t* parms) {
+	enum {
+		STAGE_INIT = 0,
+		STAGE_WAIT,
+	};
+
+	switch (parms->stage) {
+	case STAGE_INIT:
+		Event_IdleAnim(ANIMCHANNEL_LEGS, "stand");
+		parms->stage = STAGE_WAIT;
+		return SRESULT_WAIT;
+
+	case STAGE_WAIT:
+		if (can_run && AI_RUN && AI_FORWARD)
+		{
+			Event_AnimState(ANIMCHANNEL_LEGS, "Legs_Run", 8);
+			return SRESULT_DONE;
+		}
+		if (AI_FORWARD)
+		{
+			Event_AnimState(ANIMCHANNEL_LEGS, "Legs_Walk", 8);
+		}
+		return SRESULT_WAIT;
+	}
+
+	return SRESULT_DONE;
+}
+
+/*
+===================
+rvmMonsterDemonImp::Legs_DodgeLeft
+===================
+*/
+stateResult_t rvmMonsterDemonImp::Legs_DodgeLeft(stateParms_t* parms) {
+	enum {
+		STAGE_INIT = 0,
+		STAGE_WAIT,
+	};
+
+	switch (parms->stage) {
+	case STAGE_INIT:
+		Event_IdleAnim(ANIMCHANNEL_LEGS, "evade_left");
+		parms->stage = STAGE_WAIT;
+		return SRESULT_WAIT;
+
+	case STAGE_WAIT:
+		if (AnimDone(ANIMCHANNEL_LEGS, 4))
+		{
+			Event_FinishAction("strafe");
+			Event_AnimState(ANIMCHANNEL_LEGS, "Legs_Idle", 4);
+			return SRESULT_DONE;
+		}
+		return SRESULT_WAIT;
+	}
+
+	return SRESULT_DONE;
+}
+
+/*
+===================
+rvmMonsterDemonImp::Legs_DodgeRight
+===================
+*/
+stateResult_t rvmMonsterDemonImp::Legs_DodgeRight(stateParms_t* parms) {
+	enum {
+		STAGE_INIT = 0,
+		STAGE_WAIT,
+	};
+
+	switch (parms->stage) {
+	case STAGE_INIT:
+		Event_IdleAnim(ANIMCHANNEL_LEGS, "evade_right");
+		parms->stage = STAGE_WAIT;
+		return SRESULT_WAIT;
+
+	case STAGE_WAIT:
+		if (AnimDone(ANIMCHANNEL_LEGS, 4))
+		{
+			Event_FinishAction("strafe");
+			Event_AnimState(ANIMCHANNEL_LEGS, "Legs_Idle", 4);
+			return SRESULT_DONE;
+		}
+		return SRESULT_WAIT;
+	}
+
+	return SRESULT_DONE;
 }

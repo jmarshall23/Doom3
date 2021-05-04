@@ -94,7 +94,11 @@ stateResult_t idAI::Torso_RangeAttack(stateParms_t* parms) {
 		{
 			Event_AllowMovement(true);
 			Event_FinishAction("range_attack");
-			//Event_AnimState(ANIMCHANNEL_TORSO, "Torso_Idle", 8);
+
+			if (canSwitchToIdleFromRange)
+			{
+				Event_AnimState(ANIMCHANNEL_TORSO, "Torso_Idle", 8);
+			}
 			return SRESULT_DONE;
 		}
 		else

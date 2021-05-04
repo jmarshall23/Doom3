@@ -5059,6 +5059,7 @@ static classVariableInfo_t idAI_typeInfo[] = {
 	{ "idStr", "lastStateName", (intptr_t)(&((idAI *)0)->lastStateName), sizeof( ((idAI *)0)->lastStateName ) },
 	{ "stateParms_t", "storedState", (intptr_t)(&((idAI *)0)->storedState), sizeof( ((idAI *)0)->storedState ) },
 	{ "bool", "can_run", (intptr_t)(&((idAI *)0)->can_run), sizeof( ((idAI *)0)->can_run ) },
+	{ "bool", "canSwitchToIdleFromRange", (intptr_t)(&((idAI *)0)->canSwitchToIdleFromRange), sizeof( ((idAI *)0)->canSwitchToIdleFromRange ) },
 	{ NULL, 0 }
 };
 
@@ -5112,8 +5113,8 @@ static classVariableInfo_t rvmMonsterDemonImp_typeInfo[] = {
 	{ "float", "nextLeap", (intptr_t)(&((rvmMonsterDemonImp *)0)->nextLeap), sizeof( ((rvmMonsterDemonImp *)0)->nextLeap ) },
 	{ "float", "nextNoFOVAttack", (intptr_t)(&((rvmMonsterDemonImp *)0)->nextNoFOVAttack), sizeof( ((rvmMonsterDemonImp *)0)->nextNoFOVAttack ) },
 	{ "idEntity *", "combat_node", (intptr_t)(&((rvmMonsterDemonImp *)0)->combat_node), sizeof( ((rvmMonsterDemonImp *)0)->combat_node ) },
-	{ "idScriptString", "range_attack_anim", (intptr_t)(&((rvmMonsterDemonImp *)0)->range_attack_anim), sizeof( ((rvmMonsterDemonImp *)0)->range_attack_anim ) },
-	{ "idScriptVector", "jumpVelocity", (intptr_t)(&((rvmMonsterDemonImp *)0)->jumpVelocity), sizeof( ((rvmMonsterDemonImp *)0)->jumpVelocity ) },
+	{ "idStr", "range_attack_anim", (intptr_t)(&((rvmMonsterDemonImp *)0)->range_attack_anim), sizeof( ((rvmMonsterDemonImp *)0)->range_attack_anim ) },
+	{ "idVec3", "jumpVelocity", (intptr_t)(&((rvmMonsterDemonImp *)0)->jumpVelocity), sizeof( ((rvmMonsterDemonImp *)0)->jumpVelocity ) },
 	{ NULL, 0 }
 };
 

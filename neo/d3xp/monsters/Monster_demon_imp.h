@@ -26,6 +26,11 @@ private:
 	float		nextLeap;
 	float		nextNoFOVAttack;
 	idEntity*	combat_node;
-	idScriptString range_attack_anim;
-	idScriptVector jumpVelocity;
+	idStr range_attack_anim;
+	idVec3 jumpVelocity;
+private:
+	stateResult_t				Torso_LeapAttack(stateParms_t* parms);
+	stateResult_t				Legs_Idle(stateParms_t* parms);
+	stateResult_t				Legs_DodgeLeft(stateParms_t* parms);
+	stateResult_t				Legs_DodgeRight(stateParms_t* parms);
 };

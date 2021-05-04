@@ -43,6 +43,8 @@ idAI::idAI()
 	aas					= NULL;
 	travelFlags			= TFL_WALK | TFL_AIR;
 
+	canSwitchToIdleFromRange = false;
+
 	kickForce			= 2048.0f;
 	ignore_obstacles	= false;
 	blockedRadius		= 0.0f;

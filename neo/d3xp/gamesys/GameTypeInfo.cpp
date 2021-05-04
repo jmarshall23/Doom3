@@ -10003,6 +10003,19 @@ intptr_t rvmMonsterDemonImp::Invoke(const char *functionName, void *param1) {
 	if(functionNameHash == 239426) { // combat_dodge_right
 		return (intptr_t)combat_dodge_right((stateParms_t *)param1);
 	};
+	if(functionNameHash == 204424) { // Torso_LeapAttack
+		Torso_LeapAttack((stateParms_t *)param1);
+		return 0;
+	};
+	if(functionNameHash == 107329) { // Legs_Idle
+		return (intptr_t)Legs_Idle((stateParms_t *)param1);
+	};
+	if(functionNameHash == 171866) { // Legs_DodgeLeft
+		return (intptr_t)Legs_DodgeLeft((stateParms_t *)param1);
+	};
+	if(functionNameHash == 187135) { // Legs_DodgeRight
+		return (intptr_t)Legs_DodgeRight((stateParms_t *)param1);
+	};
 	return __super::Invoke(functionName, param1);
 
 };
@@ -10037,6 +10050,18 @@ bool rvmMonsterDemonImp::HasNativeFunction(const char *functionName) {
 		return true;
 	};
 	if(functionNameHash == 239426) { // combat_dodge_right
+		return true;
+	};
+	if(functionNameHash == 204424) { // Torso_LeapAttack
+		return true;
+	};
+	if(functionNameHash == 107329) { // Legs_Idle
+		return true;
+	};
+	if(functionNameHash == 171866) { // Legs_DodgeLeft
+		return true;
+	};
+	if(functionNameHash == 187135) { // Legs_DodgeRight
 		return true;
 	};
 	return __super::HasNativeFunction(functionName);
