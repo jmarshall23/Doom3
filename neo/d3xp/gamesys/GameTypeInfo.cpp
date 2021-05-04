@@ -10590,6 +10590,12 @@ intptr_t rvmMonsterZombieCommandoChaingun::Invoke(const char *functionName, void
 	if(functionNameHash == 157412) { // stand_attack
 		return (intptr_t)stand_attack((stateParms_t *)param1);
 	};
+	if(functionNameHash == 124942) { // Torso_Idle
+		return (intptr_t)Torso_Idle((stateParms_t *)param1);
+	};
+	if(functionNameHash == 218798) { // Torso_RangeAttack
+		return (intptr_t)Torso_RangeAttack((stateParms_t *)param1);
+	};
 	return __super::Invoke(functionName, param1);
 
 };
@@ -10621,6 +10627,12 @@ bool rvmMonsterZombieCommandoChaingun::HasNativeFunction(const char *functionNam
 		return true;
 	};
 	if(functionNameHash == 157412) { // stand_attack
+		return true;
+	};
+	if(functionNameHash == 124942) { // Torso_Idle
+		return true;
+	};
+	if(functionNameHash == 218798) { // Torso_RangeAttack
 		return true;
 	};
 	return __super::HasNativeFunction(functionName);

@@ -22,14 +22,18 @@ private:
 	stateResult_t				combat_dodge_left( stateParms_t* parms );
 	stateResult_t				crouch_attack( stateParms_t* parms );
 	stateResult_t				stand_attack( stateParms_t* parms );
+
+	stateResult_t				Torso_Idle(stateParms_t* parms);
+	stateResult_t				Torso_RangeAttack(stateParms_t* parms);
+	//stateResult_t				Torso_CrouchAttack(stateParms_t* parms);
 private:
-	idScriptBool		fire;
-	idScriptBool		crouch_fire;
-	idScriptBool		step_left;
-	idScriptBool		step_right;
-	idScriptFloat		nextDodge;
-	idScriptFloat		nextAttack;
-	idScriptFloat		nextNoFOVAttack;
+	bool		fire;
+	bool		crouch_fire;
+	bool		step_left;
+	bool		step_right;
+	float		nextDodge;
+	float		nextAttack;
+	float		nextNoFOVAttack;
 private:
 	idEntity*			combat_node;
 	float				attackTime;

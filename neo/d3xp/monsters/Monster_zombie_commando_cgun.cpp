@@ -9,8 +9,8 @@
 #define ZOMBIE_CGUN_RUNDISTANCE					192
 #define ZOMBIE_CGUN_WALKTURN					65
 #define ZOMBIE_CGUN_DODGE_RATE					3
-#define ZOMBIE_CGUN_ATTACK_DELAY_MIN			0.5
-#define ZOMBIE_CGUN_ATTACK_DELAY_MAX			2
+#define ZOMBIE_CGUN_ATTACK_DELAY_MIN			2.5
+#define ZOMBIE_CGUN_ATTACK_DELAY_MAX			4
 #define ZOMBIE_CGUN_ATTACK_MAX_LENGTH			2.5
 #define ZOMBIE_CGUN_ATTACK_MIN_LENGTH			1
 #define ZOMBIE_CGUN_WAIT_MIN_LENGTH				0.3
@@ -34,13 +34,13 @@ rvmMonsterZombieCommandoChaingun::Init
 */
 void rvmMonsterZombieCommandoChaingun::Init( void )
 {
-	fire.LinkTo( scriptObject, "fire" );
-	crouch_fire.LinkTo( scriptObject, "crouch_fire" );
-	step_left.LinkTo( scriptObject, "step_left" );
-	step_right.LinkTo( scriptObject, "step_right" );
-	nextDodge.LinkTo( scriptObject, "nextDodge" );
-	nextAttack.LinkTo( scriptObject, "nextAttack" );
-	nextNoFOVAttack.LinkTo( scriptObject, "nextNoFOVAttack" );
+	fire = false;
+	crouch_fire = false;
+	step_left = false;
+	step_right = false;
+	nextDodge = false;
+	nextAttack = false;
+	nextNoFOVAttack = false;
 	combat_node = NULL;
 }
 
@@ -131,7 +131,8 @@ void rvmMonsterZombieCommandoChaingun::do_attack( int attack_flags )
 	else if( attack_flags & ATTACK_ZCC_CROUCHFIRE )
 	{
 		//crouch_attack();
-		stateThread.SetState( "crouch_attack" );
+		//stateThread.SetState( "crouch_attack" );
+		stateThread.SetState("stand_attack");
 	}
 }
 
@@ -234,6 +235,7 @@ stateResult_t rvmMonsterZombieCommandoChaingun::stand_attack( stateParms_t* parm
 	{
 		fire = true;
 		Event_FaceEnemy();
+		Event_AnimState(ANIMCHANNEL_TORSO, "Torso_RangeAttack", 8);
 		attackTime = gameLocal.RandomDelay( ZOMBIE_CGUN_STAND_ATTACK_MIN_LENGTH, ZOMBIE_CGUN_STAND_ATTACK_MAX_LENGTH );
 		parms->stage = 1;
 		return SRESULT_WAIT;
@@ -472,3 +474,266 @@ stateResult_t rvmMonsterZombieCommandoChaingun::combat_dodge_right( stateParms_t
 	nextDodge = gameLocal.DelayTime( ZOMBIE_CGUN_DODGE_RATE );
 	return SRESULT_DONE;
 }
+
+/*
+================================================
+
+Chaingun Zombie Animation Code
+
+================================================
+*/
+
+/*
+===================
+rvmMonsterZombieCommandoChaingun::Torso_Idle
+===================
+*/
+stateResult_t rvmMonsterZombieCommandoChaingun::Torso_Idle(stateParms_t* parms) {
+	enum {
+		STAGE_INIT = 0,
+		STAGE_WAIT,
+	};
+
+	switch (parms->stage) {
+	case STAGE_INIT:
+		Event_IdleAnim(ANIMCHANNEL_TORSO, "range_attack_aim");
+		parms->stage = STAGE_WAIT;
+		return SRESULT_WAIT;
+
+	case STAGE_WAIT:
+		if (AI_PAIN)
+		{
+			PostAnimState(ANIMCHANNEL_TORSO, "Torso_Pain", 4);
+			PostAnimState(ANIMCHANNEL_TORSO, "Torso_Idle", 4);
+			return SRESULT_DONE;
+		}
+
+		if (fire)
+		{
+			Event_AnimState(ANIMCHANNEL_TORSO, "Torso_RangeAttack", 8);
+			return SRESULT_DONE;
+		}
+
+		if (crouch_fire)
+		{
+			Event_AnimState(ANIMCHANNEL_TORSO, "Torso_CrouchAttack", 8);
+			return SRESULT_DONE;
+		}
+
+		return SRESULT_WAIT;
+	}
+
+	return SRESULT_DONE;
+}
+
+/*
+===================
+rvmMonsterZombieCommandoChaingun::Torso_RangeAttack
+===================
+*/
+stateResult_t rvmMonsterZombieCommandoChaingun::Torso_RangeAttack(stateParms_t* parms) {
+	enum {
+		STAGE_INIT = 0,
+		STAGE_WAIT,
+		STAGE_ATTACKLOOP,
+		STAGE_BEGINEND,
+		STAGE_WAIT2
+	};
+
+	switch (parms->stage) {
+	case STAGE_INIT:
+		Event_SetAnimPrefix("");
+		Event_PlayAnim(ANIMCHANNEL_TORSO, "range_attack");
+		parms->stage = STAGE_WAIT;
+		return SRESULT_WAIT;
+
+	case STAGE_WAIT:
+		if (AnimDone(ANIMCHANNEL_TORSO, 12))
+		{
+			Event_PlayAnim(ANIMCHANNEL_TORSO, "range_attack_loop");
+			parms->param1 = gameLocal.RandomDelay(ZOMBIE_CGUN_ATTACK_MIN_LENGTH, ZOMBIE_CGUN_ATTACK_MAX_LENGTH);
+			parms->stage = STAGE_ATTACKLOOP;
+			return SRESULT_DONE;
+		}
+		else
+		{
+			if (AI_PAIN)
+			{
+				PostAnimState(ANIMCHANNEL_TORSO, "Torso_Pain", 4);
+				PostAnimState(ANIMCHANNEL_TORSO, "Torso_RangeAttack", 4);
+				return SRESULT_DONE;
+			}
+		}
+
+		return SRESULT_WAIT;
+	case STAGE_ATTACKLOOP:
+		{
+			bool isDone = (gameLocal.SysScriptTime() < parms->param1) && CanHitEnemyFromAnim("range_attack_loop");
+
+			if (!isDone)
+			{
+				if (AnimDone(ANIMCHANNEL_TORSO, 8))
+				{
+					Event_PlayAnim(ANIMCHANNEL_TORSO, "range_attack_loop");
+				}
+				else
+				{
+					if (gameLocal.InfluenceActive())
+					{
+						parms->stage = STAGE_BEGINEND;
+						return SRESULT_WAIT;
+					}
+
+					if (AI_PAIN)
+					{
+						PostAnimState(ANIMCHANNEL_TORSO, "Torso_Pain", 4);
+						PostAnimState(ANIMCHANNEL_TORSO, "Torso_RangeAttack", 4);
+						return SRESULT_DONE;
+					}
+				}
+			}
+			else
+			{
+				parms->stage = STAGE_BEGINEND;
+			}
+		}
+		return SRESULT_WAIT;
+
+	case STAGE_BEGINEND:
+		if (!AnimDone(ANIMCHANNEL_TORSO, 8)) {
+			Event_SetBlendFrames(ANIMCHANNEL_TORSO, 8);
+		}
+		Event_PlayAnim(ANIMCHANNEL_TORSO, "range_attack_end");
+		parms->stage = STAGE_WAIT2;
+		return SRESULT_WAIT;
+
+	case STAGE_WAIT2:
+		if (AnimDone(ANIMCHANNEL_TORSO, 8))
+		{
+			Event_FinishAction("turret_attack");
+			Event_AnimState(ANIMCHANNEL_TORSO, "Torso_Idle", 8);
+			return SRESULT_DONE;
+		}
+
+		if (AI_PAIN)
+		{
+			PostAnimState(ANIMCHANNEL_TORSO, "Torso_Pain", 4);
+			PostAnimState(ANIMCHANNEL_TORSO, "Torso_RangeAttack", 4);
+			return SRESULT_DONE;
+		}
+
+		return SRESULT_WAIT;
+	}
+
+	return SRESULT_DONE;
+}
+
+/*
+===================
+rvmMonsterZombieCommandoChaingun::Torso_CrouchAttack
+===================
+*/
+#if 0
+stateResult_t rvmMonsterZombieCommandoChaingun::Torso_CrouchAttack(stateParms_t* parms) {
+	enum {
+		STAGE_INIT = 0,
+		STAGE_WAIT,
+		STAGE_ATTACKLOOP,
+		STAGE_BEGINEND,
+		STAGE_WAIT2
+	};
+
+	switch (parms->stage) {
+	case STAGE_INIT:
+		Event_OverrideAnim(ANIMCHANNEL_LEGS);
+		Event_SetAnimPrefix("crouch");
+		Event_PlayAnim(ANIMCHANNEL_TORSO, "range_attack");
+		parms->stage = STAGE_WAIT;
+		return SRESULT_WAIT;
+
+	case STAGE_WAIT:
+		if (AnimDone(ANIMCHANNEL_TORSO, 12))
+		{
+			Event_SetAnimPrefix("");
+			Event_PlayAnim(ANIMCHANNEL_TORSO, "range_attack_loop");
+			parms->param1 = gameLocal.RandomDelay(ZOMBIE_CGUN_ATTACK_MIN_LENGTH, ZOMBIE_CGUN_ATTACK_MAX_LENGTH);
+			parms->stage = STAGE_ATTACKLOOP;
+			return SRESULT_DONE;
+		}
+		else
+		{
+			if (AI_PAIN)
+			{
+				Event_SetAnimPrefix("");
+				PostAnimState(ANIMCHANNEL_TORSO, "Torso_Pain", 4);
+				PostAnimState(ANIMCHANNEL_TORSO, "Torso_RangeAttack", 4);
+				return SRESULT_DONE;
+			}
+		}
+
+		return SRESULT_WAIT;
+	case STAGE_ATTACKLOOP:
+	{
+		bool isDone = (gameLocal.SysScriptTime() < parms->param1) && crouch_fire;
+
+		if (!isDone)
+		{
+			if (AnimDone(ANIMCHANNEL_TORSO, 8))
+			{
+				Event_PlayAnim(ANIMCHANNEL_TORSO, "range_attack_loop");
+			}
+			else
+			{
+				if (gameLocal.InfluenceActive())
+				{
+					parms->stage = STAGE_BEGINEND;
+					return SRESULT_WAIT;
+				}
+
+				if (AI_PAIN)
+				{
+					Event_SetAnimPrefix("");
+					PostAnimState(ANIMCHANNEL_TORSO, "Torso_Pain", 4);
+					PostAnimState(ANIMCHANNEL_TORSO, "Torso_RangeAttack", 4);
+					return SRESULT_DONE;
+				}
+			}
+		}
+		else
+		{
+			parms->stage = STAGE_BEGINEND;
+		}
+	}
+	return SRESULT_WAIT;
+
+	case STAGE_BEGINEND:
+		if (!AnimDone(ANIMCHANNEL_TORSO, 8)) {
+			Event_SetBlendFrames(ANIMCHANNEL_TORSO, 8);
+		}
+		Event_PlayAnim(ANIMCHANNEL_TORSO, "range_attack_end");
+		parms->stage = STAGE_WAIT2;
+		return SRESULT_WAIT;
+
+	case STAGE_WAIT2:
+		if (AnimDone(ANIMCHANNEL_TORSO, 8))
+		{
+			Event_SetAnimPrefix("");
+			Event_FinishAction("turret_attack");
+			Event_AnimState(ANIMCHANNEL_TORSO, "Torso_Idle", 8);
+			return SRESULT_DONE;
+		}
+
+		if (AI_PAIN)
+		{
+			Event_SetAnimPrefix("");
+			PostAnimState(ANIMCHANNEL_TORSO, "Torso_Pain", 4);
+			PostAnimState(ANIMCHANNEL_TORSO, "Torso_RangeAttack", 4);
+			return SRESULT_DONE;
+		}
+
+		return SRESULT_WAIT;
+	}
+
+	return SRESULT_DONE;
+}
+#endif

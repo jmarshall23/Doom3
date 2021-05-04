@@ -5176,13 +5176,13 @@ static classVariableInfo_t rvmMonsterZombieCommandoTentacle_typeInfo[] = {
 };
 
 static classVariableInfo_t rvmMonsterZombieCommandoChaingun_typeInfo[] = {
-	{ ": idScriptBool", "fire", (intptr_t)(&((rvmMonsterZombieCommandoChaingun *)0)->fire), sizeof( ((rvmMonsterZombieCommandoChaingun *)0)->fire ) },
-	{ "idScriptBool", "crouch_fire", (intptr_t)(&((rvmMonsterZombieCommandoChaingun *)0)->crouch_fire), sizeof( ((rvmMonsterZombieCommandoChaingun *)0)->crouch_fire ) },
-	{ "idScriptBool", "step_left", (intptr_t)(&((rvmMonsterZombieCommandoChaingun *)0)->step_left), sizeof( ((rvmMonsterZombieCommandoChaingun *)0)->step_left ) },
-	{ "idScriptBool", "step_right", (intptr_t)(&((rvmMonsterZombieCommandoChaingun *)0)->step_right), sizeof( ((rvmMonsterZombieCommandoChaingun *)0)->step_right ) },
-	{ "idScriptFloat", "nextDodge", (intptr_t)(&((rvmMonsterZombieCommandoChaingun *)0)->nextDodge), sizeof( ((rvmMonsterZombieCommandoChaingun *)0)->nextDodge ) },
-	{ "idScriptFloat", "nextAttack", (intptr_t)(&((rvmMonsterZombieCommandoChaingun *)0)->nextAttack), sizeof( ((rvmMonsterZombieCommandoChaingun *)0)->nextAttack ) },
-	{ "idScriptFloat", "nextNoFOVAttack", (intptr_t)(&((rvmMonsterZombieCommandoChaingun *)0)->nextNoFOVAttack), sizeof( ((rvmMonsterZombieCommandoChaingun *)0)->nextNoFOVAttack ) },
+	{ ": bool", "fire", (intptr_t)(&((rvmMonsterZombieCommandoChaingun *)0)->fire), sizeof( ((rvmMonsterZombieCommandoChaingun *)0)->fire ) },
+	{ "bool", "crouch_fire", (intptr_t)(&((rvmMonsterZombieCommandoChaingun *)0)->crouch_fire), sizeof( ((rvmMonsterZombieCommandoChaingun *)0)->crouch_fire ) },
+	{ "bool", "step_left", (intptr_t)(&((rvmMonsterZombieCommandoChaingun *)0)->step_left), sizeof( ((rvmMonsterZombieCommandoChaingun *)0)->step_left ) },
+	{ "bool", "step_right", (intptr_t)(&((rvmMonsterZombieCommandoChaingun *)0)->step_right), sizeof( ((rvmMonsterZombieCommandoChaingun *)0)->step_right ) },
+	{ "float", "nextDodge", (intptr_t)(&((rvmMonsterZombieCommandoChaingun *)0)->nextDodge), sizeof( ((rvmMonsterZombieCommandoChaingun *)0)->nextDodge ) },
+	{ "float", "nextAttack", (intptr_t)(&((rvmMonsterZombieCommandoChaingun *)0)->nextAttack), sizeof( ((rvmMonsterZombieCommandoChaingun *)0)->nextAttack ) },
+	{ "float", "nextNoFOVAttack", (intptr_t)(&((rvmMonsterZombieCommandoChaingun *)0)->nextNoFOVAttack), sizeof( ((rvmMonsterZombieCommandoChaingun *)0)->nextNoFOVAttack ) },
 	{ ": idEntity *", "combat_node", (intptr_t)(&((rvmMonsterZombieCommandoChaingun *)0)->combat_node), sizeof( ((rvmMonsterZombieCommandoChaingun *)0)->combat_node ) },
 	{ "float", "attackTime", (intptr_t)(&((rvmMonsterZombieCommandoChaingun *)0)->attackTime), sizeof( ((rvmMonsterZombieCommandoChaingun *)0)->attackTime ) },
 	{ NULL, 0 }
