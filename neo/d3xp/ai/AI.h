@@ -805,6 +805,7 @@ protected:
 	stateResult_t	Torso_Idle(stateParms_t* parms);
 	stateResult_t	Torso_MeleeAttack(stateParms_t* parms);
 	stateResult_t	Torso_Pain(stateParms_t* parms);
+	stateResult_t	Torso_RangeAttack(stateParms_t* parms);
 
 	stateResult_t	Legs_Idle(stateParms_t* parms);
 	stateResult_t	Legs_Walk(stateParms_t* parms);

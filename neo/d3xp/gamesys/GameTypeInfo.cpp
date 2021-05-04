@@ -9261,6 +9261,9 @@ intptr_t idAI::Invoke(const char *functionName, void *param1) {
 	if(functionNameHash == 126210) { // Torso_Pain
 		return (intptr_t)Torso_Pain((stateParms_t *)param1);
 	};
+	if(functionNameHash == 218798) { // Torso_RangeAttack
+		return (intptr_t)Torso_RangeAttack((stateParms_t *)param1);
+	};
 	if(functionNameHash == 107329) { // Legs_Idle
 		return (intptr_t)Legs_Idle((stateParms_t *)param1);
 	};
@@ -9724,6 +9727,9 @@ bool idAI::HasNativeFunction(const char *functionName) {
 		return true;
 	};
 	if(functionNameHash == 126210) { // Torso_Pain
+		return true;
+	};
+	if(functionNameHash == 218798) { // Torso_RangeAttack
 		return true;
 	};
 	if(functionNameHash == 107329) { // Legs_Idle

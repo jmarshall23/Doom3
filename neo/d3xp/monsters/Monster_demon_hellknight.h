@@ -21,5 +21,5 @@ private:
 	float			nextAttack;
 	float			nextNoFOVAttack;
 	idEntity*		combat_node;
-	idScriptString	range_attack_anim;
+	idStr			range_attack_anim;
 };

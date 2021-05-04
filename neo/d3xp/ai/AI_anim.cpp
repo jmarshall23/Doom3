@@ -72,6 +72,44 @@ stateResult_t idAI::Torso_MeleeAttack(stateParms_t* parms) {
 
 /*
 ===================
+idAI::Torso_RangeAttack
+===================
+*/
+stateResult_t idAI::Torso_RangeAttack(stateParms_t* parms) {
+	enum {
+		STAGE_INIT = 0,
+		STAGE_WAIT,
+	};
+
+	switch (parms->stage) {
+	case STAGE_INIT:
+		Event_DisablePain();
+		Event_FaceEnemy();
+		Event_PlayAnim(ANIMCHANNEL_TORSO, "turret_attack");
+		parms->stage = STAGE_WAIT;
+		return SRESULT_WAIT;
+
+	case STAGE_WAIT:
+		if (AnimDone(ANIMCHANNEL_TORSO, 8))
+		{
+			Event_AllowMovement(true);
+			Event_FinishAction("range_attack");
+			//Event_AnimState(ANIMCHANNEL_TORSO, "Torso_Idle", 8);
+			return SRESULT_DONE;
+		}
+		else
+		{
+			Event_LookAtEnemy(1.0f);
+		}
+
+		return SRESULT_WAIT;
+	}
+
+	return SRESULT_DONE;
+}
+
+/*
+===================
 idAI::Torso_Death
 ===================
 */

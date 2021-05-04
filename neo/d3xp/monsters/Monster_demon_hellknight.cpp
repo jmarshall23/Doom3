@@ -22,7 +22,7 @@ rvmMonsterDemonHellknight::Init
 */
 void rvmMonsterDemonHellknight::Init( void )
 {
-	range_attack_anim.LinkTo( scriptObject, "range_attack_anim" );
+	//range_attack_anim.LinkTo( scriptObject, "range_attack_anim" );
 }
 
 /*
