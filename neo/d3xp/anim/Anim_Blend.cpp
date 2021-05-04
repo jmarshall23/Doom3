@@ -743,7 +743,10 @@ void idAnim::CallFrameCommands( idEntity *ent, int from, int to ) const {
 					break;
 				}
 				case FC_SCRIPTFUNCTIONOBJECT: {
-					gameLocal.CallObjectFrameCommand( ent, command.string->c_str() );
+// jmarshall
+					ent->Invoke(command.string->c_str(), NULL);
+					//gameLocal.CallObjectFrameCommand( ent, command.string->c_str() );
+// jmarshall end
 					break;
 				}
 				case FC_EVENTFUNCTION: {
