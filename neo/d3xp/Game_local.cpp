@@ -401,9 +401,6 @@ void idGameLocal::Shutdown( void ) {
 
 	idAI::FreeObstacleAvoidanceNodes();
 
-	// shutdown the model exporter
-	idModelExport::Shutdown();
-
 	idEvent::Shutdown();
 
 	delete[] locationEntities;

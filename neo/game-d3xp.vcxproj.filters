@@ -33,9 +33,6 @@
     <ClCompile Include="d3xp\anim\Anim_Blend.cpp">
       <Filter>Animation</Filter>
     </ClCompile>
-    <ClCompile Include="d3xp\anim\Anim_Import.cpp">
-      <Filter>Animation</Filter>
-    </ClCompile>
     <ClCompile Include="d3xp\anim\Anim_Testmodel.cpp">
       <Filter>Animation</Filter>
     </ClCompile>

@@ -802,6 +802,7 @@ void idDeclManagerLocal::Init( void ) {
 	ClearHuffmanFrequencies();
 #endif
 
+#if !defined(ID_MAYAIMPORT)
 	// decls used throughout the engine
 	RegisterDeclType( "table",				DECL_TABLE,			idDeclAllocator<idDeclTable> );
 	RegisterDeclType( "material",			DECL_MATERIAL,		idDeclAllocator<idMaterial> );
@@ -859,7 +860,7 @@ void idDeclManagerLocal::Init( void ) {
 	cmdSystem->AddCommand( "printAudio", idPrintDecls_f<DECL_AUDIO>, CMD_FL_SYSTEM, "prints an Video", idCmdSystem::ArgCompletion_Decl<DECL_AUDIO> );
 
 	cmdSystem->AddCommand( "listHuffmanFrequencies", ListHuffmanFrequencies_f, CMD_FL_SYSTEM, "lists decl text character frequencies" );
-
+#endif
 	common->Printf( "------------------------------\n" );
 }
 
@@ -1638,12 +1639,15 @@ void idDeclManagerLocal::ReloadDecls_f( const idCmdArgs &args ) {
 		force = false;
 		common->Printf( "reloading changed decl files:\n" );
 	}
-
+#if !defined(ID_MAYAIMPORT)
 	soundSystem->SetMute( true );
+#endif
 
 	declManagerLocal.Reload( force );
 
+#if !defined(ID_MAYAIMPORT)
 	soundSystem->SetMute( false );
+#endif
 }
 
 /*

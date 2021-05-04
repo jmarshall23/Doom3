@@ -69,7 +69,11 @@ If you have questions concerning this license or the applicable additional terms
 #endif
 
 #ifndef ID_ENABLE_CURL
-	#define ID_ENABLE_CURL 1
+	#ifndef ID_MAYAIMPORT
+		#define ID_ENABLE_CURL 1
+	#else
+		#define ID_ENABLE_CURL 0
+	#endif
 #endif
 
 // fake a pure client. useful to connect an all-debug client to a server

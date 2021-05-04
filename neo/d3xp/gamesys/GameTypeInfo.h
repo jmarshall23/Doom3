@@ -9,7 +9,7 @@
 
 	599 constants
 	58 enums
-	344 classes/structs/unions
+	343 classes/structs/unions
 	3 templates
 	8 max inheritance level for 'rvmMonsterZombieSawyer'
 
@@ -1714,14 +1714,6 @@ static classVariableInfo_t animFlags_t_typeInfo[] = {
 //	{ "bool", "random_cycle_start", (intptr_t)(&((animFlags_t *)0)->random_cycle_start), sizeof( ((animFlags_t *)0)->random_cycle_start ) },
 //	{ "bool", "ai_no_turn", (intptr_t)(&((animFlags_t *)0)->ai_no_turn), sizeof( ((animFlags_t *)0)->ai_no_turn ) },
 //	{ "bool", "anim_turn", (intptr_t)(&((animFlags_t *)0)->anim_turn), sizeof( ((animFlags_t *)0)->anim_turn ) },
-	{ NULL, 0 }
-};
-
-static classVariableInfo_t idModelExport_typeInfo[] = {
-	{ ": idStr", "commandLine", (intptr_t)(&((idModelExport *)0)->commandLine), sizeof( ((idModelExport *)0)->commandLine ) },
-	{ "idStr", "src", (intptr_t)(&((idModelExport *)0)->src), sizeof( ((idModelExport *)0)->src ) },
-	{ "idStr", "dest", (intptr_t)(&((idModelExport *)0)->dest), sizeof( ((idModelExport *)0)->dest ) },
-	{ "bool", "force", (intptr_t)(&((idModelExport *)0)->force), sizeof( ((idModelExport *)0)->force ) },
 	{ NULL, 0 }
 };
 
@@ -5305,7 +5297,6 @@ static classTypeInfo_t classTypeInfo[] = {
 //	{ "class_25::class_25", "", sizeof(class_25::class_25), class_25_class_25_typeInfo },
 	{ "frameCommand_t", "", sizeof(frameCommand_t), frameCommand_t_typeInfo },
 	{ "animFlags_t", "", sizeof(animFlags_t), animFlags_t_typeInfo },
-	{ "idModelExport", "", sizeof(idModelExport), idModelExport_typeInfo },
 	{ "idMD5Anim", "", sizeof(idMD5Anim), idMD5Anim_typeInfo },
 	{ "idAnim", "", sizeof(idAnim), idAnim_typeInfo },
 	{ "idDeclModelDef", "idDecl", sizeof(idDeclModelDef), idDeclModelDef_typeInfo },
