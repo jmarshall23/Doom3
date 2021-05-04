@@ -256,3 +256,144 @@ stateResult_t rvmMonsterLostSoul::combat_retreat( stateParms_t* parms )
 
 	return SRESULT_DONE;
 }
+
+/*
+================================================
+
+Lost Soul Animation Code
+
+================================================
+*/
+
+/*
+===================
+rvmMonsterLostSoul::Torso_Idle
+===================
+*/
+stateResult_t rvmMonsterLostSoul::Torso_Idle(stateParms_t* parms) {
+	enum {
+		STAGE_INIT = 0,
+		STAGE_WAIT,
+	};
+
+	switch (parms->stage) {
+	case STAGE_INIT:
+		Event_PlayCycle(ANIMCHANNEL_TORSO, "idle");
+		parms->stage = STAGE_WAIT;
+		return SRESULT_WAIT;
+
+	case STAGE_WAIT:
+		if (AI_PAIN)
+		{
+			Event_AnimState(ANIMCHANNEL_TORSO, "Torso_Pain", 0);
+			return SRESULT_DONE;
+		}
+		if (AI_FORWARD)
+		{
+			Event_AnimState(ANIMCHANNEL_TORSO, "Torso_Fly", 4);
+			return SRESULT_DONE;
+		}
+
+		return SRESULT_WAIT;
+	}
+
+	return SRESULT_DONE;
+}
+
+/*
+===================
+rvmMonsterLostSoul::Torso_Fly
+===================
+*/
+stateResult_t rvmMonsterLostSoul::Torso_Fly(stateParms_t* parms) {
+	enum {
+		STAGE_INIT = 0,
+		STAGE_WAIT,
+	};
+
+	switch (parms->stage) {
+	case STAGE_INIT:
+		Event_PlayCycle(ANIMCHANNEL_TORSO, "fly");
+		parms->stage = STAGE_WAIT;
+		return SRESULT_WAIT;
+
+	case STAGE_WAIT:
+		if (AI_PAIN)
+		{
+			Event_AnimState(ANIMCHANNEL_TORSO, "Torso_Pain", 0);
+			return SRESULT_DONE;
+		}
+		if (!AI_FORWARD)
+		{
+			Event_AnimState(ANIMCHANNEL_TORSO, "Torso_Idle", 4);
+			return SRESULT_DONE;
+		}
+
+		return SRESULT_WAIT;
+	}
+
+	return SRESULT_DONE;
+}
+
+/*
+===================
+rvmMonsterLostSoul::Torso_Charge
+===================
+*/
+stateResult_t rvmMonsterLostSoul::Torso_Charge(stateParms_t* parms) {
+	float dist;
+	float endtime;
+
+	enum {
+		STAGE_INIT = 0,
+		STAGE_WAIT,
+		STAGE_END
+	};
+
+	switch (parms->stage) {
+	case STAGE_INIT:
+		Event_PlayCycle(ANIMCHANNEL_TORSO, "charge");
+		Event_FadeSound(SND_CHANNEL_VOICE2, 0, 0);
+		Event_StartSound("snd_charge", SND_CHANNEL_VOICE2, false);
+		dist = DistanceTo(enemy.GetEntity()->GetOrigin()) + 256;
+		endtime = gameLocal.SysScriptTime() + dist / LOSTSOUL_CHARGE_SPEED;
+
+		parms->param1 = endtime;
+
+		parms->stage = STAGE_WAIT;
+		return SRESULT_WAIT;
+
+	case STAGE_WAIT:
+		endtime = parms->param1;
+		if (!AI_PAIN && (gameLocal.SysScriptTime() < endtime))
+		{
+			if (gameLocal.InfluenceActive())
+			{
+				parms->stage = STAGE_END;
+				return SRESULT_WAIT;
+			}		
+
+			if (TestMelee())
+			{
+				AttackMelee("melee_lostsoul_charge");
+				parms->stage = STAGE_END;
+				return SRESULT_WAIT;
+			}
+
+			return SRESULT_WAIT;
+		}
+
+		parms->stage = STAGE_END;
+		return SRESULT_WAIT;
+
+	case STAGE_END:
+		Event_EndAttack();
+		Event_FadeSound(SND_CHANNEL_VOICE2, -60, 1);
+		Event_FinishAction("charge_attack");
+
+		Event_AnimState(ANIMCHANNEL_TORSO, "Torso_Idle", 4);
+		return SRESULT_WAIT;
+	}
+
+	return SRESULT_DONE;
+}

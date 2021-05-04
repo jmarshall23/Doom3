@@ -10098,6 +10098,15 @@ intptr_t rvmMonsterLostSoul::Invoke(const char *functionName, void *param1) {
 	if(functionNameHash == 186330) { // combat_retreat
 		return (intptr_t)combat_retreat((stateParms_t *)param1);
 	};
+	if(functionNameHash == 124942) { // Torso_Idle
+		return (intptr_t)Torso_Idle((stateParms_t *)param1);
+	};
+	if(functionNameHash == 114298) { // Torso_Fly
+		return (intptr_t)Torso_Fly((stateParms_t *)param1);
+	};
+	if(functionNameHash == 151380) { // Torso_Charge
+		return (intptr_t)Torso_Charge((stateParms_t *)param1);
+	};
 	return __super::Invoke(functionName, param1);
 
 };
@@ -10126,6 +10135,15 @@ bool rvmMonsterLostSoul::HasNativeFunction(const char *functionName) {
 		return true;
 	};
 	if(functionNameHash == 186330) { // combat_retreat
+		return true;
+	};
+	if(functionNameHash == 124942) { // Torso_Idle
+		return true;
+	};
+	if(functionNameHash == 114298) { // Torso_Fly
+		return true;
+	};
+	if(functionNameHash == 151380) { // Torso_Charge
 		return true;
 	};
 	return __super::HasNativeFunction(functionName);

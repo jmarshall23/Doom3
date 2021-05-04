@@ -18,6 +18,10 @@ private:
 	stateResult_t				combat_charge( stateParms_t* parms );
 	stateResult_t				combat_melee( stateParms_t* parms );
 	stateResult_t				combat_retreat( stateParms_t* parms );
+
+	stateResult_t				Torso_Idle(stateParms_t* parms);
+	stateResult_t				Torso_Fly(stateParms_t* parms);
+	stateResult_t				Torso_Charge(stateParms_t* parms);
 private:
 	float		nextAttack;
 	float		nextNoFOVAttack;
