@@ -36,6 +36,8 @@ If you have questions concerning this license or the applicable additional terms
 #include "exporter.h"
 #include "maya_main.h"
 
+#include <map>
+
 idStr	errorMessage;
 bool	initialized = false;
 
@@ -1963,9 +1965,7 @@ idExportMesh* idMayaExport::CopyMesh(MFnSkinCluster& skinCluster, float scale) {
 	MObjectArray	objarray;
 	MObjectArray	outputarray;
 	int				nGeom;
-	int				i, j, k;
 	idExportMesh* mesh;
-	float			uv_u, uv_v;
 	idStr			name, altname;
 	int				pos;
 
@@ -1976,7 +1976,7 @@ idExportMesh* idMayaExport::CopyMesh(MFnSkinCluster& skinCluster, float scale) {
 	}
 
 	nGeom = objarray.length();
-	for (i = 0; i < nGeom; i++) {
+	for (int i = 0; i < nGeom; i++) {
 		MFnDagNode dagNode(objarray[i], &status);
 		if (!status) {
 			common->Printf("CopyMesh: MFnDagNode Constructor failed (%s)", status.errorString().asChar());
@@ -1986,6 +1986,12 @@ idExportMesh* idMayaExport::CopyMesh(MFnSkinCluster& skinCluster, float scale) {
 		MFnMesh fnmesh(objarray[i], &status);
 		if (!status) {
 			// object isn't an MFnMesh
+			continue;
+		}
+
+		MItMeshPolygon mItMeshPolygon(objarray[i], &status);
+		if (!status) {
+			common->FatalError("MltMeshPolygon not a part of MFnMesh\n");
 			continue;
 		}
 
@@ -2068,7 +2074,7 @@ idExportMesh* idMayaExport::CopyMesh(MFnSkinCluster& skinCluster, float scale) {
 
 		fnmesh.getPoints(vertexArray, MSpace::kPreTransform);
 
-		for (j = 0; j < v; j++) {
+		for (int j = 0; j < v; j++) {
 			memset(&mesh->verts[j], 0, sizeof(mesh->verts[j]));
 			mesh->verts[j].pos = ConvertToIdSpace(idVec(vertexArray[j])) * scale;
 		}
@@ -2077,8 +2083,8 @@ idExportMesh* idMayaExport::CopyMesh(MFnSkinCluster& skinCluster, float scale) {
 		int p;
 
 		p = fnmesh.numPolygons(&status);
-		mesh->tris.SetNum(p);
-		mesh->uv.SetNum(p);
+		//mesh->tris.SetNum(p);
+		//mesh->uv.SetNum(p);
 
 		MString setName;
 
@@ -2086,24 +2092,56 @@ idExportMesh* idMayaExport::CopyMesh(MFnSkinCluster& skinCluster, float scale) {
 		if (!status) {
 			MayaError("CopyMesh: MFnMesh::getCurrentUVSetName failed (%s)", status.errorString().asChar());
 		}
+		// jmarshall - arbitrary polygon points, grabbed from the Unreal ActorX source code under the BSD license
+		// https://github.com/gildor2/ActorX/tree/master/ActorX_MAYA
+				// We iterate through each Polygon, which can be 3 to n Sided
+				// With the method mItMeshPolygon.getTriangles( mTrisPointArray , mTrisIndexArray )
+				// we get the internal Maya Triangle representation of the Polygon 
+		for (; !mItMeshPolygon.isDone(); mItMeshPolygon.next()) {	// Loop through each Polygon of the Mesh
+			// If Faces consist of more than 3 Points, get Indices and Points of Triangles that build the current Face
+			MIntArray		mTrisIndexArray;					// Global Vertex Indices of Triangles building the Current Face
+			MPointArray		mTrisPointArray;					// Points per Vertex per Triangle
+			MIntArray		mFaceIndexArray;					// Global Vertex Indices of the Current Face
 
-		for (j = 0; j < p; j++) {
-			fnmesh.getPolygonVertices(j, vertexList);
-			if (vertexList.length() != 3) {
-				MayaError("CopyMesh: Too many vertices on a face (%d)\n", vertexList.length());
+			//fnmesh.getPolygonVertices(j, vertexList);
+			status = mItMeshPolygon.getVertices(mFaceIndexArray);
+
+			// Get internal Maya Triangle Representation of current Polygon )
+			// Store Positions in mTrisPointArray, size n ( count of polygon Vertices )
+			// Store Global Indices in mTrisIndexArray, size n ( count of polygon Vertices )
+			status = mItMeshPolygon.getTriangles(mTrisPointArray, mTrisIndexArray, MSpace::Space::kWorld);
+			mItMeshPolygon.getVertices(vertexList);
+
+			std::map< int, int > mapVtxGlobalLocal;		// Maps from Master Vertex Index to Face Local Index
+
+			mapVtxGlobalLocal.clear();
+			for (unsigned int vi = 0; vi < mFaceIndexArray.length(); ++vi) {		// vi = VertexIndex
+				mapVtxGlobalLocal[mFaceIndexArray[vi]] = vi;
 			}
 
-			for (k = 0; k < 3; k++) {
-				mesh->tris[j].indexes[k] = vertexList[k];
+			MFloatArray		mFaceUArray, mFaceVArray;	// U V Values per Vertex of the Current Face
+			status = mItMeshPolygon.getUVs(mFaceUArray, mFaceVArray, &setName);
 
-				status = fnmesh.getPolygonUV(j, k, uv_u, uv_v, &setName);
-				if (!status) {
-					MayaError("CopyMesh: MFnMesh::getPolygonUV failed (%s)", status.errorString().asChar());
+			uint	numTrisIndices = mTrisIndexArray.length();
+			// Every 3 Points in Index/PointArray build a Triangle, so for each three steps create custom triangle
+			// Per Vertex, grab all Maya Data and push into Vertex
+			for (int tc = 0; tc < numTrisIndices / 3; tc++) {	// tc = triangleCounter
+				exportTriangle_t exportTri;
+				exportUV_t exportUV;
+
+				for (int tv = 0; tv < 3; ++tv) {						// tv = triangleVertex					
+					uint globalIndex = mTrisIndexArray[tc * 3 + tv];
+					uint localIndex = mapVtxGlobalLocal[globalIndex];			// Access the Local Index through the map
+					exportTri.indexes[tv] = globalIndex;
+
+					exportUV.uv[tv][0] = mFaceUArray[localIndex];
+					exportUV.uv[tv][1] = 1.0 - mFaceVArray[localIndex];
 				}
 
-				mesh->uv[j].uv[k][0] = uv_u;
-				mesh->uv[j].uv[k][1] = uv_v;
+				mesh->uv.Append(exportUV);
+				mesh->tris.Append(exportTri);
 			}
+			// jmarshall end	
 		}
 
 		return mesh;
@@ -2111,6 +2149,7 @@ idExportMesh* idMayaExport::CopyMesh(MFnSkinCluster& skinCluster, float scale) {
 
 	return NULL;
 }
+
 
 /*
 ===============
@@ -2186,6 +2225,10 @@ void idMayaExport::CreateMesh(float scale) {
 				c = s.asChar();
 				joint = model.FindJointReal(c);
 				if (!joint) {
+					//for (int d = 0; d < nInfs; d++)
+					//{
+					//	common->Printf("Joint %d: %s\n", d, joints[d]->name.c_str());
+					//}
 					MayaError("Mesh '%s': joint %s not found", mesh->name.c_str(), c);
 				}
 
@@ -2911,8 +2954,8 @@ void idMayaExport::ConvertModel(void) {
 		RemapParents(options.remapjoints);
 		common->Printf("Pruning joints...\n");
 		PruneJoints(options.keepjoints, options.prefix);
-		common->Printf("Combining meshes...\n");
-		CombineMeshes();
+		//common->Printf("Combining meshes...\n");
+		//CombineMeshes();
 	}
 
 	common->Printf("Align model...\n");

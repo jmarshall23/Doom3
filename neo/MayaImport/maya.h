@@ -1,9 +1,19 @@
 #ifdef _WIN32
 
 #define _BOOL
+#undef strncpy
+#undef strncmp
+#undef strcmp
+#define  FLT_EPSILON 1.19209290E-07F
+#include <math.h>
+
+#include <string>
+using namespace std;
 
 #include <maya/MStatus.h>
 #include <maya/MString.h> 
+#include <maya/MPointArray.h>
+#include <maya/MFn.h>
 #include <maya/MFileIO.h>
 #include <maya/MLibrary.h>
 #include <maya/MPoint.h>
