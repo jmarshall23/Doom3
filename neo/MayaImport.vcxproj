@@ -167,6 +167,8 @@
     <Link>
       <OutputFile>../$(TargetName)2019$(TargetExt)</OutputFile>
       <AdditionalLibraryDirectories>C:\Program Files\Autodesk\Maya2019\lib;MayaImport/maya5.0/libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <StackReserveSize>16777216</StackReserveSize>
+      <StackCommitSize>16777216</StackCommitSize>
     </Link>
     <ClCompile>
       <AdditionalIncludeDirectories>C:\Program Files\Autodesk\Maya2019\include;mssdk/include;MayaImport/Maya5.0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>

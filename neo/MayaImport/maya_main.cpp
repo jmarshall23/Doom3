@@ -115,11 +115,17 @@ const char* Sys_DefaultSavePath(void) {
 const char* Sys_EXEPath(void) {
 	return "";
 }
-
+/*
+==============
+Sys_ListFiles
+==============
+*/
 int Sys_ListFiles(const char* directory, const char* extension, idStrList& list) {
 	idStr		search;
 	struct _finddata_t findinfo;
-	int			findhandle;
+	// RB: 64 bit fixes, changed int to intptr_t
+	intptr_t	findhandle;
+	// RB end
 	int			flag;
 
 	if (!extension) {
@@ -316,10 +322,10 @@ bool idModelExport::ConvertMayaToMD5(void) {
 	idStr		path;
 
 	// check if our DLL got loaded
-	if (initialized) {
-		Maya_Error = "MayaImport dll not loaded.";
-		return false;
-	}
+	//if (initialized) {
+	//	Maya_Error = "MayaImport dll not loaded.";
+	//	return false;
+	//}
 
 	// if idAnimManager::forceExport is set then we always reexport Maya models
 	//if (idAnimManager::forceExport) {
@@ -537,14 +543,15 @@ int idModelExport::ParseExportSection(idParser& parser) {
 	idStr	parms;
 	int		count;
 
-	const char* game = cvarSystem->GetCVarString("fs_game");
-
-	if (strlen(game) == 0) {
-		game = BASE_GAMEDIR;
-	}
+	const char* game = BASE_GAMEDIR; // cvarSystem->GetCVarString("fs_game");
+	//
+	//if (strlen(game) == 0) {
+	//	game = BASE_GAMEDIR;
+	//}
+	//game = BASE_GAMEDIR;
 
 	// only export sections that match our export mask
-	if (g_exportMask.GetString()[0]) {
+	/*if (g_exportMask.GetString()[0]) {
 		if (parser.CheckTokenString("{")) {
 			parser.SkipBracedSection(false);
 			return 0;
@@ -557,7 +564,8 @@ int idModelExport::ParseExportSection(idParser& parser) {
 		}
 		parser.ExpectTokenString("{");
 	}
-	else if (!parser.CheckTokenString("{")) {
+	else*/
+	if (!parser.CheckTokenString("{")) {
 		// skip the export mask
 		parser.ReadToken(&token);
 		parser.ExpectTokenString("{");
@@ -606,10 +614,11 @@ int idModelExport::ParseExportSection(idParser& parser) {
 
 			Reset();
 			if (ParseOptions(lex)) {
-				const char* game = cvarSystem->GetCVarString("fs_game");
-				if (strlen(game) == 0) {
-					game = BASE_GAMEDIR;
-				}
+				//const char* game = cvarSystem->GetCVarString("fs_game");
+				//if (strlen(game) == 0) {
+				//	game = BASE_GAMEDIR;
+				//}
+				game = BASE_GAMEDIR;
 
 				if (command == "mesh") {
 					dest.SetFileExtension(MD5_MESH_EXT);
@@ -715,16 +724,34 @@ int idModelExport::ExportModels(const char* pathname, const char* extension) {
 int main(int argc, char** argv) {
 	static idCommonLocal commonLocal;
 
-	dllEntry(MD5_VERSION, &commonLocal, NULL);
+	printf("MayaExport v1.00\n");
+
+	Swap_Init();
+
+	printf("Starting command system..\n");
 	cmdSystem->Init();
+
+	printf("Starting cvar system..\n");
 	cvarSystem->Init();
+
+	printf("Register static vars...\n");
 	idCVar::RegisterStaticVars();
+
+	printf("Starting filesystem system..\n");
 	fileSystem->Init();
-	declManager->Init();
+
+	printf("Starting declmanager system..\n");
+	declManager->Init();	
+
+	dllEntry(MD5_VERSION, &commonLocal, sys);
+
+	idLib::fileSystem = fileSystem;
+
+	printf("Tool Init successfully\n");
 
 	idModelExport	exporter;
 	idStr			name;
-
+	
 	name = argv[1];
 	name = "def/" + name;
 	name.DefaultFileExtension(".def");

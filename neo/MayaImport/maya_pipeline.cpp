@@ -3163,27 +3163,25 @@ dllEntry
 ===============
 */
 bool dllEntry(int version, idCommon* common, idSys* sys) {
-
-	if (!common || !sys) {
-		return false;
-	}
-
 	::common = common;
 	::sys = sys;
-	::cvarSystem = NULL;
 
 	idLib::sys = sys;
 	idLib::common = common;
 	idLib::cvarSystem = NULL;
 	idLib::fileSystem = NULL;
 
+	printf("Init idLib...");
 	idLib::Init();
+	printf("Done\n");
 
 	if (version != MD5_VERSION) {
 		common->Printf("Error initializing Maya exporter: DLL version %d different from .exe version %d\n", MD5_VERSION, version);
 		return false;
 	}
 
+
+	printf("Starting Maya..\n");
 	if (!initialized) {
 		MStatus	status;
 
@@ -3195,6 +3193,7 @@ bool dllEntry(int version, idCommon* common, idSys* sys) {
 
 		initialized = true;
 	}
+	printf("Maya Init complete...\n");
 
 	return true;
 }
