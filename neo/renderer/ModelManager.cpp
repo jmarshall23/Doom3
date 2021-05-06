@@ -289,7 +289,7 @@ idRenderModel *idRenderModelManagerLocal::GetModel( const char *modelName, bool 
 
 	canonical.ExtractFileExtension( extension );
 
-	if ( ( extension.Icmp( "ase" ) == 0 ) || ( extension.Icmp( "lwo" ) == 0 ) || ( extension.Icmp( "flt" ) == 0 ) ) {
+	if ( ( extension.Icmp( "ase" ) == 0 ) || ( extension.Icmp( "lwo" ) == 0 ) || ( extension.Icmp( "flt" ) == 0 || extension.Icmp("obj") == 0 ) ) {
 		model = new idRenderModelStatic;
 		model->InitFromFile( modelName );
 	} else if ( extension.Icmp( "ma" ) == 0 ) {

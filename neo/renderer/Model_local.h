@@ -97,6 +97,10 @@ public:
 	bool						ConvertMAToModelSurfaces (const struct maModel_s *ma );
 
 	struct aseModel_s *			ConvertLWOToASE( const struct st_lwObject *obj, const char *fileName );
+// jmarshall
+	bool						LoadOBJ(const char* fileName);
+	void						ParseOBJ(rvmListSTL<idDrawVert>& drawVerts, const char* fileName, const char* objFileBuffer, int length);
+// jmarshall end
 
 	bool						DeleteSurfaceWithId( int id );
 	void						DeleteSurfacesWithNegativeId( void );

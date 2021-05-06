@@ -1336,6 +1336,7 @@
     <ClCompile Include="renderer\Model_ma.cpp" />
     <ClCompile Include="renderer\Model_md3.cpp" />
     <ClCompile Include="renderer\Model_md5.cpp" />
+    <ClCompile Include="renderer\Model_obj.cpp" />
     <ClCompile Include="renderer\Model_prt.cpp" />
     <ClCompile Include="renderer\Model_sprite.cpp" />
     <ClCompile Include="renderer\ModelDecal.cpp" />

@@ -158,6 +158,7 @@ public:
 template<class T> ID_INLINE T	Max( T x, T y ) { return ( x > y ) ? x : y; }
 template<class T> ID_INLINE T	Min( T x, T y ) { return ( x < y ) ? x : y; }
 
+
 /*
 ===============================================================================
 
@@ -220,6 +221,7 @@ template<class T> ID_INLINE T	Min( T x, T y ) { return ( x < y ) ? x : y; }
 #include "containers/HashIndex.h"
 #include "containers/HashTable.h"
 #include "containers/StaticList.h"
+#include "containers/ListSTL.h"
 #include "containers/LinkList.h"
 #include "containers/Hierarchy.h"
 #include "containers/Queue.h"

@@ -287,6 +287,9 @@ void idRenderModelStatic::InitFromFile( const char *fileName ) {
 	if ( extension.Icmp( "ase" ) == 0 ) {
 		loaded		= LoadASE( name );
 		reloadable	= true;
+	} else if (extension.Icmp("obj") == 0) {
+		loaded = LoadOBJ(name);
+		reloadable = true;
 	} else if ( extension.Icmp( "lwo" ) == 0 ) {
 		loaded		= LoadLWO( name );
 		reloadable	= true;

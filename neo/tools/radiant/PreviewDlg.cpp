@@ -113,7 +113,10 @@ void CPreviewDlg::BuildTree() {
 		fileSystem->FreeFileList( files );
 	} else if ( currentMode == MODELS ) {
 		files = fileSystem->ListFilesTree( "models", ".lwo" );
-		AddStrList( "base", files->GetList(), MODELS );
+		AddStrList( "base", files->GetList(), MODELS );		
+		fileSystem->FreeFileList(files);
+		files = fileSystem->ListFilesTree("models", ".obj");
+		AddStrList("base", files->GetList(), MODELS);
 		fileSystem->FreeFileList( files );
 		files = fileSystem->ListFilesTree( "models", ".ase" );
 		AddStrList( "base", files->GetList(), MODELS );

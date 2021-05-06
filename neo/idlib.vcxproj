@@ -240,6 +240,7 @@
     <ClInclude Include="idlib\containers\Hierarchy.h" />
     <ClInclude Include="idlib\containers\LinkList.h" />
     <ClInclude Include="idlib\containers\List.h" />
+    <ClInclude Include="idlib\containers\ListSTL.h" />
     <ClInclude Include="idlib\containers\PlaneSet.h" />
     <ClInclude Include="idlib\containers\Queue.h" />
     <ClInclude Include="idlib\containers\Stack.h" />
