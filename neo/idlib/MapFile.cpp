@@ -720,6 +720,9 @@ idMapFile::Parse
 bool idMapFile::Parse( const char *filename, bool ignoreRegion, bool osPath ) {
 	// no string concatenation for epairs and allow path names for materials
 	idLexer src( LEXFL_NOSTRINGCONCAT | LEXFL_NOSTRINGESCAPECHARS | LEXFL_ALLOWPATHNAMES );
+// jmarshall
+	idLexer entitiessrc(LEXFL_NOSTRINGCONCAT | LEXFL_NOSTRINGESCAPECHARS | LEXFL_ALLOWPATHNAMES);
+// jmarshall end
 	idToken token;
 	idStr fullName;
 	idMapEntity *mapEnt;
@@ -744,6 +747,11 @@ bool idMapFile::Parse( const char *filename, bool ignoreRegion, bool osPath ) {
 			// didn't get anything at all
 			return false;
 		}
+// jmarshall
+		idStr entitiesFullName = fullName;
+		entitiesFullName.SetFileExtension("entities");
+		entitiessrc.LoadFile(entitiesFullName, osPath);
+// jmarshall end
 	}
 
 	version = OLD_MAP_VERSION;
@@ -762,6 +770,18 @@ bool idMapFile::Parse( const char *filename, bool ignoreRegion, bool osPath ) {
 		}
 		entities.Append( mapEnt );
 	}
+// jmarshall
+	if (entitiessrc.IsLoaded())
+	{
+		while (1) {
+			mapEnt = idMapEntity::Parse(entitiessrc, false, version);
+			if (!mapEnt) {
+				break;
+			}
+			entities.Append(mapEnt);
+		}
+	}
+// jmarshall end
 
 	SetGeometryCRC();
 
@@ -834,20 +854,35 @@ bool idMapFile::Write( const char *fileName, const char *ext, bool fromBasePath 
 	int i;
 	idStr qpath;
 	idFile *fp;
+// jmarshall
+	idStr entitiesqpath;
+	idFile* entitiesfp;
+// jmarshall end
 
 	qpath = fileName;
 	qpath.SetFileExtension( ext );
+
+// jmarshall
+	entitiesqpath = fileName;
+	entitiesqpath.SetFileExtension("entities");
+// jmarshall end
 
 	idLib::common->Printf( "writing %s...\n", qpath.c_str() );
 
 	if ( fromBasePath ) {
 		fp = idLib::fileSystem->OpenFileWrite( qpath, "fs_devpath" );
+// jmarshall
+		entitiesfp = idLib::fileSystem->OpenFileWrite(entitiesqpath, "fs_devpath");
+// jmarshall end
 	}
 	else {
 		fp = idLib::fileSystem->OpenExplicitFileWrite( qpath );
+// jmarshall
+		entitiesfp = idLib::fileSystem->OpenExplicitFileWrite(entitiesqpath);
+// jmarshall end
 	}
 
-	if ( !fp ) {
+	if ( !fp || !entitiesfp) {
 		idLib::common->Warning( "Couldn't open %s\n", qpath.c_str() );
 		return false;
 	}
@@ -855,11 +890,22 @@ bool idMapFile::Write( const char *fileName, const char *ext, bool fromBasePath 
 	fp->WriteFloatString( "Version %f\n", (float) CURRENT_MAP_VERSION );
 
 	for ( i = 0; i < entities.Num(); i++ ) {
-		entities[i]->Write( fp, i );
+// jmarshall
+		if (i == 0)
+		{
+			entities[i]->Write(fp, i);
+		}
+		else
+		{
+			entities[i]->Write(entitiesfp, i - 1);
+		}
+// jmarshall end
 	}
 
 	idLib::fileSystem->CloseFile( fp );
-
+// jmarshall
+	idLib::fileSystem->CloseFile(entitiesfp);
+// jmarshall end
 	return true;
 }
 
