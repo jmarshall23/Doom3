@@ -209,11 +209,11 @@ public:
 	virtual const idMaterial *		FindMaterial( const char *name, bool makeDefault = true );
 	virtual const idDeclSkin *		FindSkin( const char *name, bool makeDefault = true );
 	virtual const idSoundShader *	FindSound( const char *name, bool makeDefault = true );
+	virtual rvmDeclRenderParam* FindRenderParam(const char* name, bool makeDefault = false);
 
 	virtual const idMaterial *		MaterialByIndex( int index, bool forceParse = true );
 	virtual const idDeclSkin *		SkinByIndex( int index, bool forceParse = true );
-	virtual const idSoundShader *	SoundByIndex( int index, bool forceParse = true );
-
+	virtual const idSoundShader *	SoundByIndex( int index, bool forceParse = true );	
 public:
 	static void					MakeNameCanonical( const char *name, char *result, int maxLength );
 	idDeclLocal *				FindTypeWithoutParsing( declType_t type, const char *name, bool makeDefault = true );
@@ -818,6 +818,11 @@ void idDeclManagerLocal::Init( void ) {
 	RegisterDeclType( "email",				DECL_EMAIL,			idDeclAllocator<idDeclEmail> );
 	RegisterDeclType( "video",				DECL_VIDEO,			idDeclAllocator<idDeclVideo> );
 	RegisterDeclType( "audio",				DECL_AUDIO,			idDeclAllocator<idDeclAudio> );
+
+// jmarshall
+	RegisterDeclType("renderParm", DECL_RENDERPARMS, idDeclAllocator<rvmDeclRenderParam>);
+	RegisterDeclFolder("renderprogs",		".parms", DECL_RENDERPARMS);
+// jmarshall end
 
 	RegisterDeclFolder( "materials",		".mtr",				DECL_MATERIAL );
 	RegisterDeclFolder( "skins",			".skin",			DECL_SKIN );
@@ -1545,6 +1550,11 @@ const idDeclSkin *idDeclManagerLocal::SkinByIndex( int index, bool forceParse ) 
 const idSoundShader *idDeclManagerLocal::FindSound( const char *name, bool makeDefault ) {
 	return static_cast<const idSoundShader *>( FindType( DECL_SOUND, name, makeDefault ) );
 }
+
+rvmDeclRenderParam* idDeclManagerLocal::FindRenderParam(const char* name, bool makeDefault) {
+	return (rvmDeclRenderParam * )(FindType(DECL_RENDERPARMS, name, makeDefault));
+}
+
 
 const idSoundShader *idDeclManagerLocal::SoundByIndex( int index, bool forceParse ) {
 	return static_cast<const idSoundShader *>( DeclByIndex( DECL_SOUND, index, forceParse ) );

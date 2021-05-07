@@ -2007,6 +2007,16 @@ void idRenderSystemLocal::Init( void ) {
 	// build brightness translation tables
 	R_SetColorMappings();
 
+
+// jmarshall
+	declManager->RegisterDeclType("renderProg", DECL_RENDERPROGS, idDeclAllocator<rvmDeclRenderProg>);
+	declManager->RegisterDeclFolder("renderprogs", ".mrpr", DECL_RENDERPROGS);
+
+	albedoTextureParam = declManager->FindRenderParam("albedoTexture");
+
+	guiTextureProgram = FindRenderProgram("guiTexture");
+// jmarshall end
+
 	R_InitMaterials();
 
 	renderModelManager->Init();

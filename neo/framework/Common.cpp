@@ -2402,7 +2402,6 @@ void idCommonLocal::InitRenderSystem( void ) {
 	}
 
 	renderSystem->InitOpenGL();
-	PrintLoadingMessage( common->GetLanguageDict()->GetString( "#str_04343" ) );
 }
 
 /*
@@ -2945,6 +2944,21 @@ void idCommonLocal::InitGame( void ) {
 		Com_ExecMachineSpec_f( args );
 	}
 
+#ifdef	ID_DEDICATED
+	idAsyncNetwork::server.InitPort();
+	cvarSystem->SetCVarBool("s_noSound", true);
+#else
+	if (idAsyncNetwork::serverDedicated.GetInteger() == 1) {
+		idAsyncNetwork::server.InitPort();
+		cvarSystem->SetCVarBool("s_noSound", true);
+	}
+	else {
+		// init OpenGL, which will open a window and connect sound and input hardware
+		PrintLoadingMessage(common->GetLanguageDict()->GetString("#str_04348"));
+		InitRenderSystem();
+	}
+#endif
+
 	// initialize the renderSystem data structures, but don't start OpenGL yet
 	renderSystem->Init();
 
@@ -2998,20 +3012,6 @@ void idCommonLocal::InitGame( void ) {
 
 	// init async network
 	idAsyncNetwork::Init();
-
-#ifdef	ID_DEDICATED
-	idAsyncNetwork::server.InitPort();
-	cvarSystem->SetCVarBool( "s_noSound", true );
-#else
-	if ( idAsyncNetwork::serverDedicated.GetInteger() == 1 ) {
-		idAsyncNetwork::server.InitPort();
-		cvarSystem->SetCVarBool( "s_noSound", true );
-	} else {
-		// init OpenGL, which will open a window and connect sound and input hardware
-		PrintLoadingMessage( common->GetLanguageDict()->GetString( "#str_04348" ) );
-		InitRenderSystem();
-	}
-#endif
 
 	PrintLoadingMessage( common->GetLanguageDict()->GetString( "#str_04349" ) );
 

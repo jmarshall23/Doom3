@@ -31,6 +31,7 @@ If you have questions concerning this license or the applicable additional terms
 
 #include "Image.h"
 #include "MegaTexture.h"
+#include "DeclRenderProg.h"
 
 class idRenderWorldLocal;
 
@@ -732,6 +733,8 @@ public:
 	virtual void			GetCardCaps( bool &oldCard, bool &nv10or20 );
 	virtual bool			UploadImage( const char *imageName, const byte *data, int width, int height );
 
+	rvmDeclRenderProg*		FindRenderProgram(const char* name) { return (rvmDeclRenderProg*)declManager->FindType(DECL_RENDERPROGS, name); }
+
 public:
 	// internal functions
 							idRenderSystemLocal( void );
@@ -801,6 +804,10 @@ public:
 	int						guiRecursionLevel;		// to prevent infinite overruns
 	class idGuiModel *		guiModel;
 	class idGuiModel *		demoGuiModel;
+
+	rvmDeclRenderParam*		albedoTextureParam;
+
+	rvmDeclRenderProg*		guiTextureProgram;
 
 	unsigned short			gammaTable[256];	// brightness / gamma modify this
 };

@@ -380,7 +380,8 @@ void RB_BindVariableStageImage( const textureStage_t *texture, const float *shad
 		cinData_t	cin;
 
 		if ( r_skipDynamicTextures.GetBool() ) {
-			globalImages->defaultImage->Bind();
+			//globalImages->defaultImage->Bind();
+			tr.albedoTextureParam->SetImage(globalImages->defaultImage);
 			return;
 		}
 
@@ -391,14 +392,13 @@ void RB_BindVariableStageImage( const textureStage_t *texture, const float *shad
 
 		if ( cin.image ) {
 			globalImages->cinematicImage->UploadScratch( cin.image, cin.imageWidth, cin.imageHeight );
+			tr.albedoTextureParam->SetImage(globalImages->cinematicImage);
 		} else {
-			globalImages->blackImage->Bind();
+			//globalImages->blackImage->Bind();
+			tr.albedoTextureParam->SetImage(globalImages->blackImage);
 		}
-	} else {
-		//FIXME: see why image is invalid
-		if (texture->image) {
-			texture->image->Bind();
-		}
+	} else {		
+		tr.albedoTextureParam->SetImage(texture->image);
 	}
 }
 

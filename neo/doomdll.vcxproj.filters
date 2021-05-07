@@ -642,6 +642,12 @@
     <ClInclude Include="external\glew\GL\wglew.h">
       <Filter>External\glew\GL</Filter>
     </ClInclude>
+    <ClInclude Include="renderer\DeclRenderProg.h">
+      <Filter>Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="framework\DeclRenderParam.h">
+      <Filter>Framework</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="cm\CollisionModel_contacts.cpp">
@@ -1852,6 +1858,12 @@
     </ClCompile>
     <ClCompile Include="external\glew\glew.c">
       <Filter>External\glew</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer\DeclRenderProg.cpp">
+      <Filter>Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="framework\DeclRenderParam.cpp">
+      <Filter>Framework</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

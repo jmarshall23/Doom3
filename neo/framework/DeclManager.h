@@ -78,6 +78,10 @@ typedef enum {
 	DECL_EMAIL,
 	DECL_MODELEXPORT,
 	DECL_MAPDEF,
+// jmarshall
+	DECL_RENDERPROGS,
+	DECL_RENDERPARMS,
+// jmarshall end
 
 	// new decl types can be added here
 
@@ -314,6 +318,8 @@ public:
 	virtual	const idMaterial *		FindMaterial( const char *name, bool makeDefault = true ) = 0;
 	virtual const idDeclSkin *		FindSkin( const char *name, bool makeDefault = true ) = 0;
 	virtual const idSoundShader *	FindSound( const char *name, bool makeDefault = true ) = 0;
+
+	virtual class rvmDeclRenderParam* FindRenderParam(const char* name, bool makeDefault = false) = 0;
 
 	virtual const idMaterial *		MaterialByIndex( int index, bool forceParse = true ) = 0;
 	virtual const idDeclSkin *		SkinByIndex( int index, bool forceParse = true ) = 0;

@@ -860,6 +860,7 @@ void RB_STD_T_RenderShaderPasses( const drawSurf_t *surf ) {
 			continue;
 		}
 
+
 		//--------------------------
 		//
 		// old style stages
@@ -938,7 +939,9 @@ void RB_STD_T_RenderShaderPasses( const drawSurf_t *surf ) {
 		RB_PrepareStageTexturing( pStage, surf, ac );
 
 		// draw it
+		tr.guiTextureProgram->Bind();
 		RB_DrawElementsWithCounters( tri );
+		tr.guiTextureProgram->BindNull();
 
 		RB_FinishStageTexturing( pStage, surf, ac );
 		
