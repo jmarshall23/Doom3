@@ -3,6 +3,11 @@
 
 #pragma once
 
+static const int PC_ATTRIB_INDEX_ST = 8;
+static const int PC_ATTRIB_INDEX_TANGENT = 9;
+static const int PC_ATTRIB_INDEX_BINORMAL = 10;
+static const int PC_ATTRIB_INDEX_NORMAL = 11;
+
 struct glslUniformLocation_t {
 	int		parmIndex;
 	GLint	uniformIndex;

@@ -98,6 +98,12 @@ rvmDeclRenderProg::CreateVertexShader
 */
 void rvmDeclRenderProg::CreateVertexShader(idStr& bracketText) {
 	vertexShader = ParseRenderParms(bracketText);
+
+	vertexShader += "attribute vec4		attr_TexCoord0;\n";
+	vertexShader += "attribute vec3		attr_Tangent;\n";
+	vertexShader += "attribute vec3		attr_Bitangent;\n";
+	vertexShader += "attribute vec3      attr_Normal;\n";
+
 	vertexShader += "void main(void)\n";
 	vertexShader += "{\n";
 	vertexShader += bracketText;
@@ -187,12 +193,10 @@ void rvmDeclRenderProg::LoadGLSLProgram(void) {
 		glAttachShader(program, vertexProgID);
 		glAttachShader(program, fragmentProgID);
 
-		// bind vertex attribute locations
-		//for (int i = 0; attribsPC[i].glsl != NULL; i++) {
-		//	if ((attribsPC[i].flags & AT_VS_IN) != 0) {
-		//		qglBindAttribLocation(program, attribsPC[i].bind, attribsPC[i].glsl);
-		//	}
-		//}
+		glBindAttribLocation(program, PC_ATTRIB_INDEX_ST, "attr_TexCoord0");
+		glBindAttribLocation(program, PC_ATTRIB_INDEX_TANGENT, "attr_Tangent");
+		glBindAttribLocation(program, PC_ATTRIB_INDEX_BINORMAL, "attr_Bitangent");
+		glBindAttribLocation(program, PC_ATTRIB_INDEX_NORMAL, "attr_Normal");
 
 		glLinkProgram(program);
 
