@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # process stdin into an M4 macro definition file
-# recognize three keyword qgl qwgl qglX
+# recognize three keyword gl qwgl glX
 #
 # output
 # global macros keep track of the three intervals for function types:

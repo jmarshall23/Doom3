@@ -107,22 +107,22 @@ static void RB_R200_ARB_DrawInteraction( const drawInteraction_t *din ) {
 	}
 
 	// load all the vertex program parameters
-	qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_LIGHT_ORIGIN, din->localLightOrigin.ToFloatPtr() );
-	qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_VIEW_ORIGIN, din->localViewOrigin.ToFloatPtr() );
-	qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_LIGHT_PROJECT_S, din->lightProjection[0].ToFloatPtr() );
-	qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_LIGHT_PROJECT_T, din->lightProjection[1].ToFloatPtr() );
-	qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_LIGHT_PROJECT_Q, din->lightProjection[2].ToFloatPtr() );
-	qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_LIGHT_FALLOFF_S, din->lightProjection[3].ToFloatPtr() );
-	qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_BUMP_MATRIX_S, din->bumpMatrix[0].ToFloatPtr() );
-	qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_BUMP_MATRIX_T, din->bumpMatrix[1].ToFloatPtr() );
-	qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_DIFFUSE_MATRIX_S, din->diffuseMatrix[0].ToFloatPtr() );
-	qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_DIFFUSE_MATRIX_T, din->diffuseMatrix[1].ToFloatPtr() );
-	qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_SPECULAR_MATRIX_S, din->diffuseMatrix[0].ToFloatPtr() );
-	qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_SPECULAR_MATRIX_T, din->diffuseMatrix[1].ToFloatPtr() );
+	glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_LIGHT_ORIGIN, din->localLightOrigin.ToFloatPtr() );
+	glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_VIEW_ORIGIN, din->localViewOrigin.ToFloatPtr() );
+	glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_LIGHT_PROJECT_S, din->lightProjection[0].ToFloatPtr() );
+	glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_LIGHT_PROJECT_T, din->lightProjection[1].ToFloatPtr() );
+	glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_LIGHT_PROJECT_Q, din->lightProjection[2].ToFloatPtr() );
+	glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_LIGHT_FALLOFF_S, din->lightProjection[3].ToFloatPtr() );
+	glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_BUMP_MATRIX_S, din->bumpMatrix[0].ToFloatPtr() );
+	glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_BUMP_MATRIX_T, din->bumpMatrix[1].ToFloatPtr() );
+	glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_DIFFUSE_MATRIX_S, din->diffuseMatrix[0].ToFloatPtr() );
+	glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_DIFFUSE_MATRIX_T, din->diffuseMatrix[1].ToFloatPtr() );
+	glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_SPECULAR_MATRIX_S, din->diffuseMatrix[0].ToFloatPtr() );
+	glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_SPECULAR_MATRIX_T, din->diffuseMatrix[1].ToFloatPtr() );
 
 	const srfTriangles_t	*tri = din->surf->geo;
 	idDrawVert	*ac = (idDrawVert *)vertexCache.Position( tri->ambientCache );
-	qglVertexPointer( 3, GL_FLOAT, sizeof( idDrawVert ), (void *)&ac->xyz );
+	glVertexPointer( 3, GL_FLOAT, sizeof( idDrawVert ), (void *)&ac->xyz );
 
 	static const float zero[4] = { 0, 0, 0, 0 };
 	static const float one[4] = { 1, 1, 1, 1 };
@@ -130,16 +130,16 @@ static void RB_R200_ARB_DrawInteraction( const drawInteraction_t *din ) {
 
 	switch ( din->vertexColor ) {
 	case SVC_IGNORE:
-		qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_COLOR_MODULATE, zero );
-		qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_COLOR_ADD, one );
+		glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_COLOR_MODULATE, zero );
+		glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_COLOR_ADD, one );
 		break;
 	case SVC_MODULATE:
-		qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_COLOR_MODULATE, one );
-		qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_COLOR_ADD, zero );
+		glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_COLOR_MODULATE, one );
+		glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_COLOR_ADD, zero );
 		break;
 	case SVC_INVERSE_MODULATE:
-		qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_COLOR_MODULATE, negOne );
-		qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_COLOR_ADD, one );
+		glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_COLOR_MODULATE, negOne );
+		glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_COLOR_ADD, one );
 		break;
 	}
 
@@ -163,31 +163,31 @@ static void RB_R200_ARB_DrawInteraction( const drawInteraction_t *din ) {
 
 	GL_SelectTexture( 3 );
 	din->specularImage->Bind();
-	qglTexCoordPointer( 3, GL_FLOAT, sizeof( idDrawVert ), (void *)&ac->normal );
+	glTexCoordPointer( 3, GL_FLOAT, sizeof( idDrawVert ), (void *)&ac->normal );
 
 	GL_SelectTexture( 2 );
 	din->diffuseImage->Bind();
-	qglTexCoordPointer( 3, GL_FLOAT, sizeof( idDrawVert ), (void *)&ac->tangents[1][0] );
+	glTexCoordPointer( 3, GL_FLOAT, sizeof( idDrawVert ), (void *)&ac->tangents[1][0] );
 
 	GL_SelectTexture( 1 );
 	din->lightFalloffImage->Bind();
-	qglTexCoordPointer( 3, GL_FLOAT, sizeof( idDrawVert ), (void *)&ac->tangents[0][0] );
+	glTexCoordPointer( 3, GL_FLOAT, sizeof( idDrawVert ), (void *)&ac->tangents[0][0] );
 
 	GL_SelectTexture( 0 );
 	din->lightImage->Bind();
-	qglTexCoordPointer( 2, GL_FLOAT, sizeof( idDrawVert ), (void *)&ac->st[0] );
+	glTexCoordPointer( 2, GL_FLOAT, sizeof( idDrawVert ), (void *)&ac->st[0] );
 
-	qglSetFragmentShaderConstantATI( GL_CON_0_ATI, din->diffuseColor.ToFloatPtr() );
-	qglSetFragmentShaderConstantATI( GL_CON_1_ATI, din->specularColor.ToFloatPtr() );
+	glSetFragmentShaderConstantATI( GL_CON_0_ATI, din->diffuseColor.ToFloatPtr() );
+	glSetFragmentShaderConstantATI( GL_CON_1_ATI, din->specularColor.ToFloatPtr() );
 
 	if ( din->vertexColor != SVC_IGNORE ) {
-		qglColorPointer( 4, GL_UNSIGNED_BYTE, sizeof(idDrawVert), (void *)&ac->color );
-		qglEnableClientState( GL_COLOR_ARRAY );
+		glColorPointer( 4, GL_UNSIGNED_BYTE, sizeof(idDrawVert), (void *)&ac->color );
+		glEnableClientState( GL_COLOR_ARRAY );
 
 		RB_DrawElementsWithCounters( tri );
 
-		qglDisableClientState( GL_COLOR_ARRAY );
-		qglColor4f( 1, 1, 1, 1 );
+		glDisableClientState( GL_COLOR_ARRAY );
+		glColor4f( 1, 1, 1, 1 );
 	} else {
 		RB_DrawElementsWithCounters( tri );
 	}
@@ -215,25 +215,25 @@ static void RB_R200_ARB_CreateDrawInteractions( const drawSurf_t *surf ) {
 	}
 
 	// start the vertex shader
-	qglBindProgramARB( GL_VERTEX_PROGRAM_ARB, VPROG_R200_INTERACTION );
-	qglEnable(GL_VERTEX_PROGRAM_ARB);
+	glBindProgramARB( GL_VERTEX_PROGRAM_ARB, VPROG_R200_INTERACTION );
+	glEnable(GL_VERTEX_PROGRAM_ARB);
 
 	// start the fragment shader
-	qglBindFragmentShaderATI( FPROG_FAST_PATH );
+	glBindFragmentShaderATI( FPROG_FAST_PATH );
 #if defined( MACOS_X )
-	qglEnable( GL_TEXT_FRAGMENT_SHADER_ATI );
+	glEnable( GL_TEXT_FRAGMENT_SHADER_ATI );
 #else
-	qglEnable( GL_FRAGMENT_SHADER_ATI );
+	glEnable( GL_FRAGMENT_SHADER_ATI );
 #endif
 
-	qglColor4f( 1, 1, 1, 1 );
+	glColor4f( 1, 1, 1, 1 );
 
 	GL_SelectTexture( 1 );
-	qglEnableClientState( GL_TEXTURE_COORD_ARRAY );
+	glEnableClientState( GL_TEXTURE_COORD_ARRAY );
 	GL_SelectTexture( 2 );
-	qglEnableClientState( GL_TEXTURE_COORD_ARRAY );
+	glEnableClientState( GL_TEXTURE_COORD_ARRAY );
 	GL_SelectTexture( 3 );
-	qglEnableClientState( GL_TEXTURE_COORD_ARRAY );
+	glEnableClientState( GL_TEXTURE_COORD_ARRAY );
 
 	for ( ; surf ; surf=surf->nextOnLight ) {
 		RB_CreateSingleDrawInteractions( surf, RB_R200_ARB_DrawInteraction );
@@ -247,23 +247,23 @@ static void RB_R200_ARB_CreateDrawInteractions( const drawSurf_t *surf ) {
 
 	GL_SelectTexture( 3 );
 	globalImages->BindNull();
-	qglDisableClientState( GL_TEXTURE_COORD_ARRAY );
+	glDisableClientState( GL_TEXTURE_COORD_ARRAY );
 
 	GL_SelectTexture( 2 );
 	globalImages->BindNull();
-	qglDisableClientState( GL_TEXTURE_COORD_ARRAY );
+	glDisableClientState( GL_TEXTURE_COORD_ARRAY );
 
 	GL_SelectTexture( 1 );
 	globalImages->BindNull();
-	qglDisableClientState( GL_TEXTURE_COORD_ARRAY );
+	glDisableClientState( GL_TEXTURE_COORD_ARRAY );
 
 	GL_SelectTexture( 0 );
 
-	qglDisable( GL_VERTEX_PROGRAM_ARB );
+	glDisable( GL_VERTEX_PROGRAM_ARB );
 #if defined( MACOS_X )
-	qglDisable( GL_TEXT_FRAGMENT_SHADER_ATI );
+	glDisable( GL_TEXT_FRAGMENT_SHADER_ATI );
 #else
-	qglDisable( GL_FRAGMENT_SHADER_ATI );
+	glDisable( GL_FRAGMENT_SHADER_ATI );
 #endif
 }
 
@@ -276,7 +276,7 @@ RB_R200_DrawInteractions
 ==================
 */
 void RB_R200_DrawInteractions( void ) {
-	qglEnable( GL_STENCIL_TEST );
+	glEnable( GL_STENCIL_TEST );
 
 	for ( viewLight_t *vLight = backEnd.viewDef->viewLights ; vLight ; vLight = vLight->next ) {
 		// do fogging later
@@ -295,33 +295,33 @@ void RB_R200_DrawInteractions( void ) {
 		if ( vLight->globalShadows || vLight->localShadows ) {
 			backEnd.currentScissor = vLight->scissorRect;
 			if ( r_useScissor.GetBool() ) {
-				qglScissor( backEnd.viewDef->viewport.x1 + backEnd.currentScissor.x1, 
+				glScissor( backEnd.viewDef->viewport.x1 + backEnd.currentScissor.x1, 
 					backEnd.viewDef->viewport.y1 + backEnd.currentScissor.y1,
 					backEnd.currentScissor.x2 + 1 - backEnd.currentScissor.x1,
 					backEnd.currentScissor.y2 + 1 - backEnd.currentScissor.y1 );
 			}
-			qglClear( GL_STENCIL_BUFFER_BIT );
+			glClear( GL_STENCIL_BUFFER_BIT );
 		} else {
 			// no shadows, so no need to read or write the stencil buffer
 			// we might in theory want to use GL_ALWAYS instead of disabling
 			// completely, to satisfy the invarience rules
-			qglStencilFunc( GL_ALWAYS, 128, 255 );
+			glStencilFunc( GL_ALWAYS, 128, 255 );
 		}
 
 		if ( r_useShadowVertexProgram.GetBool() ) {
-			qglEnable( GL_VERTEX_PROGRAM_ARB );
-			qglBindProgramARB( GL_VERTEX_PROGRAM_ARB, VPROG_STENCIL_SHADOW );
+			glEnable( GL_VERTEX_PROGRAM_ARB );
+			glBindProgramARB( GL_VERTEX_PROGRAM_ARB, VPROG_STENCIL_SHADOW );
 			RB_StencilShadowPass( vLight->globalShadows );
 
 			RB_R200_ARB_CreateDrawInteractions( vLight->localInteractions );
 
-			qglEnable( GL_VERTEX_PROGRAM_ARB );
-			qglBindProgramARB( GL_VERTEX_PROGRAM_ARB, VPROG_STENCIL_SHADOW );
+			glEnable( GL_VERTEX_PROGRAM_ARB );
+			glBindProgramARB( GL_VERTEX_PROGRAM_ARB, VPROG_STENCIL_SHADOW );
 			RB_StencilShadowPass( vLight->localShadows );
 
 			RB_R200_ARB_CreateDrawInteractions( vLight->globalInteractions );
 
-			qglDisable( GL_VERTEX_PROGRAM_ARB );	// if there weren't any globalInteractions, it would have stayed on
+			glDisable( GL_VERTEX_PROGRAM_ARB );	// if there weren't any globalInteractions, it would have stayed on
 		} else {
 			RB_StencilShadowPass( vLight->globalShadows );
 			RB_R200_ARB_CreateDrawInteractions( vLight->localInteractions );
@@ -338,7 +338,7 @@ void RB_R200_DrawInteractions( void ) {
 		// the shadow isn't calculated at their point, and the shadow
 		// behind them may be depth fighting with a back side, so there
 		// isn't any reasonable thing to do
-		qglStencilFunc( GL_ALWAYS, 128, 255 );
+		glStencilFunc( GL_ALWAYS, 128, 255 );
 		RB_R200_ARB_CreateDrawInteractions( vLight->translucentInteractions );
 	}
 }
@@ -350,9 +350,9 @@ R_BuildSurfaceFragmentProgram
 =================
 */
 static void R_BuildSurfaceFragmentProgram( int programNum ) {
-	qglBindFragmentShaderATI( programNum );
+	glBindFragmentShaderATI( programNum );
 
-	qglBeginFragmentShaderATI();
+	glBeginFragmentShaderATI();
 
 	// texture 0 = light projection
 	// texture 1 = light falloff
@@ -372,102 +372,102 @@ static void R_BuildSurfaceFragmentProgram( int programNum ) {
 	// constant 1 = specular modulate
 	// constant 5 = internal use for 0.75 constant
 
-	qglSampleMapATI( GL_REG_0_ATI, GL_TEXTURE0_ARB, GL_SWIZZLE_STQ_DQ_ATI );
-	qglSampleMapATI( GL_REG_1_ATI, GL_TEXTURE1_ARB, GL_SWIZZLE_STR_ATI );
-	qglSampleMapATI( GL_REG_4_ATI, GL_TEXTURE2_ARB, GL_SWIZZLE_STR_ATI );
-	qglSampleMapATI( GL_REG_5_ATI, GL_TEXTURE5_ARB, GL_SWIZZLE_STR_ATI );
+	glSampleMapATI( GL_REG_0_ATI, GL_TEXTURE0_ARB, GL_SWIZZLE_STQ_DQ_ATI );
+	glSampleMapATI( GL_REG_1_ATI, GL_TEXTURE1_ARB, GL_SWIZZLE_STR_ATI );
+	glSampleMapATI( GL_REG_4_ATI, GL_TEXTURE2_ARB, GL_SWIZZLE_STR_ATI );
+	glSampleMapATI( GL_REG_5_ATI, GL_TEXTURE5_ARB, GL_SWIZZLE_STR_ATI );
 
 	// move the alpha component to the red channel to support rxgb normal map compression
 	if ( globalImages->image_useNormalCompression.GetInteger() == 2 ) {
-		qglColorFragmentOp1ATI( GL_MOV_ATI, GL_REG_4_ATI, GL_RED_BIT_ATI, GL_NONE,
+		glColorFragmentOp1ATI( GL_MOV_ATI, GL_REG_4_ATI, GL_RED_BIT_ATI, GL_NONE,
 			GL_REG_4_ATI, GL_ALPHA, GL_NONE );
 	}
 
 	// light projection * light falloff
-	qglColorFragmentOp2ATI( GL_MUL_ATI, GL_REG_0_ATI, GL_NONE, GL_NONE,
+	glColorFragmentOp2ATI( GL_MUL_ATI, GL_REG_0_ATI, GL_NONE, GL_NONE,
 		GL_REG_0_ATI, GL_NONE, GL_NONE,
 		GL_REG_1_ATI, GL_NONE, GL_NONE );
 
 	// vectorToLight dot bumpMap
-	qglColorFragmentOp2ATI( GL_DOT3_ATI, GL_REG_1_ATI, GL_NONE, GL_SATURATE_BIT_ATI,
+	glColorFragmentOp2ATI( GL_DOT3_ATI, GL_REG_1_ATI, GL_NONE, GL_SATURATE_BIT_ATI,
 		GL_REG_4_ATI, GL_NONE, GL_2X_BIT_ATI | GL_BIAS_BIT_ATI,
 		GL_REG_5_ATI, GL_NONE, GL_2X_BIT_ATI | GL_BIAS_BIT_ATI );
 
 	// bump * light
-	qglColorFragmentOp2ATI( GL_MUL_ATI, GL_REG_0_ATI, GL_NONE, GL_NONE,
+	glColorFragmentOp2ATI( GL_MUL_ATI, GL_REG_0_ATI, GL_NONE, GL_NONE,
 		GL_REG_0_ATI, GL_NONE, GL_NONE,
 		GL_REG_1_ATI, GL_NONE, GL_NONE );
 
 	//-------------------
 
 	// carry over the incomingLight calculation
-	qglPassTexCoordATI( GL_REG_0_ATI, GL_REG_0_ATI, GL_SWIZZLE_STR_ATI );
+	glPassTexCoordATI( GL_REG_0_ATI, GL_REG_0_ATI, GL_SWIZZLE_STR_ATI );
 
 	// sample the diffuse surface map
-	qglSampleMapATI( GL_REG_2_ATI, GL_TEXTURE3_ARB, GL_SWIZZLE_STR_ATI );
+	glSampleMapATI( GL_REG_2_ATI, GL_TEXTURE3_ARB, GL_SWIZZLE_STR_ATI );
 
 	// sample the specular surface map
-	qglSampleMapATI( GL_REG_3_ATI, GL_TEXTURE3_ARB, GL_SWIZZLE_STR_ATI );
+	glSampleMapATI( GL_REG_3_ATI, GL_TEXTURE3_ARB, GL_SWIZZLE_STR_ATI );
 
 	// we will use the surface bump map again
-	qglPassTexCoordATI( GL_REG_4_ATI, GL_REG_4_ATI, GL_SWIZZLE_STR_ATI );
+	glPassTexCoordATI( GL_REG_4_ATI, GL_REG_4_ATI, GL_SWIZZLE_STR_ATI );
 
 	// normalize the specular halfangle
-	qglSampleMapATI( GL_REG_5_ATI, GL_TEXTURE4_ARB, GL_SWIZZLE_STR_ATI );
+	glSampleMapATI( GL_REG_5_ATI, GL_TEXTURE4_ARB, GL_SWIZZLE_STR_ATI );
 	
 	// R1 = halfangle dot surfaceNormal
-	qglColorFragmentOp2ATI( GL_DOT3_ATI, GL_REG_1_ATI, GL_NONE, GL_SATURATE_BIT_ATI,
+	glColorFragmentOp2ATI( GL_DOT3_ATI, GL_REG_1_ATI, GL_NONE, GL_SATURATE_BIT_ATI,
 		GL_REG_4_ATI, GL_NONE, GL_2X_BIT_ATI | GL_BIAS_BIT_ATI,
 		GL_REG_5_ATI, GL_NONE, GL_2X_BIT_ATI | GL_BIAS_BIT_ATI );
 
 	// R1 = 4 * ( R1 - 0.75 )
 	// subtract 0.75 and quadruple to tighten the specular spot
 	float data[4] = { 0.75, 0.75,  0.75,  0.75 };
-	qglSetFragmentShaderConstantATI( GL_CON_5_ATI, data );
-	qglColorFragmentOp2ATI( GL_SUB_ATI, GL_REG_1_ATI, GL_NONE, GL_4X_BIT_ATI | GL_SATURATE_BIT_ATI,
+	glSetFragmentShaderConstantATI( GL_CON_5_ATI, data );
+	glColorFragmentOp2ATI( GL_SUB_ATI, GL_REG_1_ATI, GL_NONE, GL_4X_BIT_ATI | GL_SATURATE_BIT_ATI,
 		GL_REG_1_ATI, GL_NONE, GL_NONE,
 		GL_CON_5_ATI, GL_NONE, GL_NONE );
 
 	// R1 = R1 * R1
 	// sqare the stretched specular result
-	qglColorFragmentOp2ATI( GL_MUL_ATI, GL_REG_1_ATI, GL_NONE, GL_SATURATE_BIT_ATI,
+	glColorFragmentOp2ATI( GL_MUL_ATI, GL_REG_1_ATI, GL_NONE, GL_SATURATE_BIT_ATI,
 		GL_REG_1_ATI, GL_NONE, GL_NONE,
 		GL_REG_1_ATI, GL_NONE, GL_NONE );
 
 	// R1 = R1 * R3
 	// R1 = specular power * specular texture * 2
-	qglColorFragmentOp2ATI( GL_MUL_ATI, GL_REG_1_ATI, GL_NONE, GL_2X_BIT_ATI | GL_SATURATE_BIT_ATI,
+	glColorFragmentOp2ATI( GL_MUL_ATI, GL_REG_1_ATI, GL_NONE, GL_2X_BIT_ATI | GL_SATURATE_BIT_ATI,
 		GL_REG_1_ATI, GL_NONE, GL_NONE,
 		GL_REG_3_ATI, GL_NONE, GL_NONE );
 
 	// R2 = R2 * CONST0
 	// down modulate the diffuse map
-	qglColorFragmentOp2ATI( GL_MUL_ATI, GL_REG_2_ATI, GL_NONE, GL_SATURATE_BIT_ATI,
+	glColorFragmentOp2ATI( GL_MUL_ATI, GL_REG_2_ATI, GL_NONE, GL_SATURATE_BIT_ATI,
 		GL_REG_2_ATI, GL_NONE, GL_NONE,
 		GL_CON_0_ATI, GL_NONE, GL_NONE );
 
 	// R2 = R2 + R1 * CONST1
 	// diffuse + specular * specular color
-	qglColorFragmentOp3ATI( GL_MAD_ATI, GL_REG_2_ATI, GL_NONE, GL_SATURATE_BIT_ATI,
+	glColorFragmentOp3ATI( GL_MAD_ATI, GL_REG_2_ATI, GL_NONE, GL_SATURATE_BIT_ATI,
 		GL_REG_1_ATI, GL_NONE, GL_NONE,
 		GL_CON_1_ATI, GL_NONE, GL_NONE,
 		GL_REG_2_ATI, GL_NONE, GL_NONE );
 
 	// out = reflectance * incoming light
-	qglColorFragmentOp2ATI( GL_MUL_ATI, GL_REG_0_ATI, GL_NONE, GL_SATURATE_BIT_ATI,
+	glColorFragmentOp2ATI( GL_MUL_ATI, GL_REG_0_ATI, GL_NONE, GL_SATURATE_BIT_ATI,
 		GL_REG_0_ATI, GL_NONE, GL_NONE,
 		GL_REG_2_ATI, GL_NONE, GL_NONE );
 
 	// out * vertex color
-	qglColorFragmentOp2ATI( GL_MUL_ATI, GL_REG_0_ATI, GL_NONE, GL_NONE,
+	glColorFragmentOp2ATI( GL_MUL_ATI, GL_REG_0_ATI, GL_NONE, GL_NONE,
 		GL_REG_0_ATI, GL_NONE, GL_NONE,
 		GL_PRIMARY_COLOR_ARB, GL_NONE, GL_NONE );
 
 	// out alpha = 0 to allow blending optimization
-	qglAlphaFragmentOp1ATI( GL_MOV_ATI, GL_REG_0_ATI, GL_NONE,
+	glAlphaFragmentOp1ATI( GL_MOV_ATI, GL_REG_0_ATI, GL_NONE,
 		GL_ZERO, GL_NONE, GL_NONE );
 
-	qglEndFragmentShaderATI();
+	glEndFragmentShaderATI();
 
 	GL_CheckErrors();
 }
@@ -489,14 +489,14 @@ void R_R200_Init( void ) {
 
 	GL_CheckErrors();
 
-	qglGetIntegerv( GL_NUM_FRAGMENT_REGISTERS_ATI, &fsi.numFragmentRegisters );
-	qglGetIntegerv( GL_NUM_FRAGMENT_CONSTANTS_ATI, &fsi.numFragmentConstants );
-	qglGetIntegerv( GL_NUM_PASSES_ATI, &fsi.numPasses );
-	qglGetIntegerv( GL_NUM_INSTRUCTIONS_PER_PASS_ATI, &fsi.numInstructionsPerPass );
-	qglGetIntegerv( GL_NUM_INSTRUCTIONS_TOTAL_ATI, &fsi.numInstructionsTotal );
-	qglGetIntegerv( GL_COLOR_ALPHA_PAIRING_ATI, &fsi.colorAlphaPairing );
-	qglGetIntegerv( GL_NUM_LOOPBACK_COMPONENTS_ATI, &fsi.numLoopbackComponenets );
-	qglGetIntegerv( GL_NUM_INPUT_INTERPOLATOR_COMPONENTS_ATI, &fsi.numInputInterpolatorComponents );
+	glGetIntegerv( GL_NUM_FRAGMENT_REGISTERS_ATI, &fsi.numFragmentRegisters );
+	glGetIntegerv( GL_NUM_FRAGMENT_CONSTANTS_ATI, &fsi.numFragmentConstants );
+	glGetIntegerv( GL_NUM_PASSES_ATI, &fsi.numPasses );
+	glGetIntegerv( GL_NUM_INSTRUCTIONS_PER_PASS_ATI, &fsi.numInstructionsPerPass );
+	glGetIntegerv( GL_NUM_INSTRUCTIONS_TOTAL_ATI, &fsi.numInstructionsTotal );
+	glGetIntegerv( GL_COLOR_ALPHA_PAIRING_ATI, &fsi.colorAlphaPairing );
+	glGetIntegerv( GL_NUM_LOOPBACK_COMPONENTS_ATI, &fsi.numLoopbackComponenets );
+	glGetIntegerv( GL_NUM_INPUT_INTERPOLATOR_COMPONENTS_ATI, &fsi.numInputInterpolatorComponents );
 
 	common->Printf( "GL_NUM_FRAGMENT_REGISTERS_ATI: %i\n", fsi.numFragmentRegisters );
 	common->Printf( "GL_NUM_FRAGMENT_CONSTANTS_ATI: %i\n", fsi.numFragmentConstants );

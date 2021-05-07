@@ -16,7 +16,7 @@ include(../gllog/gl_def.m4)
 dnl =====================================================
 dnl issue the defines to lock out gl usage
 dnl =====================================================
-define(`define_out', `#define gl$1 use_qgl$1')
+define(`define_out', `#define gl$1 use_gl$1')
 forloop(`i', gl_start, gl_end, `define_out(indir(`f'i`_name'))
 ')
 forloop(`i', glX_start, glX_end, `define_out(indir(`f'i`_name'))

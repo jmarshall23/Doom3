@@ -252,6 +252,10 @@
   <ItemGroup>
     <ClInclude Include="cm\CollisionModel.h" />
     <ClInclude Include="cm\CollisionModel_local.h" />
+    <ClInclude Include="external\glew\GL\eglew.h" />
+    <ClInclude Include="external\glew\GL\glew.h" />
+    <ClInclude Include="external\glew\GL\glxew.h" />
+    <ClInclude Include="external\glew\GL\wglew.h" />
     <ClInclude Include="framework\BuildDefines.h" />
     <ClInclude Include="framework\BuildVersion.h" />
     <ClInclude Include="framework\CmdSystem.h" />
@@ -1267,6 +1271,15 @@
     <ClCompile Include="cm\CollisionModel_rotate.cpp" />
     <ClCompile Include="cm\CollisionModel_trace.cpp" />
     <ClCompile Include="cm\CollisionModel_translate.cpp" />
+    <ClCompile Include="external\glew\glew.c">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug with inlines|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dedicated Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug with inlines and memory log|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dedicated Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Dedicated Debug with inlines|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="framework\CmdSystem.cpp" />
     <ClCompile Include="framework\Common.cpp" />
     <ClCompile Include="framework\Compressor.cpp" />

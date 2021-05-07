@@ -21,7 +21,7 @@ dnl =====================================================
 include(../gllog/gl_def.m4)
 
 dnl =====================================================
-dnl qgl stubs
+dnl gl stubs
 dnl there is a number of functions for which we have special case code
 dnl =====================================================
 

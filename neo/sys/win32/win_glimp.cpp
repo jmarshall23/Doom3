@@ -816,7 +816,7 @@ bool GLimp_Init( glimpParms_t parms ) {
 	// create our window classes if we haven't already
 	GLW_CreateWindowClasses();
 
-	// this will load the dll and set all our qgl* function pointers,
+	// this will load the dll and set all our gl* function pointers,
 	// but doesn't create a window
 
 	// r_glDriver is only intended for using instrumented OpenGL
@@ -1050,7 +1050,7 @@ GLimp_DeactivateContext
 ===================
 */
 void GLimp_DeactivateContext( void ) {
-	qglFinish();
+	glFinish();
 	if ( !qwglMakeCurrent( win32.hDC, NULL ) ) {
 		win32.wglErrors++;
 	}
@@ -1227,10 +1227,10 @@ GLimp_ExtensionPointer
 Returns a function pointer for an OpenGL extension entry point
 ===================
 */
-GLExtension_t GLimp_ExtensionPointer( const char *name ) {
+void *GLimp_ExtensionPointer( const char *name ) {
 	void	(*proc)(void);
 
-	proc = (GLExtension_t)qwglGetProcAddress( name );
+	proc = (void(__cdecl*)(void))qwglGetProcAddress( name );
 
 	if ( !proc ) {
 		common->Printf( "Couldn't find proc address for: %s\n", name );

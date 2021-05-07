@@ -504,13 +504,13 @@ e2b87ed822c749ea8fa16283f49fbec3 *src/MayaImport.vcproj
 7dcb19d26a6e770df53bc006777e6476 *src/renderer/Material.h
 944070b49e293970d7a0cca123f6d2d9 *src/renderer/Model.h
 3ecddb8eabde6caa0c29a0252034da84 *src/renderer/ModelManager.h
-df3b6a65299ffcb94b2112fd09454a9d *src/renderer/qgl.h
-d7cef91f74111c3f718fbb013f0e89fb *src/renderer/qgl_linked.h
+df3b6a65299ffcb94b2112fd09454a9d *src/renderer/gl.h
+d7cef91f74111c3f718fbb013f0e89fb *src/renderer/gl_linked.h
 8120ce8cecf1f5c14c9d8fdc51ef76fc *src/renderer/RenderSystem.h
 f2dbceca220c1b8aca832dce917b6516 *src/renderer/RenderWorld.h
 d53f08c1cd4e79c2d393134c68057d2e *src/SConstruct
 58657928eab2a7c4cd3e212f1893433d *src/sound/sound.h
-99de5ead06f5526a2bc2e223be36f506 *src/sys/linux/qgl_enforce.h
+99de5ead06f5526a2bc2e223be36f506 *src/sys/linux/gl_enforce.h
 c097031304dd401e701002d427f79d06 *src/sys/scons/SConscript.game
 d41d4564fcaa6da50cdb36482937b827 *src/sys/scons/SConscript.idlib
 017d27f219517537234a27a8fe1219f4 *src/sys/scons/scons_utils.py

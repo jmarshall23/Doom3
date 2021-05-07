@@ -71,7 +71,7 @@ for i_m4 in m4_list:
 
 # enable if you need to generate again
 # FIXME: conflicts when several environements are used. move that to seperate script
-#enforce = gl_env.M4( '#sys/linux/qgl_enforce.h', '../linux/qgl_enforce.h.m4' )
+#enforce = gl_env.M4( '#sys/linux/gl_enforce.h', '../linux/gl_enforce.h.m4' )
 #gl_env.Depends( enforce, '../gllog/gl_def.m4' )
 
 # logging functions, python generated ( that's beyond my m4-fu )

@@ -1,6 +1,6 @@
-XVisualInfo *;qglX;ChooseVisual;Display *dpy, int screen, int *attribList
-GLXContext;qglX;CreateContext;Display *dpy, XVisualInfo *vis, GLXContext shareList, Bool direct
-void;qglX;DestroyContext;Display *dpy, GLXContext ctx
-Bool;qglX;MakeCurrent;Display *dpy, GLXDrawable drawable, GLXContext ctx
-void;qglX;SwapBuffers;Display *dpy, GLXDrawable drawable
-GLExtension_t;qglX;GetProcAddressARB;const GLubyte *procName
+XVisualInfo *;glX;ChooseVisual;Display *dpy, int screen, int *attribList
+GLXContext;glX;CreateContext;Display *dpy, XVisualInfo *vis, GLXContext shareList, Bool direct
+void;glX;DestroyContext;Display *dpy, GLXContext ctx
+Bool;glX;MakeCurrent;Display *dpy, GLXDrawable drawable, GLXContext ctx
+void;glX;SwapBuffers;Display *dpy, GLXDrawable drawable
+GLExtension_t;glX;GetProcAddressARB;const GLubyte *procName

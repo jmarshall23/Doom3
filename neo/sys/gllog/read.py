@@ -13,11 +13,11 @@ def read_gl(f_in):
 	for line in lines:
 		if ( len(line) ): # drop empty lines
 			tokens = string.split(line, ';')
-			if ( tokens[1] == 'qgl' ):
+			if ( tokens[1] == 'gl' ):
 				gl.append(tokens)
 			elif ( tokens[1] == 'qwgl' ):
 				wgl.append(tokens)
-			elif ( tokens[1] == 'qglX' ):
+			elif ( tokens[1] == 'glX' ):
 				glX.append(tokens)
 			else:
 				sys.stderr.write('ERROR: unknown type %s\n' % tokens[1])

@@ -21,10 +21,10 @@ dnl =====================================================
 include(../gllog/gl_def.m4)
 
 dnl =====================================================
-dnl qgl function ptrs
+dnl gl function ptrs
 dnl =====================================================
 
-define(`instance_funcptr', ``$1' ( APIENTRY * qgl`$2' )(`$3');')
+define(`instance_funcptr', ``$1' ( APIENTRY * gl`$2' )(`$3');')
 forloop(`i', gl_start, gl_end, `instance_funcptr(indir(`f'i`_ret'), indir(`f'i`_name'), indir(`f'i`_params'))
 ')
 
@@ -32,14 +32,14 @@ dnl =====================================================
 dnl glX function ptrs
 dnl =====================================================
 
-define(`instance_funcptr', ``$1' ( * qglX`$2' )(`$3');')
+define(`instance_funcptr', ``$1' ( * glX`$2' )(`$3');')
 forloop(`i', glX_start, glX_end, `instance_funcptr(indir(`f'i`_ret'), indir(`f'i`_name'), indir(`f'i`_params'))
 ')
 
 dnl =====================================================
 dnl dll ptrs
 dnl those are the actual dlsym'ed pointers
-dnl logging configuration redirects qgl / qglX to either log or dll versions
+dnl logging configuration redirects gl / glX to either log or dll versions
 dnl =====================================================
 
 define(`instance_funcptr', ``$1' ( * dll`$2' )(`$3');')
@@ -58,11 +58,11 @@ GLimp_BindNative
 ======================
 */
 void GLimp_BindNative() {
-define(`assign_funcptr', `qgl`$1' = dll`$1';')
+define(`assign_funcptr', `gl`$1' = dll`$1';')
 forloop(`i', gl_start, gl_end, `assign_funcptr(indir(`f'i`_name'))
 ')
 
-define(`assign_funcptr', `qglX`$1' = dll`$1';')
+define(`assign_funcptr', `glX`$1' = dll`$1';')
 forloop(`i', glX_start, glX_end, `assign_funcptr(indir(`f'i`_name'))
 ')
 }
@@ -124,11 +124,11 @@ void GLimp_dlclose() {
 		glHandle = NULL;
 	}
 	
-define(`reset_funcptr', `qgl`$1' = NULL;')
+define(`reset_funcptr', `gl`$1' = NULL;')
 forloop(`i', gl_start, gl_end, `reset_funcptr(indir(`f'i`_name'))
 ')
 
-define(`reset_funcptr', `qglX`$1' = NULL;')
+define(`reset_funcptr', `glX`$1' = NULL;')
 forloop(`i', glX_start, glX_end, `reset_funcptr(indir(`f'i`_name'))
 ')
 

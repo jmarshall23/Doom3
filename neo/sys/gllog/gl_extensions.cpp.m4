@@ -48,7 +48,7 @@ GLExtension_t GLimp_ExtensionPointer( const char *name ) {
 	GLExtension_t ret;
 	#if defined(__linux__)    
 	// for some reason glXGetProcAddressARB doesn't work on RH9?
-	ret = qglXGetProcAddressARB((const GLubyte *) name);
+	ret = glXGetProcAddressARB((const GLubyte *) name);
 	if ( !ret ) {
 		common->Printf("glXGetProcAddressARB failed: \"%s\"\n", name);
 		return StubFunction;

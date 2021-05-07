@@ -287,7 +287,7 @@ static void R_ReportTextureParms( void ) {
 	int	parms[8];
 
 //	q glGetTexParameteriv( GL_TEXTURE_RECTANGLE_NV, 
-	qglGetIntegerv( GL_TEXTURE_BINDING_RECTANGLE_NV, parms );
+	glGetIntegerv( GL_TEXTURE_BINDING_RECTANGLE_NV, parms );
 
 }
 
@@ -326,7 +326,7 @@ GL_SelectTextureNoClient
 */
 static void GL_SelectTextureNoClient( int unit ) {
 	backEnd.glState.currenttmu = unit;
-	qglActiveTextureARB( GL_TEXTURE0_ARB + unit );
+	glActiveTextureARB( GL_TEXTURE0_ARB + unit );
 	RB_LogComment( "glActiveTextureARB( %i )\n", unit );
 }
 
@@ -348,17 +348,17 @@ static void R_CreateShadowBufferImage( idImage *image ) {
 	// now reset it to a shadow depth image
 	GL_CheckErrors();
 	image->uploadWidth = image->uploadHeight = lightBufferSize; 
-	qglTexImage2D( GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24_ARB, lightBufferSize, lightBufferSize, 
+	glTexImage2D( GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24_ARB, lightBufferSize, lightBufferSize, 
 		0, GL_DEPTH_COMPONENT, GL_UNSIGNED_BYTE, data );
 
-	qglTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB, GL_COMPARE_R_TO_TEXTURE );
-//	qglTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB, GL_NONE );
-	qglTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC_ARB, GL_LEQUAL );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB, GL_COMPARE_R_TO_TEXTURE );
+//	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB, GL_NONE );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC_ARB, GL_LEQUAL );
 
 	// explicit zero depth border
 	float	color[4];
 	color[0] = color[1] = color[2] = color[3] = 0;
-	qglTexParameterfv( GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, color );
+	glTexParameterfv( GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, color );
 
 	GL_CheckErrors();
 
@@ -383,8 +383,8 @@ static void R_CreateStubImage( idImage *image ) {
 	float	data[3][4][4];
 
 	// generate the texture number
-	qglGenTextures( 1, &image->texnum );
-	qglBindTexture( GL_TEXTURE_RECTANGLE_NV, image->texnum );
+	glGenTextures( 1, &image->texnum );
+	glBindTexture( GL_TEXTURE_RECTANGLE_NV, image->texnum );
 	memset( data, 0, sizeof( data ) );
 	glTexImage2D( GL_TEXTURE_RECTANGLE_NV, 0, GL_FLOAT_RGBA16_NV, 4, 3, 0, GL_RGBA, GL_FLOAT, &data );
 }
@@ -791,7 +791,7 @@ void RB_EXP_RenderOccluders( viewLight_t *vLight ) {
 		// a different space
 		float	matrix[16];
 		myGlMultMatrix( inter->entityDef->modelMatrix, lightMatrix, matrix );
-		qglLoadMatrixf( matrix );
+		glLoadMatrixf( matrix );
 
 		// draw each surface
 		for ( int i = 0 ; i < inter->numSurfaces ; i++ ) {
@@ -815,8 +815,8 @@ void RB_EXP_RenderOccluders( viewLight_t *vLight ) {
 				R_CreateAmbientCache( const_cast<srfTriangles_t *>(tri), false ); 
 			}
 			idDrawVert *ac = (idDrawVert *)vertexCache.Position( tri->ambientCache );
-			qglVertexPointer( 3, GL_FLOAT, sizeof( idDrawVert ), ac->xyz.ToFloatPtr() );
-	qglTexCoordPointer( 2, GL_FLOAT, sizeof( idDrawVert ), ac->st.ToFloatPtr() );
+			glVertexPointer( 3, GL_FLOAT, sizeof( idDrawVert ), ac->xyz.ToFloatPtr() );
+	glTexCoordPointer( 2, GL_FLOAT, sizeof( idDrawVert ), ac->st.ToFloatPtr() );
 	if ( surfInt->shader ) {
 		surfInt->shader->GetEditorImage()->Bind();
 	}
@@ -880,22 +880,22 @@ void    RB_RenderShadowBuffer( viewLight_t	*vLight, int side ) {
 		R_MakeCurrent( shadowPbufferDC, win32.hGLRC, NULL /* !@# shadowPbuffer */ );
 	}
 
-	qglMatrixMode( GL_PROJECTION );
-	qglLoadMatrixf( lightProjectionMatrix );
-	qglMatrixMode( GL_MODELVIEW );
+	glMatrixMode( GL_PROJECTION );
+	glLoadMatrixf( lightProjectionMatrix );
+	glMatrixMode( GL_MODELVIEW );
 
-	qglViewport( 0, 0, lightBufferSize, lightBufferSize );
-	qglScissor( 0, 0, lightBufferSize, lightBufferSize );
-	qglStencilFunc( GL_ALWAYS, 0, 255 );
+	glViewport( 0, 0, lightBufferSize, lightBufferSize );
+	glScissor( 0, 0, lightBufferSize, lightBufferSize );
+	glStencilFunc( GL_ALWAYS, 0, 255 );
 
-qglClearColor( 0, 1, 0, 0 );
+glClearColor( 0, 1, 0, 0 );
 GL_State( GLS_DEPTHFUNC_LESS | GLS_SRCBLEND_ONE | GLS_DSTBLEND_ZERO );	// make sure depth mask is off before clear
-qglClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
 // draw all the occluders
-qglColor3f( 1, 1, 1 );
+glColor3f( 1, 1, 1 );
 GL_SelectTexture( 0 );
-qglEnableClientState( GL_TEXTURE_COORD_ARRAY );
+glEnableClientState( GL_TEXTURE_COORD_ARRAY );
 
 	backEnd.currentSpace = NULL;
 
@@ -1032,70 +1032,70 @@ qglEnableClientState( GL_TEXTURE_COORD_ARRAY );
 		//
 		switch ( r_sb_occluderFacing.GetInteger() ) {
 		case 0:		// front sides
-			qglPolygonOffset( r_sb_polyOfsFactor.GetFloat(), r_sb_polyOfsUnits.GetFloat() );
-			qglEnable( GL_POLYGON_OFFSET_FILL );
+			glPolygonOffset( r_sb_polyOfsFactor.GetFloat(), r_sb_polyOfsUnits.GetFloat() );
+			glEnable( GL_POLYGON_OFFSET_FILL );
 			RB_EXP_RenderOccluders( vLight );
-			qglDisable( GL_POLYGON_OFFSET_FILL );
+			glDisable( GL_POLYGON_OFFSET_FILL );
 			break;
 		case 1:		// back sides
-			qglPolygonOffset( -r_sb_polyOfsFactor.GetFloat(), -r_sb_polyOfsUnits.GetFloat() );
-			qglEnable( GL_POLYGON_OFFSET_FILL );
+			glPolygonOffset( -r_sb_polyOfsFactor.GetFloat(), -r_sb_polyOfsUnits.GetFloat() );
+			glEnable( GL_POLYGON_OFFSET_FILL );
 			GL_Cull( CT_BACK_SIDED );
 			RB_EXP_RenderOccluders( vLight );
 			GL_Cull( CT_FRONT_SIDED );
-			qglDisable( GL_POLYGON_OFFSET_FILL );
+			glDisable( GL_POLYGON_OFFSET_FILL );
 			break;
 		case 2:		// both sides
 			GL_Cull( CT_BACK_SIDED );
 			RB_EXP_RenderOccluders( vLight );
 			GL_Cull( CT_FRONT_SIDED );
 			shadowImage[2]->Bind();
-			qglCopyTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, 0, 0, lightBufferSize, lightBufferSize );
+			glCopyTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, 0, 0, lightBufferSize, lightBufferSize );
 
 			RB_EXP_RenderOccluders( vLight );
 			shadowImage[1]->Bind();
-			qglCopyTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, 0, 0, lightBufferSize, lightBufferSize );
+			glCopyTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, 0, 0, lightBufferSize, lightBufferSize );
 
 			// fragment program to combine the two depth images
-			qglBindProgramARB( GL_VERTEX_PROGRAM_ARB, depthMidpointVertexProgram );
-			qglBindProgramARB( GL_FRAGMENT_PROGRAM_ARB, depthMidpointFragmentProgram );
-			qglEnable(GL_VERTEX_PROGRAM_ARB);
-			qglEnable(GL_FRAGMENT_PROGRAM_ARB);
+			glBindProgramARB( GL_VERTEX_PROGRAM_ARB, depthMidpointVertexProgram );
+			glBindProgramARB( GL_FRAGMENT_PROGRAM_ARB, depthMidpointFragmentProgram );
+			glEnable(GL_VERTEX_PROGRAM_ARB);
+			glEnable(GL_FRAGMENT_PROGRAM_ARB);
 
 			GL_SelectTextureNoClient( 1 );
 			shadowImage[1]->Bind();
-			qglTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB, GL_NONE );
-			qglTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
-			qglTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB, GL_NONE );
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
 
 			GL_SelectTextureNoClient( 0 );
 			shadowImage[2]->Bind();
-			qglTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB, GL_NONE );
-			qglTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
-			qglTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB, GL_NONE );
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
 
 			// draw a full screen quad
-			qglMatrixMode( GL_PROJECTION );
-			qglLoadIdentity(); 
-			qglOrtho( 0, 1, 0, 1, -1, 1 );
-			qglMatrixMode( GL_MODELVIEW );
-			qglLoadIdentity();
+			glMatrixMode( GL_PROJECTION );
+			glLoadIdentity(); 
+			glOrtho( 0, 1, 0, 1, -1, 1 );
+			glMatrixMode( GL_MODELVIEW );
+			glLoadIdentity();
 
 			GL_State( GLS_DEPTHFUNC_ALWAYS );
 
-			qglBegin( GL_TRIANGLE_FAN );
-			qglTexCoord2f( 0, 0 );
-			qglVertex2f( 0, 0 );
-			qglTexCoord2f( 0, lightBufferSizeFraction );
-			qglVertex2f( 0, 1 );
-			qglTexCoord2f( lightBufferSizeFraction, lightBufferSizeFraction );
-			qglVertex2f( 1, 1 );
-			qglTexCoord2f( lightBufferSizeFraction, 0 );
-			qglVertex2f( 1, 0 );
-			qglEnd();
+			glBegin( GL_TRIANGLE_FAN );
+			glTexCoord2f( 0, 0 );
+			glVertex2f( 0, 0 );
+			glTexCoord2f( 0, lightBufferSizeFraction );
+			glVertex2f( 0, 1 );
+			glTexCoord2f( lightBufferSizeFraction, lightBufferSizeFraction );
+			glVertex2f( 1, 1 );
+			glTexCoord2f( lightBufferSizeFraction, 0 );
+			glVertex2f( 1, 0 );
+			glEnd();
 
-			qglDisable( GL_VERTEX_PROGRAM_ARB );
-			qglDisable( GL_FRAGMENT_PROGRAM_ARB );
+			glDisable( GL_VERTEX_PROGRAM_ARB );
+			glDisable( GL_FRAGMENT_PROGRAM_ARB );
 
 			break;
 		}
@@ -1103,16 +1103,16 @@ qglEnableClientState( GL_TEXTURE_COORD_ARRAY );
 
 	// copy to the texture
 	shadowImage[0]->Bind();
-	qglCopyTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, 0, 0, lightBufferSize, lightBufferSize );
+	glCopyTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, 0, 0, lightBufferSize, lightBufferSize );
 
-qglDisableClientState( GL_TEXTURE_COORD_ARRAY );
+glDisableClientState( GL_TEXTURE_COORD_ARRAY );
 
 
 	// reset the normal view matrix
 
-	qglMatrixMode( GL_PROJECTION );
-	qglLoadMatrixf( backEnd.viewDef->projectionMatrix );
-	qglMatrixMode( GL_MODELVIEW );
+	glMatrixMode( GL_PROJECTION );
+	glLoadMatrixf( backEnd.viewDef->projectionMatrix );
+	glMatrixMode( GL_MODELVIEW );
 
 	// the current modelView matrix is not valid
 	backEnd.currentSpace = NULL;
@@ -1125,18 +1125,18 @@ RB_EXP_DrawInteraction
 */
 void	RB_EXP_DrawInteraction( const drawInteraction_t *din ) {
 	// load all the vertex program parameters
-	qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_LIGHT_ORIGIN, din->localLightOrigin.ToFloatPtr() );
-	qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_VIEW_ORIGIN, din->localViewOrigin.ToFloatPtr() );
-	qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_LIGHT_PROJECT_S, din->lightProjection[0].ToFloatPtr() );
-	qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_LIGHT_PROJECT_T, din->lightProjection[1].ToFloatPtr() );
-	qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_LIGHT_PROJECT_Q, din->lightProjection[2].ToFloatPtr() );
-	qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_LIGHT_FALLOFF_S, din->lightProjection[3].ToFloatPtr() );
-	qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_BUMP_MATRIX_S, din->bumpMatrix[0].ToFloatPtr() );
-	qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_BUMP_MATRIX_T, din->bumpMatrix[1].ToFloatPtr() );
-	qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_DIFFUSE_MATRIX_S, din->diffuseMatrix[0].ToFloatPtr() );
-	qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_DIFFUSE_MATRIX_T, din->diffuseMatrix[1].ToFloatPtr() );
-	qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_SPECULAR_MATRIX_S, din->specularMatrix[0].ToFloatPtr() );
-	qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_SPECULAR_MATRIX_T, din->specularMatrix[1].ToFloatPtr() );
+	glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_LIGHT_ORIGIN, din->localLightOrigin.ToFloatPtr() );
+	glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_VIEW_ORIGIN, din->localViewOrigin.ToFloatPtr() );
+	glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_LIGHT_PROJECT_S, din->lightProjection[0].ToFloatPtr() );
+	glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_LIGHT_PROJECT_T, din->lightProjection[1].ToFloatPtr() );
+	glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_LIGHT_PROJECT_Q, din->lightProjection[2].ToFloatPtr() );
+	glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_LIGHT_FALLOFF_S, din->lightProjection[3].ToFloatPtr() );
+	glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_BUMP_MATRIX_S, din->bumpMatrix[0].ToFloatPtr() );
+	glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_BUMP_MATRIX_T, din->bumpMatrix[1].ToFloatPtr() );
+	glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_DIFFUSE_MATRIX_S, din->diffuseMatrix[0].ToFloatPtr() );
+	glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_DIFFUSE_MATRIX_T, din->diffuseMatrix[1].ToFloatPtr() );
+	glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_SPECULAR_MATRIX_S, din->specularMatrix[0].ToFloatPtr() );
+	glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_SPECULAR_MATRIX_T, din->specularMatrix[1].ToFloatPtr() );
 
 
 // calculate depth projection for shadow buffer
@@ -1154,28 +1154,28 @@ sRow[0] = 0.5 * lightBufferSizeFraction * ( matrix2[0] + matrix2[3] );
 sRow[1] = 0.5 * lightBufferSizeFraction * ( matrix2[4] + matrix2[7] );
 sRow[2] = 0.5 * lightBufferSizeFraction * ( matrix2[8] + matrix2[11] );
 sRow[3] = 0.5 * lightBufferSizeFraction * ( matrix2[12] + matrix2[15] );
-qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, 18, sRow );
+glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, 18, sRow );
 tRow[0] = 0.5 * lightBufferSizeFraction * ( matrix2[1] + matrix2[3] );
 tRow[1] = 0.5 * lightBufferSizeFraction * ( matrix2[5] + matrix2[7] );
 tRow[2] = 0.5 * lightBufferSizeFraction * ( matrix2[9] + matrix2[11] );
 tRow[3] = 0.5 * lightBufferSizeFraction * ( matrix2[13] + matrix2[15] );
-qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, 19, tRow );
+glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, 19, tRow );
 rRow[0] = 0.5 * ( matrix2[2] + matrix2[3] );
 rRow[1] = 0.5 * ( matrix2[6] + matrix2[7] );
 rRow[2] = 0.5 * ( matrix2[10] + matrix2[11] );
 rRow[3] = 0.5 * ( matrix2[14] + matrix2[15] );
-qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, 20, rRow );
+glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, 20, rRow );
 qRow[0] = matrix2[3];
 qRow[1] = matrix2[7];
 qRow[2] = matrix2[11];
 qRow[3] = matrix2[15];
-qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, 21, qRow );
+glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, 21, qRow );
 
 
 	// testing fragment based normal mapping
 	if ( r_testARBProgram.GetBool() ) {
-		qglProgramEnvParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 2, din->localLightOrigin.ToFloatPtr() );
-		qglProgramEnvParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 3, din->localViewOrigin.ToFloatPtr() );
+		glProgramEnvParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 2, din->localLightOrigin.ToFloatPtr() );
+		glProgramEnvParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 3, din->localViewOrigin.ToFloatPtr() );
 	}
 
 	static const float zero[4] = { 0, 0, 0, 0 };
@@ -1184,22 +1184,22 @@ qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, 21, qRow );
 
 	switch ( din->vertexColor ) {
 	case SVC_IGNORE:
-		qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_COLOR_MODULATE, zero );
-		qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_COLOR_ADD, one );
+		glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_COLOR_MODULATE, zero );
+		glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_COLOR_ADD, one );
 		break;
 	case SVC_MODULATE:
-		qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_COLOR_MODULATE, one );
-		qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_COLOR_ADD, zero );
+		glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_COLOR_MODULATE, one );
+		glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_COLOR_ADD, zero );
 		break;
 	case SVC_INVERSE_MODULATE:
-		qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_COLOR_MODULATE, negOne );
-		qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_COLOR_ADD, one );
+		glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_COLOR_MODULATE, negOne );
+		glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_COLOR_ADD, one );
 		break;
 	}
 
 	// set the constant colors
-	qglProgramEnvParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 0, din->diffuseColor.ToFloatPtr() );
-	qglProgramEnvParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 1, din->specularColor.ToFloatPtr() );
+	glProgramEnvParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 0, din->diffuseColor.ToFloatPtr() );
+	glProgramEnvParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 1, din->specularColor.ToFloatPtr() );
 
 	//-----------------------------------------------------
 	// screen power of two correction factor
@@ -1209,14 +1209,14 @@ qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, 21, qRow );
 	parm[1] = 1.0 / JITTER_SIZE;
 	parm[2] = 0;
 	parm[3] = 1;
-	qglProgramLocalParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 2, parm );
+	glProgramLocalParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 2, parm );
 
 	// jitter tex scale
 	parm[0] = 
 	parm[1] = r_sb_jitterScale.GetFloat() * lightBufferSizeFraction;
 	parm[2] = -r_sb_biasScale.GetFloat();
 	parm[3] = 0;
-	qglProgramLocalParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 3, parm );
+	glProgramLocalParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 3, parm );
 
 	// jitter tex offset
 	if ( r_sb_randomize.GetBool() ) {
@@ -1227,7 +1227,7 @@ qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, 21, qRow );
 	}
 	parm[2] = 0;
 	parm[3] = 0;
-	qglProgramLocalParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 4, parm );
+	glProgramLocalParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 4, parm );
 	//-----------------------------------------------------
 
 	// set the textures
@@ -1271,11 +1271,11 @@ void RB_EXP_CreateDrawInteractions( const drawSurf_t *surf ) {
 		GL_State( GLS_SRCBLEND_DST_ALPHA | GLS_DSTBLEND_ONE | GLS_DEPTHMASK | backEnd.depthFunc );
 
 		if ( r_testARBProgram.GetBool() ) {
-			qglBindProgramARB( GL_VERTEX_PROGRAM_ARB, VPROG_TEST );
-			qglBindProgramARB( GL_FRAGMENT_PROGRAM_ARB, FPROG_TEST );
+			glBindProgramARB( GL_VERTEX_PROGRAM_ARB, VPROG_TEST );
+			glBindProgramARB( GL_FRAGMENT_PROGRAM_ARB, FPROG_TEST );
 		} else {
-			qglBindProgramARB( GL_VERTEX_PROGRAM_ARB, VPROG_INTERACTION );
-			qglBindProgramARB( GL_FRAGMENT_PROGRAM_ARB, FPROG_INTERACTION );
+			glBindProgramARB( GL_VERTEX_PROGRAM_ARB, VPROG_INTERACTION );
+			glBindProgramARB( GL_FRAGMENT_PROGRAM_ARB, FPROG_INTERACTION );
 		}
 	} else {
 		// perform setup here that will be constant for all interactions
@@ -1283,34 +1283,34 @@ void RB_EXP_CreateDrawInteractions( const drawSurf_t *surf ) {
 GL_State( GLS_DEPTHMASK | GLS_DEPTHFUNC_ALWAYS );//!@#
 
 		// bind the vertex program
-		qglBindProgramARB( GL_VERTEX_PROGRAM_ARB, shadowVertexProgram );
+		glBindProgramARB( GL_VERTEX_PROGRAM_ARB, shadowVertexProgram );
 		if ( r_sb_samples.GetInteger() == 16 ) {
-			qglBindProgramARB( GL_FRAGMENT_PROGRAM_ARB, shadowFragmentProgram16 );
+			glBindProgramARB( GL_FRAGMENT_PROGRAM_ARB, shadowFragmentProgram16 );
 		} else if ( r_sb_samples.GetInteger() == 4 ) {
-			qglBindProgramARB( GL_FRAGMENT_PROGRAM_ARB, shadowFragmentProgram4 );
+			glBindProgramARB( GL_FRAGMENT_PROGRAM_ARB, shadowFragmentProgram4 );
 		} else if ( r_sb_samples.GetInteger() == 1 ) {
-			qglBindProgramARB( GL_FRAGMENT_PROGRAM_ARB, shadowFragmentProgram1 );
+			glBindProgramARB( GL_FRAGMENT_PROGRAM_ARB, shadowFragmentProgram1 );
 		} else {
-			qglBindProgramARB( GL_FRAGMENT_PROGRAM_ARB, shadowFragmentProgram0 );
+			glBindProgramARB( GL_FRAGMENT_PROGRAM_ARB, shadowFragmentProgram0 );
 		}
 	}
 
-	qglEnable(GL_VERTEX_PROGRAM_ARB);
-	qglEnable(GL_FRAGMENT_PROGRAM_ARB);
+	glEnable(GL_VERTEX_PROGRAM_ARB);
+	glEnable(GL_FRAGMENT_PROGRAM_ARB);
 
 	// enable the vertex arrays
-	qglEnableVertexAttribArrayARB( 8 );
-	qglEnableVertexAttribArrayARB( 9 );
-	qglEnableVertexAttribArrayARB( 10 );
-	qglEnableVertexAttribArrayARB( 11 );
-	qglEnableClientState( GL_COLOR_ARRAY );
+	glEnableVertexAttribArrayARB( 8 );
+	glEnableVertexAttribArrayARB( 9 );
+	glEnableVertexAttribArrayARB( 10 );
+	glEnableVertexAttribArrayARB( 11 );
+	glEnableClientState( GL_COLOR_ARRAY );
 
 	// texture 0 is the normalization cube map for the vector towards the light
 	GL_SelectTextureNoClient( 0 );
 	if ( backEnd.vLight->lightShader->IsAmbientLight() ) {
 		globalImages->normalCubeMapImage->Bind();
-		qglBindProgramARB( GL_VERTEX_PROGRAM_ARB, VPROG_AMBIENT);
-		qglBindProgramARB( GL_FRAGMENT_PROGRAM_ARB, FPROG_AMBIENT);
+		glBindProgramARB( GL_VERTEX_PROGRAM_ARB, VPROG_AMBIENT);
+		glBindProgramARB( GL_FRAGMENT_PROGRAM_ARB, FPROG_AMBIENT);
 	} else {
 		globalImages->normalCubeMapImage->Bind();
 	}
@@ -1333,17 +1333,17 @@ GL_State( GLS_DEPTHMASK | GLS_DEPTHFUNC_ALWAYS );//!@#
 			parm[1] = surf->space->modelMatrix[4];
 			parm[2] = surf->space->modelMatrix[8];
 			parm[3] = 0;
-			qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, 20, parm );
+			glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, 20, parm );
 			parm[0] = surf->space->modelMatrix[1];
 			parm[1] = surf->space->modelMatrix[5];
 			parm[2] = surf->space->modelMatrix[9];
 			parm[3] = 0;
-			qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, 21, parm );
+			glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, 21, parm );
 			parm[0] = surf->space->modelMatrix[2];
 			parm[1] = surf->space->modelMatrix[6];
 			parm[2] = surf->space->modelMatrix[10];
 			parm[3] = 0;
-			qglProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, 22, parm );
+			glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, 22, parm );
 
 			GL_SelectTextureNoClient( 0 );
 			const shaderStage_t *stage = backEnd.vLight->lightShader->GetStage( 0 );
@@ -1354,12 +1354,12 @@ GL_State( GLS_DEPTHMASK | GLS_DEPTHFUNC_ALWAYS );//!@#
 
 		// set the vertex pointers
 		idDrawVert	*ac = (idDrawVert *)vertexCache.Position( surf->geo->ambientCache );
-		qglColorPointer( 4, GL_UNSIGNED_BYTE, sizeof( idDrawVert ), ac->color );
-		qglVertexAttribPointerARB( 11, 3, GL_FLOAT, false, sizeof( idDrawVert ), ac->normal.ToFloatPtr() );
-		qglVertexAttribPointerARB( 10, 3, GL_FLOAT, false, sizeof( idDrawVert ), ac->tangents[1].ToFloatPtr() );
-		qglVertexAttribPointerARB( 9, 3, GL_FLOAT, false, sizeof( idDrawVert ), ac->tangents[0].ToFloatPtr() );
-		qglVertexAttribPointerARB( 8, 2, GL_FLOAT, false, sizeof( idDrawVert ), ac->st.ToFloatPtr() );
-		qglVertexPointer( 3, GL_FLOAT, sizeof( idDrawVert ), ac->xyz.ToFloatPtr() );
+		glColorPointer( 4, GL_UNSIGNED_BYTE, sizeof( idDrawVert ), ac->color );
+		glVertexAttribPointerARB( 11, 3, GL_FLOAT, false, sizeof( idDrawVert ), ac->normal.ToFloatPtr() );
+		glVertexAttribPointerARB( 10, 3, GL_FLOAT, false, sizeof( idDrawVert ), ac->tangents[1].ToFloatPtr() );
+		glVertexAttribPointerARB( 9, 3, GL_FLOAT, false, sizeof( idDrawVert ), ac->tangents[0].ToFloatPtr() );
+		glVertexAttribPointerARB( 8, 2, GL_FLOAT, false, sizeof( idDrawVert ), ac->st.ToFloatPtr() );
+		glVertexPointer( 3, GL_FLOAT, sizeof( idDrawVert ), ac->xyz.ToFloatPtr() );
 
 		// this may cause RB_ARB2_DrawInteraction to be exacuted multiple
 		// times with different colors and images if the surface or light have multiple layers
@@ -1370,11 +1370,11 @@ GL_State( GLS_DEPTHMASK | GLS_DEPTHFUNC_ALWAYS );//!@#
 		}
 	}
 
-	qglDisableVertexAttribArrayARB( 8 );
-	qglDisableVertexAttribArrayARB( 9 );
-	qglDisableVertexAttribArrayARB( 10 );
-	qglDisableVertexAttribArrayARB( 11 );
-	qglDisableClientState( GL_COLOR_ARRAY );
+	glDisableVertexAttribArrayARB( 8 );
+	glDisableVertexAttribArrayARB( 9 );
+	glDisableVertexAttribArrayARB( 10 );
+	glDisableVertexAttribArrayARB( 11 );
+	glDisableClientState( GL_COLOR_ARRAY );
 
 	// disable features
 	GL_SelectTextureNoClient( 6 );
@@ -1398,8 +1398,8 @@ GL_State( GLS_DEPTHMASK | GLS_DEPTHFUNC_ALWAYS );//!@#
 	backEnd.glState.currenttmu = -1;
 	GL_SelectTexture( 0 );
 
-	qglDisable(GL_VERTEX_PROGRAM_ARB);
-	qglDisable(GL_FRAGMENT_PROGRAM_ARB);
+	glDisable(GL_VERTEX_PROGRAM_ARB);
+	glDisable(GL_FRAGMENT_PROGRAM_ARB);
 }
 
 void InvertByTranspose( const float a[16], float r[16] ) {
@@ -1577,26 +1577,26 @@ RB_Exp_SelectFrustum
 ==================
 */
 void	RB_Exp_SelectFrustum( viewLight_t *vLight, int side ) {
-	qglLoadMatrixf( backEnd.viewDef->worldSpace.modelViewMatrix );
+	glLoadMatrixf( backEnd.viewDef->worldSpace.modelViewMatrix );
 
 	const srfTriangles_t *tri = RB_Exp_TrianglesForFrustum( vLight, side );
 
 	idDrawVert *ac = (idDrawVert *)vertexCache.Position( tri->ambientCache );
-	qglVertexPointer( 3, GL_FLOAT, sizeof( idDrawVert ), ac->xyz.ToFloatPtr() );
+	glVertexPointer( 3, GL_FLOAT, sizeof( idDrawVert ), ac->xyz.ToFloatPtr() );
 
-	qglDisable( GL_TEXTURE_2D );
-	qglDisableClientState( GL_TEXTURE_COORD_ARRAY );
+	glDisable( GL_TEXTURE_2D );
+	glDisableClientState( GL_TEXTURE_COORD_ARRAY );
 	// clear stencil buffer
-	qglEnable( GL_SCISSOR_TEST );
-	qglEnable( GL_STENCIL_TEST );
-	qglClearStencil( 1 );
-	qglClear( GL_STENCIL_BUFFER_BIT );
+	glEnable( GL_SCISSOR_TEST );
+	glEnable( GL_STENCIL_TEST );
+	glClearStencil( 1 );
+	glClear( GL_STENCIL_BUFFER_BIT );
 
 	// draw front faces of the light frustum, incrementing the stencil buffer on depth fail
 	// so we can't draw on those pixels
 	GL_State( GLS_COLORMASK | GLS_ALPHAMASK | GLS_DEPTHMASK | GLS_DEPTHFUNC_LESS );
-	qglStencilFunc( GL_ALWAYS, 0, 255 );
-	qglStencilOp( GL_KEEP, GL_INCR, GL_KEEP );
+	glStencilFunc( GL_ALWAYS, 0, 255 );
+	glStencilOp( GL_KEEP, GL_INCR, GL_KEEP );
 	GL_Cull( CT_FRONT_SIDED );
 
 	RB_DrawElementsWithCounters( tri );
@@ -1608,34 +1608,34 @@ void	RB_Exp_SelectFrustum( viewLight_t *vLight, int side ) {
 	// can occur on those pixels
 
 	// this pass does all the shadow filtering
-	qglStencilFunc( GL_EQUAL, 1, 255 );
-	qglStencilOp( GL_KEEP, GL_KEEP, GL_ZERO );
+	glStencilFunc( GL_EQUAL, 1, 255 );
+	glStencilOp( GL_KEEP, GL_KEEP, GL_ZERO );
 
 	GL_Cull( CT_BACK_SIDED );
-	qglDepthFunc( GL_GREATER );
+	glDepthFunc( GL_GREATER );
 
 	// write to destination alpha
 	if ( r_sb_showFrustumPixels.GetBool() ) {
 		GL_State( GLS_SRCBLEND_ONE | GLS_DSTBLEND_ONE | GLS_DEPTHMASK | GLS_DEPTHFUNC_LESS );
-		qglDisable( GL_TEXTURE_2D );
-		qglColor4f( 0, 0.25, 0, 1 );
+		glDisable( GL_TEXTURE_2D );
+		glColor4f( 0, 0.25, 0, 1 );
 	} else {
 		GL_State( GLS_COLORMASK | GLS_DEPTHMASK | GLS_DEPTHFUNC_LESS );
-		qglEnable(GL_VERTEX_PROGRAM_ARB);
-		qglEnable(GL_FRAGMENT_PROGRAM_ARB);
-		qglBindProgramARB( GL_VERTEX_PROGRAM_ARB, screenSpaceShadowVertexProgram );
+		glEnable(GL_VERTEX_PROGRAM_ARB);
+		glEnable(GL_FRAGMENT_PROGRAM_ARB);
+		glBindProgramARB( GL_VERTEX_PROGRAM_ARB, screenSpaceShadowVertexProgram );
 		switch ( r_sb_samples.GetInteger() ) {
 		case 0:
-			qglBindProgramARB( GL_FRAGMENT_PROGRAM_ARB, screenSpaceShadowFragmentProgram0 );
+			glBindProgramARB( GL_FRAGMENT_PROGRAM_ARB, screenSpaceShadowFragmentProgram0 );
 			break;
 		case 1:
-			qglBindProgramARB( GL_FRAGMENT_PROGRAM_ARB, screenSpaceShadowFragmentProgram1 );
+			glBindProgramARB( GL_FRAGMENT_PROGRAM_ARB, screenSpaceShadowFragmentProgram1 );
 			break;
 		case 4:
-			qglBindProgramARB( GL_FRAGMENT_PROGRAM_ARB, screenSpaceShadowFragmentProgram4 );
+			glBindProgramARB( GL_FRAGMENT_PROGRAM_ARB, screenSpaceShadowFragmentProgram4 );
 			break;
 		case 16:
-			qglBindProgramARB( GL_FRAGMENT_PROGRAM_ARB, screenSpaceShadowFragmentProgram16 );
+			glBindProgramARB( GL_FRAGMENT_PROGRAM_ARB, screenSpaceShadowFragmentProgram16 );
 			break;
 		}
 	}
@@ -1713,22 +1713,22 @@ PARAM	jitterTexOffset				= program.local[9];
 	sRow[1] = 0.5 * ( matrix2[4] + matrix2[7] ) * lightBufferSizeFraction;
 	sRow[2] = 0.5 * ( matrix2[8] + matrix2[11] ) * lightBufferSizeFraction;
 	sRow[3] = 0.5 * ( matrix2[12] + matrix2[15] ) * lightBufferSizeFraction;
-	qglProgramLocalParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 3, sRow );
+	glProgramLocalParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 3, sRow );
 	tRow[0] = 0.5 * ( matrix2[1] + matrix2[3] ) * lightBufferSizeFraction;
 	tRow[1] = 0.5 * ( matrix2[5] + matrix2[7] ) * lightBufferSizeFraction;
 	tRow[2] = 0.5 * ( matrix2[9] + matrix2[11] ) * lightBufferSizeFraction;
 	tRow[3] = 0.5 * ( matrix2[13] + matrix2[15] ) * lightBufferSizeFraction;
-	qglProgramLocalParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 4, tRow );
+	glProgramLocalParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 4, tRow );
 	rRow[0] = 0.5 * ( matrix2[2] + matrix2[3] );
 	rRow[1] = 0.5 * ( matrix2[6] + matrix2[7] );
 	rRow[2] = 0.5 * ( matrix2[10] + matrix2[11] );
 	rRow[3] = 0.5 * ( matrix2[14] + matrix2[15] );
-	qglProgramLocalParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 5, rRow );
+	glProgramLocalParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 5, rRow );
 	qRow[0] = matrix2[3];
 	qRow[1] = matrix2[7];
 	qRow[2] = matrix2[11];
 	qRow[3] = matrix2[15];
-	qglProgramLocalParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 6, qRow );
+	glProgramLocalParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 6, qRow );
 
 	//-----------------------------------------------------
 	// these should be constant for the entire frame
@@ -1742,35 +1742,35 @@ PARAM	jitterTexOffset				= program.local[9];
 	parm[1] = parm[0]; // 1.0 / pot;
 	parm[2] = 0;
 	parm[3] = 1;
-	qglProgramLocalParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 0, parm );
+	glProgramLocalParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 0, parm );
 
 	// zProject values
 	parm[0] = backEnd.viewDef->projectionMatrix[10];
 	parm[1] = backEnd.viewDef->projectionMatrix[14];
 	parm[2] = 0;
 	parm[3] = 0;
-	qglProgramLocalParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 1, parm );
+	glProgramLocalParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 1, parm );
 
 	// positionToViewSpace
 	parm[0] = -1.0 / backEnd.viewDef->projectionMatrix[0];
 	parm[1] = -1.0 / backEnd.viewDef->projectionMatrix[5];
 	parm[2] = 2.0/viewBufferSize;
 	parm[3] = 2.0/viewBufferSize;
-	qglProgramLocalParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 2, parm );
+	glProgramLocalParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 2, parm );
 
 	// positionToJitterTexScale
 	parm[0] = 1.0 / ( JITTER_SIZE * r_sb_samples.GetInteger() ) ;
 	parm[1] = 1.0 / JITTER_SIZE;
 	parm[2] = 0;
 	parm[3] = 1;
-	qglProgramLocalParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 7, parm );
+	glProgramLocalParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 7, parm );
 
 	// jitter tex scale
 	parm[0] = 
 	parm[1] = r_sb_jitterScale.GetFloat() * lightBufferSizeFraction;
 	parm[2] = -r_sb_biasScale.GetFloat();
 	parm[3] = 0;
-	qglProgramLocalParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 8, parm );
+	glProgramLocalParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 8, parm );
 
 	// jitter tex offset
 	if ( r_sb_randomize.GetBool() ) {
@@ -1781,29 +1781,29 @@ PARAM	jitterTexOffset				= program.local[9];
 	}
 	parm[2] = 0;
 	parm[3] = 0;
-	qglProgramLocalParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 9, parm );
+	glProgramLocalParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 9, parm );
 	//-----------------------------------------------------
 
 
 
 	RB_DrawElementsWithCounters( tri );
 
-	qglDisable(GL_VERTEX_PROGRAM_ARB);
-	qglDisable(GL_FRAGMENT_PROGRAM_ARB);
+	glDisable(GL_VERTEX_PROGRAM_ARB);
+	glDisable(GL_FRAGMENT_PROGRAM_ARB);
 
 	GL_Cull( CT_FRONT_SIDED );
-//	qglEnableClientState( GL_TEXTURE_COORD_ARRAY );
+//	glEnableClientState( GL_TEXTURE_COORD_ARRAY );
 
-	qglDepthFunc( GL_LEQUAL );
+	glDepthFunc( GL_LEQUAL );
 	if ( r_sb_showFrustumPixels.GetBool() ) {
-		qglEnable( GL_TEXTURE_2D );
-		qglColor3f( 1, 1, 1 );
+		glEnable( GL_TEXTURE_2D );
+		glColor3f( 1, 1, 1 );
 	}
 
 	// after all the frustums have been drawn, the surfaces that have been drawn on will get interactions
 	// scissor may still be a win even with the stencil test for very fast rejects
-	qglStencilFunc( GL_EQUAL, 0, 255 );
-	qglStencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
+	glStencilFunc( GL_EQUAL, 0, 255 );
+	glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
 
 	// we can avoid clearing the stencil buffer by changing the hasLight value for each light
 }
@@ -1866,14 +1866,14 @@ void R_EXP_RenderViewDepthImage( void ) {
 		}
 
 		// render the depth to the new size
-		qglViewport( 0, 0, viewBufferSize, viewBufferHeight );
-		qglScissor( 0, 0, viewBufferSize, viewBufferHeight );
-		qglClear( GL_DEPTH_BUFFER_BIT );
-		qglStencilFunc( GL_ALWAYS, 0, 255 );
+		glViewport( 0, 0, viewBufferSize, viewBufferHeight );
+		glScissor( 0, 0, viewBufferSize, viewBufferHeight );
+		glClear( GL_DEPTH_BUFFER_BIT );
+		glStencilFunc( GL_ALWAYS, 0, 255 );
 
 		// the first texture will be used for alpha tested surfaces
 		GL_SelectTexture( 0 );
-		qglEnableClientState( GL_TEXTURE_COORD_ARRAY );
+		glEnableClientState( GL_TEXTURE_COORD_ARRAY );
 
 		GL_State( GLS_DEPTHFUNC_LESS );
 
@@ -1883,7 +1883,7 @@ void R_EXP_RenderViewDepthImage( void ) {
 		// copy it to a texture
 		//
 		viewDepthImage->Bind();
-		qglCopyTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, 0, 0, viewBufferSize, viewBufferHeight );
+		glCopyTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, 0, 0, viewBufferSize, viewBufferHeight );
 
 		if ( r_sb_usePbuffer.GetBool() ) {
 			// set the normal screen drawable current
@@ -1891,15 +1891,15 @@ void R_EXP_RenderViewDepthImage( void ) {
 		}
 
 		// reset the window clipping
-		qglMatrixMode( GL_PROJECTION );
-		qglLoadMatrixf( backEnd.viewDef->projectionMatrix );
-		qglMatrixMode( GL_MODELVIEW );
+		glMatrixMode( GL_PROJECTION );
+		glLoadMatrixf( backEnd.viewDef->projectionMatrix );
+		glMatrixMode( GL_MODELVIEW );
 
-		qglViewport( tr.viewportOffset[0] + backEnd.viewDef->viewport.x1, 
+		glViewport( tr.viewportOffset[0] + backEnd.viewDef->viewport.x1, 
 			tr.viewportOffset[1] + backEnd.viewDef->viewport.y1, 
 			backEnd.viewDef->viewport.x2 + 1 - backEnd.viewDef->viewport.x1,
 			backEnd.viewDef->viewport.y2 + 1 - backEnd.viewDef->viewport.y1 );
-		qglScissor( tr.viewportOffset[0] + backEnd.viewDef->viewport.x1, 
+		glScissor( tr.viewportOffset[0] + backEnd.viewDef->viewport.x1, 
 			tr.viewportOffset[1] + backEnd.viewDef->viewport.y1, 
 			backEnd.viewDef->viewport.x2 + 1 - backEnd.viewDef->viewport.x1,
 			backEnd.viewDef->viewport.y2 + 1 - backEnd.viewDef->viewport.y1 );
@@ -1908,10 +1908,10 @@ void R_EXP_RenderViewDepthImage( void ) {
 		backEnd.currentSpace = NULL;
 	}
 
-	qglTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB, GL_NONE );
-	qglTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB, GL_NONE );
-	qglTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
-	qglTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB, GL_NONE );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB, GL_NONE );
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
 }
 
 /*
@@ -1925,14 +1925,14 @@ void RB_EXP_SetNativeBuffer( void ) {
 	// set the normal screen drawable current
 	R_MakeCurrent( win32.hDC, win32.hGLRC, NULL );
 
-	qglViewport( tr.viewportOffset[0] + backEnd.viewDef->viewport.x1, 
+	glViewport( tr.viewportOffset[0] + backEnd.viewDef->viewport.x1, 
 		tr.viewportOffset[1] + backEnd.viewDef->viewport.y1, 
 		backEnd.viewDef->viewport.x2 + 1 - backEnd.viewDef->viewport.x1,
 		backEnd.viewDef->viewport.y2 + 1 - backEnd.viewDef->viewport.y1 );
 
 	backEnd.currentScissor = backEnd.viewDef->viewport;
 	if ( r_useScissor.GetBool() ) {
-		qglScissor( backEnd.viewDef->viewport.x1 + backEnd.currentScissor.x1, 
+		glScissor( backEnd.viewDef->viewport.x1 + backEnd.currentScissor.x1, 
 			backEnd.viewDef->viewport.y1 + backEnd.currentScissor.y1,
 			backEnd.currentScissor.x2 + 1 - backEnd.currentScissor.x1,
 			backEnd.currentScissor.y2 + 1 - backEnd.currentScissor.y1 );
@@ -1956,7 +1956,7 @@ void RB_EXP_SetRenderBuffer( viewLight_t *vLight ) {
 		}
 	}
 
-	qglViewport( tr.viewportOffset[0] + backEnd.viewDef->viewport.x1, 
+	glViewport( tr.viewportOffset[0] + backEnd.viewDef->viewport.x1, 
 		tr.viewportOffset[1] + backEnd.viewDef->viewport.y1, 
 		backEnd.viewDef->viewport.x2 + 1 - backEnd.viewDef->viewport.x1,
 		backEnd.viewDef->viewport.y2 + 1 - backEnd.viewDef->viewport.y1 );
@@ -1967,7 +1967,7 @@ void RB_EXP_SetRenderBuffer( viewLight_t *vLight ) {
 		backEnd.currentScissor = vLight->scissorRect;
 	}
 	if ( r_useScissor.GetBool() ) {
-		qglScissor( backEnd.viewDef->viewport.x1 + backEnd.currentScissor.x1, 
+		glScissor( backEnd.viewDef->viewport.x1 + backEnd.currentScissor.x1, 
 			backEnd.viewDef->viewport.y1 + backEnd.currentScissor.y1,
 			backEnd.currentScissor.x2 + 1 - backEnd.currentScissor.x1,
 			backEnd.currentScissor.y2 + 1 - backEnd.currentScissor.y1 );
@@ -1983,31 +1983,31 @@ RB_shadowResampleAlpha
 void	RB_shadowResampleAlpha( void ) {
 	viewAlphaImage->Bind();
 	// we could make this a subimage, but it isn't relevent once we have render-to-texture
-	qglCopyTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, 0, 0, viewBufferSize, viewBufferHeight );
+	glCopyTexSubImage2D( GL_TEXTURE_2D, 0, 0, 0, 0, 0, viewBufferSize, viewBufferHeight );
 
 	RB_EXP_SetRenderBuffer( backEnd.vLight );
 
 //=====================
 
-	qglLoadMatrixf( backEnd.viewDef->worldSpace.modelViewMatrix );
+	glLoadMatrixf( backEnd.viewDef->worldSpace.modelViewMatrix );
 
 	// this uses the full light, not side frustums
 	const srfTriangles_t *tri = backEnd.vLight->frustumTris;
 
 	idDrawVert *ac = (idDrawVert *)vertexCache.Position( tri->ambientCache );
-	qglVertexPointer( 3, GL_FLOAT, sizeof( idDrawVert ), ac->xyz.ToFloatPtr() );
+	glVertexPointer( 3, GL_FLOAT, sizeof( idDrawVert ), ac->xyz.ToFloatPtr() );
 
 	// clear stencil buffer
-	qglEnable( GL_SCISSOR_TEST );
-	qglEnable( GL_STENCIL_TEST );
-	qglClearStencil( 1 );
-	qglClear( GL_STENCIL_BUFFER_BIT );
+	glEnable( GL_SCISSOR_TEST );
+	glEnable( GL_STENCIL_TEST );
+	glClearStencil( 1 );
+	glClear( GL_STENCIL_BUFFER_BIT );
 
 	// draw front faces of the light frustum, incrementing the stencil buffer on depth fail
 	// so we can't draw on those pixels
 	GL_State( GLS_COLORMASK | GLS_ALPHAMASK | GLS_DEPTHMASK | GLS_DEPTHFUNC_LESS );
-	qglStencilFunc( GL_ALWAYS, 0, 255 );
-	qglStencilOp( GL_KEEP, GL_INCR, GL_KEEP );
+	glStencilFunc( GL_ALWAYS, 0, 255 );
+	glStencilOp( GL_KEEP, GL_INCR, GL_KEEP );
 	GL_Cull( CT_FRONT_SIDED );
 
 	// set fragment / vertex program?
@@ -2021,20 +2021,20 @@ void	RB_shadowResampleAlpha( void ) {
 	// can occur on those pixels
 
 	// this pass does all the shadow filtering
-	qglStencilFunc( GL_EQUAL, 1, 255 );
-	qglStencilOp( GL_KEEP, GL_KEEP, GL_ZERO );
+	glStencilFunc( GL_EQUAL, 1, 255 );
+	glStencilOp( GL_KEEP, GL_KEEP, GL_ZERO );
 
 	// write to destination alpha
 	if ( r_sb_showFrustumPixels.GetBool() ) {
 		GL_State( GLS_SRCBLEND_ONE | GLS_DSTBLEND_ONE | GLS_DEPTHMASK | GLS_DEPTHFUNC_LESS );
-		qglDisable( GL_TEXTURE_2D );
-		qglColor4f( 0, 0.25, 0, 1 );
+		glDisable( GL_TEXTURE_2D );
+		glColor4f( 0, 0.25, 0, 1 );
 	} else {
 		GL_State( GLS_COLORMASK | GLS_DEPTHMASK | GLS_DEPTHFUNC_LESS );
-		qglEnable(GL_VERTEX_PROGRAM_ARB);
-		qglEnable(GL_FRAGMENT_PROGRAM_ARB);
-		qglBindProgramARB( GL_VERTEX_PROGRAM_ARB, shadowResampleVertexProgram );
-		qglBindProgramARB( GL_FRAGMENT_PROGRAM_ARB, shadowResampleFragmentProgram );
+		glEnable(GL_VERTEX_PROGRAM_ARB);
+		glEnable(GL_FRAGMENT_PROGRAM_ARB);
+		glBindProgramARB( GL_VERTEX_PROGRAM_ARB, shadowResampleVertexProgram );
+		glBindProgramARB( GL_FRAGMENT_PROGRAM_ARB, shadowResampleFragmentProgram );
 
 		// convert 0..viewport-1 sizes to fractions inside the POT screen depth texture
 		// shrink by one unit for bilerp
@@ -2043,29 +2043,29 @@ void	RB_shadowResampleAlpha( void ) {
 		parm[1] = parm[0];
 		parm[2] = 0;
 		parm[3] = 1;
-		qglProgramLocalParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 0, parm );
+		glProgramLocalParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 0, parm );
 	}
 
 	GL_Cull( CT_BACK_SIDED );
-	qglDepthFunc( GL_GREATER );
+	glDepthFunc( GL_GREATER );
 
 	RB_DrawElementsWithCounters( tri );
 
-	qglDisable(GL_VERTEX_PROGRAM_ARB);
-	qglDisable(GL_FRAGMENT_PROGRAM_ARB);
+	glDisable(GL_VERTEX_PROGRAM_ARB);
+	glDisable(GL_FRAGMENT_PROGRAM_ARB);
 
 	GL_Cull( CT_FRONT_SIDED );
 
-	qglDepthFunc( GL_LEQUAL );
+	glDepthFunc( GL_LEQUAL );
 	if ( r_sb_showFrustumPixels.GetBool() ) {
-		qglEnable( GL_TEXTURE_2D );
-		qglColor3f( 1, 1, 1 );
+		glEnable( GL_TEXTURE_2D );
+		glColor3f( 1, 1, 1 );
 	}
 
 	// after all the frustums have been drawn, the surfaces that have been drawn on will get interactions
 	// scissor may still be a win even with the stencil test for very fast rejects
-	qglStencilFunc( GL_EQUAL, 0, 255 );
-	qglStencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
+	glStencilFunc( GL_EQUAL, 0, 255 );
+	glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
 }
 
 
@@ -2076,18 +2076,18 @@ RB_EXP_CoverScreen
 */
 void RB_EXP_CoverScreen( void ) {
 	// draw a full screen quad
-	qglMatrixMode( GL_PROJECTION );
-	qglLoadIdentity(); 
-	qglOrtho( 0, 1, 0, 1, -1, 1 );
-	qglMatrixMode( GL_MODELVIEW );
-	qglLoadIdentity();
+	glMatrixMode( GL_PROJECTION );
+	glLoadIdentity(); 
+	glOrtho( 0, 1, 0, 1, -1, 1 );
+	glMatrixMode( GL_MODELVIEW );
+	glLoadIdentity();
 
-	qglBegin( GL_TRIANGLE_FAN );
-	qglVertex2f( 0, 0 );
-	qglVertex2f( 0, 1 );
-	qglVertex2f( 1, 1 );
-	qglVertex2f( 1, 0 );
-	qglEnd();
+	glBegin( GL_TRIANGLE_FAN );
+	glVertex2f( 0, 0 );
+	glVertex2f( 0, 1 );
+	glVertex2f( 1, 1 );
+	glVertex2f( 1, 0 );
+	glEnd();
 }
 
 /*
@@ -2099,7 +2099,7 @@ void RB_EXP_ReadFloatBuffer( void ) {
 	int		pixels = glConfig.vidWidth * glConfig.vidHeight;
 	float	*buf = (float *)R_StaticAlloc( pixels * 4 * sizeof( float ) );
 
-	qglReadPixels( 0, 0, glConfig.vidWidth, glConfig.vidHeight, GL_RGBA, GL_FLOAT, buf );
+	glReadPixels( 0, 0, glConfig.vidWidth, glConfig.vidHeight, GL_RGBA, GL_FLOAT, buf );
 
 	float	mins[4] = { 9999, 9999, 9999, 9999 };
 	float	maxs[4] = { -9999, -9999, -9999, -9999 };
@@ -2117,19 +2117,19 @@ void RB_EXP_ReadFloatBuffer( void ) {
 
 	RB_EXP_SetNativeBuffer();
 
-	qglLoadIdentity();
-	qglMatrixMode( GL_PROJECTION );
+	glLoadIdentity();
+	glMatrixMode( GL_PROJECTION );
 	GL_State( GLS_DEPTHFUNC_ALWAYS );
-	qglColor3f( 1, 1, 1 );
-	qglPushMatrix();
-	qglLoadIdentity(); 
-	qglDisable( GL_TEXTURE_2D );
-    qglOrtho( 0, 1, 0, 1, -1, 1 );
-	qglRasterPos2f( 0.01f, 0.01f );
-	qglDrawPixels( glConfig.vidWidth, glConfig.vidHeight, GL_RGBA, GL_FLOAT, buf );
-	qglPopMatrix();
-	qglEnable( GL_TEXTURE_2D );
-	qglMatrixMode( GL_MODELVIEW );
+	glColor3f( 1, 1, 1 );
+	glPushMatrix();
+	glLoadIdentity(); 
+	glDisable( GL_TEXTURE_2D );
+    glOrtho( 0, 1, 0, 1, -1, 1 );
+	glRasterPos2f( 0.01f, 0.01f );
+	glDrawPixels( glConfig.vidWidth, glConfig.vidHeight, GL_RGBA, GL_FLOAT, buf );
+	glPopMatrix();
+	glEnable( GL_TEXTURE_2D );
+	glMatrixMode( GL_MODELVIEW );
 
 	R_StaticFree( buf );
 }
@@ -2171,20 +2171,20 @@ PARAM	positionToBloomScale =		program.local[5];
 
 	*/
 
-	qglBindProgramARB( GL_VERTEX_PROGRAM_ARB,gammaDitherVertexProgram );
-	qglBindProgramARB( GL_FRAGMENT_PROGRAM_ARB, gammaDitherFragmentProgram );
-	qglEnable(GL_VERTEX_PROGRAM_ARB);
-	qglEnable(GL_FRAGMENT_PROGRAM_ARB);
+	glBindProgramARB( GL_VERTEX_PROGRAM_ARB,gammaDitherVertexProgram );
+	glBindProgramARB( GL_FRAGMENT_PROGRAM_ARB, gammaDitherFragmentProgram );
+	glEnable(GL_VERTEX_PROGRAM_ARB);
+	glEnable(GL_FRAGMENT_PROGRAM_ARB);
 
-	qglActiveTextureARB( GL_TEXTURE2_ARB );
-	qglBindTexture( GL_TEXTURE_RECTANGLE_NV, floatPbufferQuarterImage->texnum );
+	glActiveTextureARB( GL_TEXTURE2_ARB );
+	glBindTexture( GL_TEXTURE_RECTANGLE_NV, floatPbufferQuarterImage->texnum );
 	R_BindTexImage( floatPbufferQuarter );
 
-	qglActiveTextureARB( GL_TEXTURE1_ARB );
+	glActiveTextureARB( GL_TEXTURE1_ARB );
 	random256Image->BindFragment();
 
-	qglActiveTextureARB( GL_TEXTURE0_ARB );
-	qglBindTexture( GL_TEXTURE_RECTANGLE_NV, floatPbufferImage->texnum );
+	glActiveTextureARB( GL_TEXTURE0_ARB );
+	glBindTexture( GL_TEXTURE_RECTANGLE_NV, floatPbufferImage->texnum );
 	R_BindTexImage( floatPbuffer );
 
 	float	parm[4];
@@ -2193,48 +2193,48 @@ PARAM	positionToBloomScale =		program.local[5];
 	parm[1] = 0;
 	parm[2] = 0;
 	parm[3] = 0;
-	qglProgramLocalParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 0, parm );
+	glProgramLocalParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 0, parm );
 
 	parm[0] = r_hdr_gamma.GetFloat();
 	parm[1] = 0;
 	parm[2] = 0;
 	parm[3] = 0;
-	qglProgramLocalParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 1, parm );
+	glProgramLocalParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 1, parm );
 
 	parm[0] = r_hdr_monitorDither.GetFloat();
 	parm[1] = 0;
 	parm[2] = 0;
 	parm[3] = 0;
-	qglProgramLocalParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 2, parm );
+	glProgramLocalParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 2, parm );
 
 	parm[0] = 1.0 / 256;
 	parm[1] = parm[0];
 	parm[2] = rand()/65535.0;
 	parm[3] = rand()/65535.0;
-	qglProgramLocalParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 3, parm );
+	glProgramLocalParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 3, parm );
 
 	parm[0] = 1.0 - r_hdr_bloomFraction.GetFloat();
 	parm[1] = r_hdr_bloomFraction.GetFloat();
 	parm[2] = 0;
 	parm[3] = 0;
-	qglProgramLocalParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 4, parm );
+	glProgramLocalParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 4, parm );
 
 	parm[0] = 0.25;
 	parm[1] = 0.25;
 	parm[2] = 0;
 	parm[3] = 0;
-	qglProgramLocalParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 5, parm );
+	glProgramLocalParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 5, parm );
 
-	qglDisable( GL_STENCIL_TEST );
-	qglDisable( GL_SCISSOR_TEST );
-	qglDisable( GL_DEPTH_TEST );
+	glDisable( GL_STENCIL_TEST );
+	glDisable( GL_SCISSOR_TEST );
+	glDisable( GL_DEPTH_TEST );
 
 	RB_EXP_CoverScreen();
 
-	qglEnable( GL_DEPTH_TEST );
+	glEnable( GL_DEPTH_TEST );
 
-	qglDisable(GL_VERTEX_PROGRAM_ARB);
-	qglDisable(GL_FRAGMENT_PROGRAM_ARB);
+	glDisable(GL_VERTEX_PROGRAM_ARB);
+	glDisable(GL_FRAGMENT_PROGRAM_ARB);
 }
 
 /*
@@ -2261,36 +2261,36 @@ void	RB_EXP_Bloom( void ) {
 	R_MakeCurrent( floatPbuffer2DC, floatContext, floatPbuffer2 );
 
 	GL_State( 0 );
-	qglDisable( GL_DEPTH_TEST );
-	qglDisable( GL_SCISSOR_TEST );
+	glDisable( GL_DEPTH_TEST );
+	glDisable( GL_SCISSOR_TEST );
 
-	qglEnable(GL_VERTEX_PROGRAM_ARB);
-	qglEnable(GL_FRAGMENT_PROGRAM_ARB);
+	glEnable(GL_VERTEX_PROGRAM_ARB);
+	glEnable(GL_FRAGMENT_PROGRAM_ARB);
 
-	qglClearColor( 1.0, 0.5, 0, 0 );
-	qglClear( GL_COLOR_BUFFER_BIT );
-	qglViewport( 0, 0, glConfig.vidWidth>>1, glConfig.vidHeight>>1 );
+	glClearColor( 1.0, 0.5, 0, 0 );
+	glClear( GL_COLOR_BUFFER_BIT );
+	glViewport( 0, 0, glConfig.vidWidth>>1, glConfig.vidHeight>>1 );
 
 	// read from the original floatPbuffer
-	qglActiveTextureARB( GL_TEXTURE0_ARB );
-	qglBindTexture( GL_TEXTURE_RECTANGLE_NV, floatPbufferImage->texnum );
+	glActiveTextureARB( GL_TEXTURE0_ARB );
+	glBindTexture( GL_TEXTURE_RECTANGLE_NV, floatPbufferImage->texnum );
 	R_BindTexImage( floatPbuffer );
 
-	qglBindProgramARB( GL_VERTEX_PROGRAM_ARB, downSampleVertexProgram );
-	qglBindProgramARB( GL_FRAGMENT_PROGRAM_ARB, downSampleFragmentProgram );
+	glBindProgramARB( GL_VERTEX_PROGRAM_ARB, downSampleVertexProgram );
+	glBindProgramARB( GL_FRAGMENT_PROGRAM_ARB, downSampleFragmentProgram );
 
 	RB_EXP_CoverScreen();
 
 	//
 	// mip map again
 	//
-	qglViewport( 0, 0, glConfig.vidWidth>>2, glConfig.vidHeight>>2 );
+	glViewport( 0, 0, glConfig.vidWidth>>2, glConfig.vidHeight>>2 );
 
 	// draw to the second floatPbuffer
 	R_MakeCurrent( floatPbufferQuarterDC, floatContext, floatPbufferQuarter );
 
 	// read from the original floatPbuffer
-	qglBindTexture( GL_TEXTURE_RECTANGLE_NV, floatPbuffer2Image->texnum );
+	glBindTexture( GL_TEXTURE_RECTANGLE_NV, floatPbuffer2Image->texnum );
 	R_BindTexImage( floatPbuffer2 );
 
 	RB_EXP_CoverScreen();
@@ -2308,15 +2308,15 @@ PARAM	step =		program.local[0];		# { 1, 0 } or { 0, 1 } for horizontal / vertica
 	// draw to the second floatPbuffer
 	R_MakeCurrent( floatPbuffer2DC, floatContext, floatPbuffer2 );
 
-	qglBindProgramARB( GL_VERTEX_PROGRAM_ARB, bloomVertexProgram );
-	qglBindProgramARB( GL_FRAGMENT_PROGRAM_ARB, bloomFragmentProgram );
-	qglEnable(GL_VERTEX_PROGRAM_ARB);
-	qglEnable(GL_FRAGMENT_PROGRAM_ARB);
+	glBindProgramARB( GL_VERTEX_PROGRAM_ARB, bloomVertexProgram );
+	glBindProgramARB( GL_FRAGMENT_PROGRAM_ARB, bloomFragmentProgram );
+	glEnable(GL_VERTEX_PROGRAM_ARB);
+	glEnable(GL_FRAGMENT_PROGRAM_ARB);
 
 	GL_SelectTextureNoClient( 0 );
 
 	// blur horizontally first to the second floatPbuffer
-	qglBindTexture( GL_TEXTURE_RECTANGLE_NV, floatPbufferQuarterImage->texnum );
+	glBindTexture( GL_TEXTURE_RECTANGLE_NV, floatPbufferQuarterImage->texnum );
 	R_BindTexImage( floatPbufferQuarter );
 
 	float	parm[4];
@@ -2325,7 +2325,7 @@ PARAM	step =		program.local[0];		# { 1, 0 } or { 0, 1 } for horizontal / vertica
 	parm[1] = 0;
 	parm[2] = 0;
 	parm[3] = 0;
-	qglProgramLocalParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 0, parm );
+	glProgramLocalParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 0, parm );
 
 	RB_EXP_CoverScreen();
 
@@ -2334,24 +2334,24 @@ PARAM	step =		program.local[0];		# { 1, 0 } or { 0, 1 } for horizontal / vertica
 	//
 	R_MakeCurrent( floatPbufferQuarterDC, floatContext, floatPbufferQuarter );
 
-	qglBindTexture( GL_TEXTURE_RECTANGLE_NV, floatPbuffer2Image->texnum );
+	glBindTexture( GL_TEXTURE_RECTANGLE_NV, floatPbuffer2Image->texnum );
 	R_BindTexImage( floatPbuffer2 );
 
 	parm[0] = 0;
 	parm[1] = 1;
 	parm[2] = 0;
 	parm[3] = 0;
-	qglProgramLocalParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 0, parm );
+	glProgramLocalParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 0, parm );
 
 	RB_EXP_CoverScreen();
 
 	//========================
 
-	qglEnable( GL_DEPTH_TEST );
-	qglEnable( GL_SCISSOR_TEST );
+	glEnable( GL_DEPTH_TEST );
+	glEnable( GL_SCISSOR_TEST );
 
-	qglDisable(GL_VERTEX_PROGRAM_ARB);
-	qglDisable(GL_FRAGMENT_PROGRAM_ARB);
+	glDisable(GL_VERTEX_PROGRAM_ARB);
+	glDisable(GL_FRAGMENT_PROGRAM_ARB);
 
 	GL_CheckErrors();
 }
@@ -2403,13 +2403,13 @@ void    RB_Exp_DrawInteractions( void ) {
 	// set up for either point sampled or percentage-closer filtering for the shadow sampling
 	shadowImage[0]->BindFragment();
 	if ( r_sb_linearFilter.GetBool() ) {
-		qglTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-		qglTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 	} else {
-		qglTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
-		qglTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
 	}
-	qglTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB, GL_COMPARE_R_TO_TEXTURE );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB, GL_COMPARE_R_TO_TEXTURE );
 
 	globalImages->BindNull();
 
@@ -2418,10 +2418,10 @@ void    RB_Exp_DrawInteractions( void ) {
 	R_EXP_RenderViewDepthImage();
 
 	GL_SelectTexture( 0 );
-	qglDisableClientState( GL_TEXTURE_COORD_ARRAY );
+	glDisableClientState( GL_TEXTURE_COORD_ARRAY );
 
 	// disable stencil shadow test
-	qglStencilFunc( GL_ALWAYS, 128, 255 );
+	glStencilFunc( GL_ALWAYS, 128, 255 );
 
 	// the jitter image will be used to offset sample centers
 	GL_SelectTextureNoClient( 8 );
@@ -2438,8 +2438,8 @@ void    RB_Exp_DrawInteractions( void ) {
 		RB_EXP_SetRenderBuffer( NULL );
 		// we need to set a lot of things, because this is a completely different context
 		RB_SetDefaultGLState();
-		qglClearColor( 0.001f, 1.0f, 0.01f, 0.1f );
-		qglClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+		glClearColor( 0.001f, 1.0f, 0.01f, 0.1f );
+		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 		// clear the z buffer, set the projection matrix, etc
 		RB_BeginDrawingView();
 		RB_STD_FillDepthBuffer( (drawSurf_t **)&backEnd.viewDef->drawSurfs[0], backEnd.viewDef->numDrawSurfs );
@@ -2507,8 +2507,8 @@ void    RB_Exp_DrawInteractions( void ) {
 					// set the current openGL drawable to the shadow buffer
 					R_MakeCurrent( viewPbufferDC, win32.hGLRC, viewPbuffer );
 				}
-				qglViewport( 0, 0, viewBufferSize, viewBufferHeight );
-				qglScissor( 0, 0, viewBufferSize, viewBufferHeight );	// !@# FIXME: scale light scissor
+				glViewport( 0, 0, viewBufferSize, viewBufferHeight );
+				glScissor( 0, 0, viewBufferSize, viewBufferHeight );	// !@# FIXME: scale light scissor
 			}
 
 			// render the shadows into destination alpha on the included pixels
@@ -2531,13 +2531,13 @@ void    RB_Exp_DrawInteractions( void ) {
 		if ( r_sb_screenSpaceShadow.GetBool() ) {
 			if ( !nativeViewBuffer ) {
 				RB_shadowResampleAlpha();
-				qglEnable( GL_STENCIL_TEST );
+				glEnable( GL_STENCIL_TEST );
 			} else {
 				RB_EXP_SetRenderBuffer( vLight );
 if ( r_ignore.GetBool() ) {
-qglEnable( GL_STENCIL_TEST );	//!@#
+glEnable( GL_STENCIL_TEST );	//!@#
 } else {
-qglDisable( GL_STENCIL_TEST );	//!@#
+glDisable( GL_STENCIL_TEST );	//!@#
 }
 			}
 			RB_EXP_CreateDrawInteractions( vLight->localInteractions );
@@ -2549,7 +2549,7 @@ qglDisable( GL_STENCIL_TEST );	//!@#
 	}
 
 	GL_SelectTexture( 0 );
-	qglEnableClientState( GL_TEXTURE_COORD_ARRAY );
+	glEnableClientState( GL_TEXTURE_COORD_ARRAY );
 
 	// experimental transfer function
 	for ( int i = 7 ; i >= 0 ; i-- ) {
@@ -2568,7 +2568,7 @@ qglDisable( GL_STENCIL_TEST );	//!@#
 
 	// take it out of texture compare mode so I can testImage it for debugging
 	shadowImage[0]->BindFragment();
-	qglTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB, GL_NONE );
+	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB, GL_NONE );
 
 
 }
@@ -2602,7 +2602,7 @@ RB_CreateBloomTable();
 #endif
 
 #if 0
-	qglCombinerParameterfvNV = (void (APIENTRY *)( GLenum pname, const GLfloat *params ))
+	glCombinerParameterfvNV = (void (APIENTRY *)( GLenum pname, const GLfloat *params ))
 		GLimp_ExtensionPointer( "glCombinerParameterfvNV" );
 #endif
 

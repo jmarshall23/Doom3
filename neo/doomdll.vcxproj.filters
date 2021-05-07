@@ -106,6 +106,15 @@
     <Filter Include="Ui">
       <UniqueIdentifier>{b3166d25-0562-49da-bc8d-961006fe1785}</UniqueIdentifier>
     </Filter>
+    <Filter Include="External">
+      <UniqueIdentifier>{6d6e233a-8700-44c0-bcae-a9078efe06be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="External\glew">
+      <UniqueIdentifier>{4a21e076-819f-4699-8913-f669c87962b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="External\glew\GL">
+      <UniqueIdentifier>{f5a7856c-45f7-4736-8d91-a3f3c052d1ce}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cm\CollisionModel.h">
@@ -620,6 +629,18 @@
     </ClInclude>
     <ClInclude Include="ui\Winvar.h">
       <Filter>Ui</Filter>
+    </ClInclude>
+    <ClInclude Include="external\glew\GL\eglew.h">
+      <Filter>External\glew\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="external\glew\GL\glew.h">
+      <Filter>External\glew\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="external\glew\GL\glxew.h">
+      <Filter>External\glew\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="external\glew\GL\wglew.h">
+      <Filter>External\glew\GL</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1828,6 +1849,9 @@
     </ClCompile>
     <ClCompile Include="renderer\Model_obj.cpp">
       <Filter>Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="external\glew\glew.c">
+      <Filter>External\glew</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -292,10 +292,10 @@ renderer/ModelManager.h
 renderer/RenderSystem.h
 renderer/RenderWorld.h
 renderer/glext.h
-renderer/qgl.h
-renderer/qgl_linked.h
+renderer/gl.h
+renderer/gl_linked.h
 sound/sound.h
-sys/linux/qgl_enforce.h
+sys/linux/gl_enforce.h
 sys/scons/SConscript.game
 sys/scons/SConscript.idlib
 sys/scons/scons_utils.py

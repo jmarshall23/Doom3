@@ -510,8 +510,8 @@
 		812257730912BC79005D34B9 /* ModelManager.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ModelManager.h; sourceTree = "<group>"; };
 		812257740912BC79005D34B9 /* ModelOverlay.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ModelOverlay.cpp; sourceTree = "<group>"; };
 		812257750912BC79005D34B9 /* ModelOverlay.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ModelOverlay.h; sourceTree = "<group>"; };
-		812257760912BC79005D34B9 /* qgl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = qgl.h; sourceTree = "<group>"; };
-		812257770912BC79005D34B9 /* qgl_linked.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = qgl_linked.h; sourceTree = "<group>"; };
+		812257760912BC79005D34B9 /* gl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = gl.h; sourceTree = "<group>"; };
+		812257770912BC79005D34B9 /* gl_linked.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = gl_linked.h; sourceTree = "<group>"; };
 		812257780912BC79005D34B9 /* RenderEntity.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = RenderEntity.cpp; sourceTree = "<group>"; };
 		812257790912BC79005D34B9 /* RenderSystem.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = RenderSystem.cpp; sourceTree = "<group>"; };
 		8122577A0912BC79005D34B9 /* RenderSystem.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = RenderSystem.h; sourceTree = "<group>"; };
@@ -1029,8 +1029,8 @@
 				812257730912BC79005D34B9 /* ModelManager.h */,
 				812257740912BC79005D34B9 /* ModelOverlay.cpp */,
 				812257750912BC79005D34B9 /* ModelOverlay.h */,
-				812257760912BC79005D34B9 /* qgl.h */,
-				812257770912BC79005D34B9 /* qgl_linked.h */,
+				812257760912BC79005D34B9 /* gl.h */,
+				812257770912BC79005D34B9 /* gl_linked.h */,
 				812257780912BC79005D34B9 /* RenderEntity.cpp */,
 				812257790912BC79005D34B9 /* RenderSystem.cpp */,
 				8122577A0912BC79005D34B9 /* RenderSystem.h */,

@@ -75,9 +75,9 @@ CheckErrors
 void CheckErrors( void ) {		
 	GLenum   err;
 
-	err = qglGetError();
+	err = glGetError();
 	if ( err != GL_NO_ERROR ) {
-		common->Error( "glGetError: %s\n", qglGetString( err ) );
+		common->Error( "glGetError: %s\n", glGetString( err ) );
 	}
 }
 
@@ -122,12 +122,12 @@ bool GLimp_SetMode(  glimpParms_t parms ) {
 	glConfig.isFullscreen = parms.fullScreen;
     
 	// draw something to show that GL is alive	
-	qglClearColor( 0.5, 0.5, 0.7, 0 );
-	qglClear( GL_COLOR_BUFFER_BIT );
+	glClearColor( 0.5, 0.5, 0.7, 0 );
+	glClear( GL_COLOR_BUFFER_BIT );
 	GLimp_SwapBuffers();
         
-	qglClearColor( 0.5, 0.5, 0.7, 0 );
-	qglClear( GL_COLOR_BUFFER_BIT );
+	glClearColor( 0.5, 0.5, 0.7, 0 );
+	glClear( GL_COLOR_BUFFER_BIT );
 	GLimp_SwapBuffers();
 
 	Sys_UnfadeScreen( Sys_DisplayToUse(), NULL );
@@ -423,7 +423,7 @@ static bool CreateGameWindow(  glimpParms_t parms ) {
 // This can be used to temporarily disassociate the GL context from the screen so that CoreGraphics can be used to draw to the screen.
 void Sys_PauseGL () {
 	if (!glw_state.glPauseCount) {
-		qglFinish (); // must do this to ensure the queue is complete
+		glFinish (); // must do this to ensure the queue is complete
         
 		// Have to call both to actually deallocate kernel resources and free the NSSurface
 		CGLClearDrawable(OSX_GetCGLContext());
@@ -484,10 +484,10 @@ bool GLimp_Init( glimpParms_t parms ) {
 	common->Printf(  "------------------\n" );
 
 	// get our config strings
-	glConfig.vendor_string = (const char *)qglGetString( GL_VENDOR );
-	glConfig.renderer_string = (const char *)qglGetString( GL_RENDERER );
-	glConfig.version_string = (const char *)qglGetString( GL_VERSION );
-	glConfig.extensions_string = (const char *)qglGetString( GL_EXTENSIONS );
+	glConfig.vendor_string = (const char *)glGetString( GL_VENDOR );
+	glConfig.renderer_string = (const char *)glGetString( GL_RENDERER );
+	glConfig.version_string = (const char *)glGetString( GL_VERSION );
+	glConfig.extensions_string = (const char *)glGetString( GL_EXTENSIONS );
 
 	//
 	// chipset specific configuration
@@ -689,16 +689,16 @@ static void _endPass (void) {
 }
 
 GLuint glGenFragmentShadersATI (GLuint ID) {
-	qglGenProgramsARB(1, &ID);
+	glGenProgramsARB(1, &ID);
 	return ID;
 }
 
 void glBindFragmentShaderATI (GLuint ID) {
-	qglBindProgramARB(GL_TEXT_FRAGMENT_SHADER_ATI, ID);
+	glBindProgramARB(GL_TEXT_FRAGMENT_SHADER_ATI, ID);
 }
 
 void glDeleteFragmentShaderATI (GLuint ID) {
-//	qglDeleteProgramsARB(1, &ID);
+//	glDeleteProgramsARB(1, &ID);
 }
 
 void glBeginFragmentShaderATI (void) {
@@ -758,8 +758,8 @@ void glEndFragmentShaderATI (void) {
 		strcat(fragString, "EndPass;\n");
 	}
 
-	qglProgramStringARB(GL_TEXT_FRAGMENT_SHADER_ATI, GL_PROGRAM_FORMAT_ASCII_ARB, strlen(fragString), fragString);
-	qglGetIntegerv( GL_PROGRAM_ERROR_POSITION_ARB, &errPos );
+	glProgramStringARB(GL_TEXT_FRAGMENT_SHADER_ATI, GL_PROGRAM_FORMAT_ASCII_ARB, strlen(fragString), fragString);
+	glGetIntegerv( GL_PROGRAM_ERROR_POSITION_ARB, &errPos );
 	if(errPos != -1) {
 		const GLubyte *errString = glGetString(GL_PROGRAM_ERROR_STRING_ARB);
 		common->Warning("WARNING: glError at %d:%s when compiling atiFragmentShader %s", errPos, errString, fragString);
@@ -783,7 +783,7 @@ void glSetFragmentShaderConstantATI (GLuint num, const GLfloat *val) {
 		// So, we cache those values and only set the constants if they are different.
 		if (memcmp (val, sConstVal[constNum], sizeof(GLfloat)*8*4) != 0)
 		{
-			qglProgramEnvParameter4fvARB (GL_TEXT_FRAGMENT_SHADER_ATI, num-GL_CON_0_ATI, val);
+			glProgramEnvParameter4fvARB (GL_TEXT_FRAGMENT_SHADER_ATI, num-GL_CON_0_ATI, val);
 			memcpy (sConstVal[constNum], val, sizeof(GLfloat)*8*4);
 		}
 	}

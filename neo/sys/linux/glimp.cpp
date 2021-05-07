@@ -92,12 +92,12 @@ bool GLimp_SpawnRenderThread(void (*a) ()) {
 void GLimp_ActivateContext() {
 	assert( dpy );
 	assert( ctx );
-	qglXMakeCurrent( dpy, win, ctx );
+	glXMakeCurrent( dpy, win, ctx );
 }
 
 void GLimp_DeactivateContext() {
 	assert( dpy );
-	qglXMakeCurrent( dpy, None, NULL );
+	glXMakeCurrent( dpy, None, NULL );
 }
 
 /*
@@ -186,7 +186,7 @@ void GLimp_Shutdown() {
 	
 		GLimp_RestoreGamma();
 
-		qglXDestroyContext( dpy, ctx );
+		glXDestroyContext( dpy, ctx );
 		
 #if !defined( ID_GL_HARDLINK )
 		GLimp_dlclose();
@@ -211,7 +211,7 @@ void GLimp_Shutdown() {
 
 void GLimp_SwapBuffers() {
 	assert( dpy );
-	qglXSwapBuffers( dpy, win );
+	glXSwapBuffers( dpy, win );
 }
 
 /*
@@ -459,7 +459,7 @@ int GLX_Init(glimpParms_t a) {
 		attrib[ATTR_DEPTH_IDX] = tdepthbits;	// default to 24 depth
 		attrib[ATTR_STENCIL_IDX] = tstencilbits;
 
-		visinfo = qglXChooseVisual(dpy, scrnum, attrib);
+		visinfo = glXChooseVisual(dpy, scrnum, attrib);
 		if (!visinfo) {
 			continue;
 		}
@@ -518,18 +518,18 @@ int GLX_Init(glimpParms_t a) {
 
 	XFlush(dpy);
 	XSync(dpy, False);
-	ctx = qglXCreateContext(dpy, visinfo, NULL, True);
+	ctx = glXCreateContext(dpy, visinfo, NULL, True);
 	XSync(dpy, False);
 
 	// Free the visinfo after we're done with it
 	XFree(visinfo);
 
-	qglXMakeCurrent(dpy, win, ctx);
+	glXMakeCurrent(dpy, win, ctx);
 
-	glstring = (const char *) qglGetString(GL_RENDERER);
+	glstring = (const char *) glGetString(GL_RENDERER);
 	common->Printf("GL_RENDERER: %s\n", glstring);
 	
-	glstring = (const char *) qglGetString(GL_EXTENSIONS);
+	glstring = (const char *) glGetString(GL_EXTENSIONS);
 	common->Printf("GL_EXTENSIONS: %s\n", glstring);
 
 	// FIXME: here, software GL test
