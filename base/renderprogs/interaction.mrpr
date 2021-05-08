@@ -75,7 +75,7 @@ renderProg interaction
 		vec3 localNormal = vec3(bumpMap.r, bumpMap.g, bumpMap.b);
 		localNormal = localNormal * 2.0 - 1.0;
 
-		const float specularPower = 1		0.0f;
+		const float specularPower = 10.0f;
 		float hDotN = dot3( normalize( gl_TexCoord[6].xyz ), localNormal );
 		vec3 specularContribution = vec3( pow(hDotN, specularPower) );
 
