@@ -11,6 +11,7 @@ static const int PC_ATTRIB_INDEX_NORMAL = 11;
 struct glslUniformLocation_t {
 	int		parmIndex;
 	GLint	uniformIndex;
+	GLint   textureUnit;
 };
 
 //

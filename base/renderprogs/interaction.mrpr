@@ -20,8 +20,8 @@ renderProg interaction
 		
 		//textures 1 takes the base coordinates by the texture matrix
 		gl_TexCoord[1] = defaultTexCoord;
-		gl_TexCoord[1].x = dot4( gl_TexCoord[0].xy, $rpbumpmatrixs );
-		gl_TexCoord[1].y = dot4( gl_TexCoord[0].xy, $rpbumpmatrixt );
+		gl_TexCoord[1].x = dot4( attr_TexCoord0.xy, $rpbumpmatrixs );
+		gl_TexCoord[1].y = dot4( attr_TexCoord0.xy, $rpbumpmatrixt );
 		
 		//# texture 2 has one texgen
 		gl_TexCoord[2] = defaultTexCoord;
@@ -35,13 +35,13 @@ renderProg interaction
 
 		//# textures 4 takes the base coordinates by the texture matrix
 		gl_TexCoord[4] = defaultTexCoord;
-		gl_TexCoord[4].x = dot4( gl_Vertex.xy, $rpdiffusematrixs );
-		gl_TexCoord[4].y = dot4( gl_Vertex.xy, $rpdiffusematrixt );
+		gl_TexCoord[4].x = dot4( attr_TexCoord0.xy, $rpdiffusematrixs );
+		gl_TexCoord[4].y = dot4( attr_TexCoord0.xy, $rpdiffusematrixt );
 
 		//# textures 5 takes the base coordinates by the texture matrix
 		gl_TexCoord[5] = defaultTexCoord;
-		gl_TexCoord[5].x = dot4( gl_Vertex.xy, $rpspecularmatrixs );
-		gl_TexCoord[5].y = dot4( gl_Vertex.xy, $rpspecularmatrixt );
+		gl_TexCoord[5].x = dot4( attr_TexCoord0.xy, $rpspecularmatrixs );
+		gl_TexCoord[5].y = dot4( attr_TexCoord0.xy, $rpspecularmatrixt );
 				
 		//# calculate normalized vector to light in R0
 		toLight = normalize( toLight );
@@ -57,6 +57,8 @@ renderProg interaction
 		gl_TexCoord[6].y = dot3( vBinormal, halfAngleVector );
 		gl_TexCoord[6].z = dot3( vNormal, halfAngleVector );
 		gl_TexCoord[6].w = 1.0f;
+		
+		gl_TexCoord[7].xyz = attr_Normal; //gl_Color * vertexcolormodulate + vertexcoloradd;
 	}
 
 	pixel
@@ -69,20 +71,19 @@ renderProg interaction
 
 		vec3 lightVector = normalize( gl_TexCoord[0].xyz );
 
-		vec3 localNormal;
-		localNormal.xy = bumpMap.wy - 0.5;
-		localNormal.z = sqrt( abs( dot( localNormal.xy, localNormal.xy ) - 0.25 ) );
-		localNormal = normalize( localNormal );
+		bumpMap.x = bumpMap.w;
+		vec3 localNormal = vec3(bumpMap.r, bumpMap.g, bumpMap.b);
+		localNormal = localNormal * 2.0 - 1.0;
 
-		const float specularPower = 10.0f;
+		const float specularPower = 1		0.0f;
 		float hDotN = dot3( normalize( gl_TexCoord[6].xyz ), localNormal );
-		vec3 specularContribution = vec3( pow( hDotN, specularPower ) );
+		vec3 specularContribution = vec3( pow(hDotN, specularPower) );
 
 		vec3 diffuseColor = diffuseMap.xyz * $rpdiffusemodifier.xyz;
-		vec3 specularColor = specMap.xyz * specularContribution * $rpspecularmodifier.xyz;
-		vec3 lightColor = dot3( lightVector, localNormal ) * lightProj.xyz * lightFalloff.xyz;
+		vec3 specularColor = specMap.xyz * specularContribution;
+		vec3 lightColor = dot3( localNormal, lightVector ) * lightProj.xyz * lightFalloff.xyz;
 
-		gl_FragColor.xyz = ( diffuseColor + specularColor ) * lightColor;
+		gl_FragColor.xyz = ( diffuseColor.xyz + specularColor ) * lightColor;
 		gl_FragColor.w = 1.0;
 	}
 }

@@ -41,7 +41,8 @@ rvmDeclRenderProg::ParseRenderParms
 ===================
 */
 idStr rvmDeclRenderProg::ParseRenderParms(idStr& bracketText) {
-	idStr uniforms = "";
+	idStr uniforms = tr.globalRenderInclude;
+	uniforms += "\n";
 
 	idLexer src;
 	idToken	token, token2;
@@ -69,16 +70,27 @@ idStr rvmDeclRenderProg::ParseRenderParms(idStr& bracketText) {
 				return "";
 			}
 
+			idStr name = token;
+			char* buffer = (char *)name.c_str(); // still not the worst thing I've ever done, muaahahaha!
+			for (int i = 0; i < name.Length(); i++)
+			{
+				if (buffer[i] == '.')
+				{
+					buffer[i] = 0;
+					break;
+				}
+			}
+
 			switch (parm->GetType())
 			{
 				case RENDERPARM_TYPE_IMAGE:
-					uniforms += va("uniform sampler2D %s;\n", token.c_str());
+					uniforms += va("uniform sampler2D %s;\n", name.c_str());
 					break;
 				case RENDERPARM_TYPE_VEC4:
-					uniforms += va("uniform vec4 %s;\n", token.c_str());
+					uniforms += va("uniform vec4 %s;\n", name.c_str());
 					break;
 				case RENDERPARM_TYPE_FLOAT:
-					uniforms += va("uniform float %s;\n", token.c_str());
+					uniforms += va("uniform float %s;\n", name.c_str());
 					break;
 			}
 
@@ -227,6 +239,9 @@ void rvmDeclRenderProg::LoadGLSLProgram(void) {
 		return;
 	}
 
+	int textureUnit = 0;
+	glUseProgram(program);
+
 	// store the uniform locations after we have linked the GLSL program
 	uniformLocations.Clear();
 	for (int i = 0; i < renderParams.Num(); i++) {
@@ -236,21 +251,18 @@ void rvmDeclRenderProg::LoadGLSLProgram(void) {
 			glslUniformLocation_t uniformLocation;
 			uniformLocation.parmIndex = i;
 			uniformLocation.uniformIndex = loc;
+
+			if (renderParams[i]->GetType() == RENDERPARM_TYPE_IMAGE)
+			{
+				glUniform1i(loc, textureUnit);
+				uniformLocation.textureUnit = textureUnit;
+				textureUnit++;
+			}
+
 			uniformLocations.Append(uniformLocation);
 		}
 	}
 
-	// set the texture unit locations once for the render program. We only need to do this once since we only link the program once
-	glUseProgram(program);
-	for (int i = 0; i < renderParams.Num(); ++i) {
-		if (renderParams[i]->GetType() != RENDERPARM_TYPE_IMAGE)
-			continue;
-
-		GLint loc = glGetUniformLocation(program, renderParams[i]->GetName());
-		if (loc != -1) {
-			glUniform1i(loc, i);
-		}
-	}	
 	glUseProgram(0);
 }
 
@@ -271,9 +283,12 @@ void rvmDeclRenderProg::Bind(void) {
 		switch (parm->GetType())
 		{
 			case RENDERPARM_TYPE_IMAGE:
-				GL_SelectTextureNoClient(tmu);
-				parm->GetImage()->Bind();
-				tmu++;
+				if (uniformLocation.textureUnit != -1)
+				{
+					GL_SelectTextureNoClient(uniformLocation.textureUnit);
+					parm->GetImage()->Bind();
+					tmu++;
+				}
 				break;
 
 			case RENDERPARM_TYPE_VEC4:

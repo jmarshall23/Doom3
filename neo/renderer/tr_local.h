@@ -806,8 +806,33 @@ public:
 	class idGuiModel *		demoGuiModel;
 
 	rvmDeclRenderParam*		albedoTextureParam;
+	rvmDeclRenderParam*		bumpmapTextureParam;
+	rvmDeclRenderParam*		specularTextureParam;
+	rvmDeclRenderParam*		lightfalloffTextureParam;
+	rvmDeclRenderParam*		lightProgTextureParam;
+	rvmDeclRenderParam*		bumpmatrixSParam;
+	rvmDeclRenderParam*		bumpmatrixTParam;
+	rvmDeclRenderParam*		lightfalloffSParam;
+	rvmDeclRenderParam*		lightProjectionSParam;
+	rvmDeclRenderParam*		lightProjectionTParam;
+	rvmDeclRenderParam*		lightProjectionQParam;
+	rvmDeclRenderParam*		diffuseMatrixSParam;
+	rvmDeclRenderParam*		diffuseMatrixTParam;
+	rvmDeclRenderParam*		specularMatrixSParam;
+	rvmDeclRenderParam*		specularMatrixTParam;
+
+	rvmDeclRenderParam*		viewOriginParam;
+	rvmDeclRenderParam*		lightOriginParam;
+	rvmDeclRenderParam*		lightColorParam;
+	rvmDeclRenderParam*		lightScaleParam;
+
+	rvmDeclRenderParam* vertexScaleAddParam;
+	rvmDeclRenderParam* vertexScaleModulateParam;
+
+	idStr					globalRenderInclude;
 
 	rvmDeclRenderProg*		guiTextureProgram;
+	rvmDeclRenderProg*		interactionProgram;
 
 	unsigned short			gammaTable[256];	// brightness / gamma modify this
 };

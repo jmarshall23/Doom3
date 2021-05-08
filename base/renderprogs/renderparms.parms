@@ -27,4 +27,5 @@ renderParm lightorigin { float4 }
 renderParm lightcolor { float4 }
 renderParm lightscale { float4 }
 
-
+renderParm vertexcolormodulate { float4 }
+renderParm vertexcoloradd { float4 }

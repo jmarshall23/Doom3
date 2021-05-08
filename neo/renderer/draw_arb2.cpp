@@ -65,72 +65,77 @@ RB_ARB2_DrawInteraction
 ==================
 */
 void	RB_ARB2_DrawInteraction( const drawInteraction_t *din ) {
+// jmarshall
 	// load all the vertex program parameters
-	glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_LIGHT_ORIGIN, din->localLightOrigin.ToFloatPtr() );
-	glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_VIEW_ORIGIN, din->localViewOrigin.ToFloatPtr() );
-	glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_LIGHT_PROJECT_S, din->lightProjection[0].ToFloatPtr() );
-	glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_LIGHT_PROJECT_T, din->lightProjection[1].ToFloatPtr() );
-	glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_LIGHT_PROJECT_Q, din->lightProjection[2].ToFloatPtr() );
-	glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_LIGHT_FALLOFF_S, din->lightProjection[3].ToFloatPtr() );
-	glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_BUMP_MATRIX_S, din->bumpMatrix[0].ToFloatPtr() );
-	glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_BUMP_MATRIX_T, din->bumpMatrix[1].ToFloatPtr() );
-	glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_DIFFUSE_MATRIX_S, din->diffuseMatrix[0].ToFloatPtr() );
-	glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_DIFFUSE_MATRIX_T, din->diffuseMatrix[1].ToFloatPtr() );
-	glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_SPECULAR_MATRIX_S, din->specularMatrix[0].ToFloatPtr() );
-	glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_SPECULAR_MATRIX_T, din->specularMatrix[1].ToFloatPtr() );
+	tr.lightOriginParam->SetVectorValue(din->localLightOrigin);
+	tr.viewOriginParam->SetVectorValue(din->localViewOrigin);
+	tr.lightProjectionSParam->SetVectorValue(din->lightProjection[0]);
+	tr.lightProjectionTParam->SetVectorValue(din->lightProjection[1]);
+	tr.lightProjectionQParam->SetVectorValue(din->lightProjection[2]);
+	tr.lightfalloffSParam->SetVectorValue(din->lightProjection[3]);
+	tr.bumpmatrixSParam->SetVectorValue(din->bumpMatrix[0]);
+	tr.bumpmatrixTParam->SetVectorValue(din->bumpMatrix[1]);
+	tr.diffuseMatrixSParam->SetVectorValue(din->diffuseMatrix[0]);
+	tr.diffuseMatrixTParam->SetVectorValue(din->diffuseMatrix[1]);
+	tr.specularMatrixSParam->SetVectorValue(din->specularMatrix[0]);
+	tr.specularMatrixTParam->SetVectorValue(din->specularMatrix[1]);
+
+	// load all the vertex program parameters
+	//glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_LIGHT_ORIGIN, din->localLightOrigin.ToFloatPtr() );
+	//glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_VIEW_ORIGIN, din->localViewOrigin.ToFloatPtr() );
+	//glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_LIGHT_PROJECT_S, din->lightProjection[0].ToFloatPtr() );
+	//glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_LIGHT_PROJECT_T, din->lightProjection[1].ToFloatPtr() );
+	//glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_LIGHT_PROJECT_Q, din->lightProjection[2].ToFloatPtr() );
+	//glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_LIGHT_FALLOFF_S, din->lightProjection[3].ToFloatPtr() );
+	//glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_BUMP_MATRIX_S, din->bumpMatrix[0].ToFloatPtr() );
+	//glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_BUMP_MATRIX_T, din->bumpMatrix[1].ToFloatPtr() );
+	//glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_DIFFUSE_MATRIX_S, din->diffuseMatrix[0].ToFloatPtr() );
+	//glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_DIFFUSE_MATRIX_T, din->diffuseMatrix[1].ToFloatPtr() );
+	//glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_SPECULAR_MATRIX_S, din->specularMatrix[0].ToFloatPtr() );
+	//glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_SPECULAR_MATRIX_T, din->specularMatrix[1].ToFloatPtr() );
+// jmarshall end
+
 
 	// testing fragment based normal mapping
-	if ( r_testARBProgram.GetBool() ) {
-		glProgramEnvParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 2, din->localLightOrigin.ToFloatPtr() );
-		glProgramEnvParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 3, din->localViewOrigin.ToFloatPtr() );
-	}
+	//if ( r_testARBProgram.GetBool() ) {
+	//	glProgramEnvParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 2, din->localLightOrigin.ToFloatPtr() );
+	//	glProgramEnvParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 3, din->localViewOrigin.ToFloatPtr() );
+	//}
 
-	static const float zero[4] = { 0, 0, 0, 0 };
-	static const float one[4] = { 1, 1, 1, 1 };
-	static const float negOne[4] = { -1, -1, -1, -1 };
+	static idVec4 zero( 0, 0, 0, 0 );
+	static idVec4 one(1, 1, 1, 1 );
+	static idVec4 negOne(-1, -1, -1, -1 );
 
 	switch ( din->vertexColor ) {
-	case SVC_IGNORE:
-		glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_COLOR_MODULATE, zero );
-		glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_COLOR_ADD, one );
+	case SVC_IGNORE:		
+		tr.vertexScaleModulateParam->SetVectorValue(zero);
+		tr.vertexScaleAddParam->SetVectorValue(one);
 		break;
 	case SVC_MODULATE:
-		glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_COLOR_MODULATE, one );
-		glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_COLOR_ADD, zero );
+		tr.vertexScaleModulateParam->SetVectorValue(one);
+		tr.vertexScaleAddParam->SetVectorValue(zero);
 		break;
 	case SVC_INVERSE_MODULATE:
-		glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_COLOR_MODULATE, negOne );
-		glProgramEnvParameter4fvARB( GL_VERTEX_PROGRAM_ARB, PP_COLOR_ADD, one );
+		tr.vertexScaleModulateParam->SetVectorValue(negOne);
+		tr.vertexScaleAddParam->SetVectorValue(one);		
 		break;
 	}
 
 	// set the constant colors
-	glProgramEnvParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 0, din->diffuseColor.ToFloatPtr() );
-	glProgramEnvParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 1, din->specularColor.ToFloatPtr() );
+	//glProgramEnvParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 0, din->diffuseColor.ToFloatPtr() );
+	//glProgramEnvParameter4fvARB( GL_FRAGMENT_PROGRAM_ARB, 1, din->specularColor.ToFloatPtr() );
+	tr.lightColorParam->SetVectorValue(din->diffuseColor);
 
 	// set the textures
 
-	// texture 1 will be the per-surface bump map
-	GL_SelectTextureNoClient( 1 );
-	din->bumpImage->Bind();
-
-	// texture 2 will be the light falloff texture
-	GL_SelectTextureNoClient( 2 );
-	din->lightFalloffImage->Bind();
-
-	// texture 3 will be the light projection texture
-	GL_SelectTextureNoClient( 3 );
-	din->lightImage->Bind();
-
-	// texture 4 is the per-surface diffuse map
-	GL_SelectTextureNoClient( 4 );
-	din->diffuseImage->Bind();
-
-	// texture 5 is the per-surface specular map
-	GL_SelectTextureNoClient( 5 );
-	din->specularImage->Bind();
+	tr.bumpmapTextureParam->SetImage(din->bumpImage);
+	tr.lightfalloffTextureParam->SetImage(din->lightFalloffImage);
+	tr.lightProgTextureParam->SetImage(din->lightImage);
+	tr.albedoTextureParam->SetImage(din->diffuseImage);
+	tr.specularTextureParam->SetImage(din->specularImage);
 
 	// draw it
+	tr.interactionProgram->Bind();
 	RB_DrawElementsWithCounters( din->surf->geo );
 }
 
@@ -150,16 +155,16 @@ void RB_ARB2_CreateDrawInteractions( const drawSurf_t *surf ) {
 	GL_State( GLS_SRCBLEND_ONE | GLS_DSTBLEND_ONE | GLS_DEPTHMASK | backEnd.depthFunc );
 
 	// bind the vertex program
-	if ( r_testARBProgram.GetBool() ) {
-		glBindProgramARB( GL_VERTEX_PROGRAM_ARB, VPROG_TEST );
-		glBindProgramARB( GL_FRAGMENT_PROGRAM_ARB, FPROG_TEST );
-	} else {
-		glBindProgramARB( GL_VERTEX_PROGRAM_ARB, VPROG_INTERACTION );
-		glBindProgramARB( GL_FRAGMENT_PROGRAM_ARB, FPROG_INTERACTION );
-	}
+	//if ( r_testARBProgram.GetBool() ) {
+	//	glBindProgramARB( GL_VERTEX_PROGRAM_ARB, VPROG_TEST );
+	//	glBindProgramARB( GL_FRAGMENT_PROGRAM_ARB, FPROG_TEST );
+	//} else {
+	//	glBindProgramARB( GL_VERTEX_PROGRAM_ARB, VPROG_INTERACTION );
+	//	glBindProgramARB( GL_FRAGMENT_PROGRAM_ARB, FPROG_INTERACTION );
+	//}
 
-	glEnable(GL_VERTEX_PROGRAM_ARB);
-	glEnable(GL_FRAGMENT_PROGRAM_ARB);
+	//glEnable(GL_VERTEX_PROGRAM_ARB);
+	//glEnable(GL_FRAGMENT_PROGRAM_ARB);
 
 	// enable the vertex arrays
 	glEnableVertexAttribArrayARB( 8 );
@@ -167,23 +172,6 @@ void RB_ARB2_CreateDrawInteractions( const drawSurf_t *surf ) {
 	glEnableVertexAttribArrayARB( 10 );
 	glEnableVertexAttribArrayARB( 11 );
 	glEnableClientState( GL_COLOR_ARRAY );
-
-	// texture 0 is the normalization cube map for the vector towards the light
-	GL_SelectTextureNoClient( 0 );
-	if ( backEnd.vLight->lightShader->IsAmbientLight() ) {
-		globalImages->ambientNormalMap->Bind();
-	} else {
-		globalImages->normalCubeMapImage->Bind();
-	}
-
-	// texture 6 is the specular lookup table
-	GL_SelectTextureNoClient( 6 );
-	if ( r_testARBProgram.GetBool() ) {
-		globalImages->specular2DTableImage->Bind();	// variable specularity in alpha channel
-	} else {
-		globalImages->specularTableImage->Bind();
-	}
-
 
 	for ( ; surf ; surf=surf->nextOnLight ) {
 		// perform setup here that will not change over multiple interaction passes
@@ -209,29 +197,13 @@ void RB_ARB2_CreateDrawInteractions( const drawSurf_t *surf ) {
 	glDisableClientState( GL_COLOR_ARRAY );
 
 	// disable features
-	GL_SelectTextureNoClient( 6 );
-	globalImages->BindNull();
-
-	GL_SelectTextureNoClient( 5 );
-	globalImages->BindNull();
-
-	GL_SelectTextureNoClient( 4 );
-	globalImages->BindNull();
-
-	GL_SelectTextureNoClient( 3 );
-	globalImages->BindNull();
-
-	GL_SelectTextureNoClient( 2 );
-	globalImages->BindNull();
-
-	GL_SelectTextureNoClient( 1 );
-	globalImages->BindNull();
+	tr.interactionProgram->BindNull();
 
 	backEnd.glState.currenttmu = -1;
 	GL_SelectTexture( 0 );
 
-	glDisable(GL_VERTEX_PROGRAM_ARB);
-	glDisable(GL_FRAGMENT_PROGRAM_ARB);
+	//glDisable(GL_VERTEX_PROGRAM_ARB);
+	//glDisable(GL_FRAGMENT_PROGRAM_ARB);
 }
 
 

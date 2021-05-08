@@ -2012,9 +2012,38 @@ void idRenderSystemLocal::Init( void ) {
 	declManager->RegisterDeclType("renderProg", DECL_RENDERPROGS, idDeclAllocator<rvmDeclRenderProg>);
 	declManager->RegisterDeclFolder("renderprogs", ".mrpr", DECL_RENDERPROGS);
 
-	albedoTextureParam = declManager->FindRenderParam("albedoTexture");
+	albedoTextureParam = declManager->FindRenderParam("albedoTexture");		
+	bumpmapTextureParam = declManager->FindRenderParam("bumpmap");
+	specularTextureParam = declManager->FindRenderParam("specularmap");
+	lightfalloffTextureParam = declManager->FindRenderParam("lightfallofftex");
+	lightProgTextureParam = declManager->FindRenderParam("lightprogtex");
+	bumpmatrixSParam = declManager->FindRenderParam("rpbumpmatrixs");
+	bumpmatrixTParam = declManager->FindRenderParam("rpbumpmatrixt");
+	lightfalloffSParam = declManager->FindRenderParam("rplightfalloffs");
+	lightProjectionSParam = declManager->FindRenderParam("rplightprojections");
+	lightProjectionTParam = declManager->FindRenderParam("rplightprojectiont");
+	lightProjectionQParam = declManager->FindRenderParam("rplightprojectionq");
+	diffuseMatrixSParam = declManager->FindRenderParam("rpdiffusematrixs");
+	diffuseMatrixTParam = declManager->FindRenderParam("rpdiffusematrixt");
+	specularMatrixSParam = declManager->FindRenderParam("rpspecularmatrixs");
+	specularMatrixTParam = declManager->FindRenderParam("rpspecularmatrixt");
+	viewOriginParam = declManager->FindRenderParam("vieworigin");
+	lightOriginParam = declManager->FindRenderParam("lightorigin");
+	lightColorParam = declManager->FindRenderParam("rpdiffusemodifier");
+	lightScaleParam = declManager->FindRenderParam("lightscale");
+
+	vertexScaleModulateParam = declManager->FindRenderParam("vertexcolormodulate");
+	vertexScaleAddParam = declManager->FindRenderParam("vertexcoloradd");
+
+	char* globalIncludeBuffer = NULL;
+	if (fileSystem->ReadFile("renderProgs/global.inc", (void **)&globalIncludeBuffer) <= 0)
+	{
+		common->FatalError("Failed to include global render include!\n");
+	}
+	globalRenderInclude = globalIncludeBuffer;
 
 	guiTextureProgram = FindRenderProgram("guiTexture");
+	interactionProgram = FindRenderProgram("interaction");
 // jmarshall end
 
 	R_InitMaterials();
