@@ -64,7 +64,7 @@ public:
 	virtual void			WriteToSnapshot( idBitMsgDelta &msg ) const;
 	virtual void			ReadFromSnapshot( const idBitMsgDelta &msg );
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	void					SetAttacker( idEntity *ent );
 #endif
 
@@ -72,7 +72,7 @@ protected:
 	idPhysics_RigidBody		physicsObj;				// physics object
 	idStr					brokenModel;			// model set when health drops down to or below zero
 	idStr					damage;					// if > 0 apply damage to hit entities
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	idStr					monsterDamage;
 	idEntity				*attacker;
 #endif
@@ -159,7 +159,7 @@ public:
 	void					Save( idSaveGame *savefile ) const;
 	void					Restore( idRestoreGame *savefile );
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	bool					IsStable( void );
 	void					SetStability( bool stability );
 	void					StartBurning( void );
@@ -198,7 +198,7 @@ private:
 	int						particleTime;
 	int						lightTime;
 	float					time;
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	bool					isStable;
 #endif
 

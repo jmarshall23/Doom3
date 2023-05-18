@@ -70,7 +70,7 @@ idBrittleFracture::idBrittleFracture( void ) {
 
 	fl.networkSync = true;
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	isXraySurface = false;
 #endif
 }
@@ -157,7 +157,7 @@ void idBrittleFracture::Save( idSaveGame *savefile ) const {
 		savefile->WriteStaticObject( shards[i]->physicsObj );
 	}
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	savefile->WriteBool( isXraySurface );
 #endif
 }
@@ -248,7 +248,7 @@ void idBrittleFracture::Restore( idRestoreGame *savefile ) {
 		}
 	}
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	savefile->ReadBool( isXraySurface );
 #endif
 }
@@ -288,7 +288,7 @@ void idBrittleFracture::Spawn( void ) {
 	// FIXME: set "bleed" so idProjectile calls AddDamageEffect
 	spawnArgs.SetBool( "bleed", 1 );
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	// check for xray surface
 	if ( 1 ) {
 		const idRenderModel *model = renderEntity.hModel;
@@ -1056,7 +1056,7 @@ void idBrittleFracture::Fracture_r( idFixedWinding &w ) {
 
 		// randomly create a split plane
 		axis[2] = windingPlane.Normal();
-#ifdef _D3XP
+#if 1 // previously _D3XP
 		if ( isXraySurface ) {
 			a = idMath::TWO_PI / 2.f;
 		}
@@ -1133,7 +1133,7 @@ void idBrittleFracture::CreateFractures( const idRenderModel *renderModel ) {
 	physicsObj.SetOrigin( GetPhysics()->GetOrigin(), 0 );
 	physicsObj.SetAxis( GetPhysics()->GetAxis(), 0 );
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	if ( isXraySurface ) {
 		for ( i = 0; i < 1 /*renderModel->NumSurfaces()*/; i++ ) {
 			surf = renderModel->Surface( i );

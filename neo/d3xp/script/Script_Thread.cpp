@@ -49,7 +49,7 @@ const idEventDef EV_Thread_Trigger( "trigger", "e" );
 const idEventDef EV_Thread_SetCvar( "setcvar", "ss" );
 const idEventDef EV_Thread_GetCvar( "getcvar", "s", 's' );
 const idEventDef EV_Thread_Random( "random", "f", 'f' );
-#ifdef _D3XP
+#if 1 // previously _D3XP
 const idEventDef EV_Thread_RandomInt( "randomInt", "d", 'd' );
 #endif
 const idEventDef EV_Thread_GetTime( "getTime", NULL, 'f' );
@@ -72,7 +72,7 @@ const idEventDef EV_Thread_AngToRight( "angToRight", "v", 'v' );
 const idEventDef EV_Thread_AngToUp( "angToUp", "v", 'v' );
 const idEventDef EV_Thread_Sine( "sin", "f", 'f' );
 const idEventDef EV_Thread_Cosine( "cos", "f", 'f' );
-#ifdef _D3XP
+#if 1 // previously _D3XP
 const idEventDef EV_Thread_ArcSine( "asin", "f", 'f' );
 const idEventDef EV_Thread_ArcCosine( "acos", "f", 'f' );
 #endif
@@ -82,7 +82,7 @@ const idEventDef EV_Thread_VecLength( "vecLength", "v", 'f' );
 const idEventDef EV_Thread_VecDotProduct( "DotProduct", "vv", 'f' );
 const idEventDef EV_Thread_VecCrossProduct( "CrossProduct", "vv", 'v' );
 const idEventDef EV_Thread_VecToAngles( "VecToAngles", "v", 'v' );
-#ifdef _D3XP
+#if 1 // previously _D3XP
 const idEventDef EV_Thread_VecToOrthoBasisAngles( "VecToOrthoBasisAngles", "v", 'v' );
 const idEventDef EV_Thread_RotateVector("rotateVector", "vv", 'v');
 #endif
@@ -138,7 +138,7 @@ CLASS_DECLARATION( idClass, idThread )
 	EVENT( EV_Thread_SetCvar,				idThread::Event_SetCvar )
 	EVENT( EV_Thread_GetCvar,				idThread::Event_GetCvar )
 	EVENT( EV_Thread_Random,				idThread::Event_Random )
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	EVENT( EV_Thread_RandomInt,				idThread::Event_RandomInt )
 #endif
 	EVENT( EV_Thread_GetTime,				idThread::Event_GetTime )
@@ -161,7 +161,7 @@ CLASS_DECLARATION( idClass, idThread )
 	EVENT( EV_Thread_AngToUp,				idThread::Event_AngToUp )
 	EVENT( EV_Thread_Sine,					idThread::Event_GetSine )
 	EVENT( EV_Thread_Cosine,				idThread::Event_GetCosine )
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	EVENT( EV_Thread_ArcSine,				idThread::Event_GetArcSine )
 	EVENT( EV_Thread_ArcCosine,				idThread::Event_GetArcCosine )
 #endif
@@ -171,7 +171,7 @@ CLASS_DECLARATION( idClass, idThread )
 	EVENT( EV_Thread_VecDotProduct,			idThread::Event_VecDotProduct )
 	EVENT( EV_Thread_VecCrossProduct,		idThread::Event_VecCrossProduct )
 	EVENT( EV_Thread_VecToAngles,			idThread::Event_VecToAngles )
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	EVENT( EV_Thread_VecToOrthoBasisAngles, idThread::Event_VecToOrthoBasisAngles )
 	EVENT( EV_Thread_RotateVector,			idThread::Event_RotateVector )
 #endif
@@ -1092,7 +1092,7 @@ void idThread::Event_Random( float range ) const {
 	ReturnFloat( range * result );
 }
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 
 void idThread::Event_RandomInt( int range ) const {
 	int result;
@@ -1317,7 +1317,7 @@ void idThread::Event_GetCosine( float angle ) {
 	ReturnFloat( idMath::Cos( DEG2RAD( angle ) ) );
 }
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 /*
 ================
 idThread::Event_GetArcSine
@@ -1396,7 +1396,7 @@ void idThread::Event_VecToAngles( idVec3 &vec ) {
 	ReturnVector( idVec3( ang[0], ang[1], ang[2] ) );
 }
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 /*
 ================
 idThread::Event_VecToOrthoBasisAngles

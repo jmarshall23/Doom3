@@ -35,7 +35,7 @@ If you have questions concerning this license or the applicable additional terms
 static const char * iconKeys[ ICON_NONE ] = {
 	"mtr_icon_lag",
 	"mtr_icon_chat"
-#ifdef CTF
+#if 1 // previously CTF
 	,"mtr_icon_redteam",
 	"mtr_icon_blueteam"
 #endif
@@ -103,7 +103,7 @@ void idPlayerIcon::Draw( idPlayer *player, const idVec3 &origin ) {
 		if ( !CreateIcon( player, ICON_CHAT, origin, axis ) ) {
 			UpdateIcon( player, origin, axis );
 		}
-#ifdef CTF
+#if 1 // previously CTF
 	} else if ( g_CTFArrows.GetBool() && gameLocal.mpGame.IsGametypeFlagBased() && gameLocal.GetLocalPlayer() && player->team == gameLocal.GetLocalPlayer()->team && !player->IsHidden() && !player->AI_DEAD ) {
 		int icon = ICON_TEAM_RED + player->team;
 

@@ -565,7 +565,7 @@ const char *idAnim::AddFrameCommand( const idDeclModelDef *modelDef, int framenu
 		fc.type = FC_FIREMISSILEATTARGET;
 		fc.string = new idStr( token );
 		fc.index = jointInfo->num;
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	} else if ( token == "launch_projectile" ) {
 		if( !src.ReadTokenOnLine( &token ) ) {
 			return "Unexpected end of line";
@@ -879,7 +879,7 @@ void idAnim::CallFrameCommands( idEntity *ent, int from, int to ) const {
 
 					target = gameLocal.FindEntity( command.string->c_str() );
 					if ( target ) {
-#ifdef _D3XP
+#if 1 // previously _D3XP
 						SetTimeState ts(target->timeGroup);
 #endif
 						target->Signal( SIG_TRIGGER );
@@ -927,7 +927,7 @@ void idAnim::CallFrameCommands( idEntity *ent, int from, int to ) const {
 					ent->ProcessEvent( &AI_FireMissileAtTarget, modelDef->GetJointName( command.index ), command.string->c_str() );
 					break;
 				}
-#ifdef _D3XP
+#if 1 // previously _D3XP
 				case FC_LAUNCH_PROJECTILE: {
 					ent->ProcessEvent( &AI_LaunchProjectile, command.string->c_str() );
 					break;

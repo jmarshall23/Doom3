@@ -356,7 +356,7 @@ void idLight::Spawn( void ) {
 		Off();
 	}
 
-#ifdef CTF
+#if 1 // previously CTF
     // Midnight CTF
     if ( gameLocal.mpGame.IsGametypeFlagBased() && gameLocal.serverInfo.GetBool("si_midnight") && !spawnArgs.GetBool("midnight_override") ) {
         Off();

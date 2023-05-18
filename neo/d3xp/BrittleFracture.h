@@ -100,7 +100,7 @@ private:
 	float						bouncyness;
 	idStr						fxFracture;
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	bool						isXraySurface;
 #endif
 

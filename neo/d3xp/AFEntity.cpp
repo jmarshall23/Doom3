@@ -960,7 +960,7 @@ idAFEntity_Gibbable::idAFEntity_Gibbable( void ) {
 	skeletonModel = NULL;
 	skeletonModelDefHandle = -1;
 	gibbed = false;
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	wasThrown = false;
 #endif
 }
@@ -985,7 +985,7 @@ idAFEntity_Gibbable::Save
 void idAFEntity_Gibbable::Save( idSaveGame *savefile ) const {
 	savefile->WriteBool( gibbed );
 	savefile->WriteBool( combatModel != NULL );
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	savefile->WriteBool( wasThrown );
 #endif
 }
@@ -1000,7 +1000,7 @@ void idAFEntity_Gibbable::Restore( idRestoreGame *savefile ) {
 
 	savefile->ReadBool( gibbed );
 	savefile->ReadBool( hasCombatModel );
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	savefile->ReadBool( wasThrown );
 #endif
 
@@ -1021,7 +1021,7 @@ void idAFEntity_Gibbable::Spawn( void ) {
 	InitSkeletonModel();
 
 	gibbed = false;
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	wasThrown = false;
 #endif
 }
@@ -1104,7 +1104,7 @@ void idAFEntity_Gibbable::Damage( idEntity *inflictor, idEntity *attacker, const
 	}
 }
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 /*
 =====================
 idAFEntity_Gibbable::SetThrown
@@ -1188,7 +1188,7 @@ void idAFEntity_Gibbable::SpawnGibs( const idVec3 &dir, const char *damageDefNam
 			list[i]->GetPhysics()->UnlinkClip();
 			list[i]->GetPhysics()->PutToRest();
 		} else {
-#ifdef _D3XP
+#if 1 // previously _D3XP
 			list[i]->GetPhysics()->SetContents( 0 );
 #else
 			list[i]->GetPhysics()->SetContents( CONTENTS_CORPSE );
@@ -1199,7 +1199,7 @@ void idAFEntity_Gibbable::SpawnGibs( const idVec3 &dir, const char *damageDefNam
 			velocity += ( i & 1 ) ? dir : -dir;
 			list[i]->GetPhysics()->SetLinearVelocity( velocity * 75.0f );
 		}
-#ifdef _D3XP
+#if 1 // previously _D3XP
 		// Don't allow grabber to pick up temporary gibs
 		list[i]->noGrab = true;
 #endif
@@ -1220,7 +1220,7 @@ void idAFEntity_Gibbable::Gib( const idVec3 &dir, const char *damageDefName ) {
 		return;
 	}
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	// Don't grab this ent after it's been gibbed (and now invisible!)
 	noGrab = true;
 #endif
@@ -1492,7 +1492,7 @@ void idAFEntity_WithAttachedHead::SetupHead( void ) {
 		headEnt->SetCombatModel();
 		head = headEnt;
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 		idStr xSkin;
 		if ( spawnArgs.GetString( "skin_head_xray", "", xSkin ) ) {
 			headEnt->xraySkin = declManager->FindSkin( xSkin.c_str() );
@@ -2329,7 +2329,7 @@ void idAFEntity_VehicleSixWheels::Think( void ) {
 	}
 }
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 /*
 ===============================================================================
 
@@ -3156,7 +3156,7 @@ idRenderModel *idGameEdit::AF_CreateMesh( const idDict &args, idVec3 &meshOrigin
 	return md5->InstantiateDynamicModel( &ent, NULL, NULL );
 }
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 
 /*
 ===============================================================================

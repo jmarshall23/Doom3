@@ -56,7 +56,7 @@ public :
 	virtual void			FreeLightDef( void );
 
 	idEntity *				GetOwner( void ) const;
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	void					CatchProjectile( idEntity* o, const char* reflectName );
 	int						GetProjectileState( void );
 	void					Event_CreateProjectile( idEntity *owner, const idVec3 &start, const idVec3 &dir );
@@ -113,7 +113,7 @@ protected:
 	const idDeclParticle *	smokeFly;
 	int						smokeFlyTime;
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	int						originalTimeGroup;
 #endif
 
@@ -153,7 +153,7 @@ public :
 	void					Spawn( void );
 	virtual void			Think( void );
 	virtual void			Launch( const idVec3 &start, const idVec3 &dir, const idVec3 &pushVelocity, const float timeSinceFire = 0.0f, const float launchPower = 1.0f, const float dmgPower = 1.0f );
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	void					SetEnemy( idEntity *ent );
 	void					Event_SetEnemy(idEntity *ent);
 #endif

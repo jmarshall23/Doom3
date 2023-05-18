@@ -149,7 +149,7 @@ public:
 		bool				grabbed				:1;	// if true object is currently being grabbed
 	} fl;
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	int						timeGroup;
 
 	bool					noGrab;
@@ -516,7 +516,7 @@ public:
 	void					Event_HasFunction( const char *name );
 	void					Event_CallFunction( const char *name );
 	void					Event_SetNeverDormant( int enable );
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	void					Event_SetGui( int guiNum, const char *guiName);
 	void					Event_PrecacheGui( const char *guiName );
 	void					Event_GetGuiParm(int guiNum, const char *key);
@@ -601,7 +601,7 @@ public:
 };
 
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 class SetTimeState {
 private:
 	bool					activated;

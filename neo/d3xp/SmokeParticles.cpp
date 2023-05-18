@@ -129,7 +129,7 @@ void idSmokeParticles::FreeSmokes( void ) {
 		for ( last = NULL, smoke = active->smokes; smoke; smoke = next ) {
 			next = smoke->next;
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 			float frac;
 
 			if ( smoke->timeGroup ) {
@@ -175,7 +175,7 @@ Called by game code to drop another particle into the list
 */
 bool idSmokeParticles::EmitSmoke( const idDeclParticle *smoke, const int systemStartTime, const float diversity, const idVec3 &origin, const idMat3 &axis, int timeGroup /*_D3XP*/ ) {
 	bool	continues = false;
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	SetTimeState ts( timeGroup );
 #endif
 
@@ -279,7 +279,7 @@ bool idSmokeParticles::EmitSmoke( const idDeclParticle *smoke, const int systemS
 			freeSmokes = freeSmokes->next;
 			numActiveSmokes++;
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 			newSmoke->timeGroup = timeGroup;
 #endif
 			newSmoke->index = prevCount;
@@ -356,7 +356,7 @@ bool idSmokeParticles::UpdateRenderEntity( renderEntity_s *renderEntity, const r
 		for ( last = NULL, smoke = active->smokes; smoke; smoke = next ) {
 			next = smoke->next;
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 			if ( smoke->timeGroup ) {
 				g.frac = (float)( gameLocal.fast.time - smoke->privateStartTime ) / (stage->particleLife * 1000);
 			}

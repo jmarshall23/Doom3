@@ -58,7 +58,7 @@ typedef struct singleSmoke_s {
 	idRandom					random;
 	idVec3						origin;
 	idMat3						axis;
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	int							timeGroup;
 #endif
 } singleSmoke_t;

@@ -51,7 +51,7 @@ float global_flashlight_intensity = 1.0;
 #include "script/map_mc_underground.script"
 #include "script/map_monorail.script"
 
-#include "script/d3xp_main.script"
+#include "script/d3xp_main_new.script"
 
 void doom_main() {
 	sys.print( "Entering doom_main()\n");

@@ -92,7 +92,7 @@ extern idCVar	ai_showCombatNodes;
 extern idCVar	ai_showPaths;
 extern idCVar	ai_showObstacleAvoidance;
 extern idCVar	ai_blockedFailSafe;
-#ifdef _D3XP
+#if 1 // previously _D3XP
 extern idCVar	ai_showHealth;
 #endif
 
@@ -119,7 +119,7 @@ extern idCVar	g_vehicleSuspensionDown;
 extern idCVar	g_vehicleSuspensionKCompress;
 extern idCVar	g_vehicleSuspensionDamping;
 extern idCVar	g_vehicleTireFriction;
-#ifdef _D3XP
+#if 1 // previously _D3XP
 extern idCVar	g_vehicleDebug;
 extern idCVar	g_debugShockwave;
 extern idCVar	g_enablePortalSky;
@@ -230,7 +230,7 @@ extern idCVar	g_testModelBlend;
 extern idCVar	g_exportMask;
 extern idCVar	g_flushSave;
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 extern idCVar	g_enableSlowmo;
 extern idCVar	g_slowmoStepRate;
 extern idCVar	g_testFullscreenFX;
@@ -243,7 +243,7 @@ extern idCVar	g_testBloomIntensity;
 extern idCVar	g_testBloomNumPasses;
 #endif
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 extern idCVar	g_grabberHoldSeconds;
 extern idCVar	g_grabberEnableShake;
 extern idCVar	g_grabberRandomMotion;
@@ -251,7 +251,7 @@ extern idCVar	g_grabberHardStop;
 extern idCVar	g_grabberDamping;
 #endif
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 extern idCVar	g_xp_bind_run_once;
 #endif
 
@@ -278,7 +278,7 @@ extern idCVar	si_gameType;
 extern idCVar	si_map;
 extern idCVar	si_spectators;
 
-#ifdef CTF
+#if 1 // previously CTF
 extern idCVar si_flagDropTimeLimit;
 extern idCVar si_midnight;
 

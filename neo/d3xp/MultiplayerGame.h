@@ -39,7 +39,7 @@ If you have questions concerning this license or the applicable additional terms
 
 class idPlayer;
 
-#ifdef CTF
+#if 1 // previously CTF
 class idItemTeam;
 #endif
 
@@ -50,13 +50,13 @@ typedef enum {
 	GAME_TOURNEY,
 	GAME_TDM,
 	GAME_LASTMAN,
-#ifdef CTF
+#if 1 // previously CTF
     GAME_CTF,
 	GAME_COUNT,
 #endif
 } gameType_t;
 
-#ifdef CTF
+#if 1 // previously CTF
 
 // Used by the UI
 typedef enum {
@@ -91,7 +91,7 @@ const int CHAT_FADE_TIME	= 400;
 const int FRAGLIMIT_DELAY	= 2000;
 
 const int MP_PLAYER_MINFRAGS = -100;
-#ifdef CTF
+#if 1 // previously CTF
 const int MP_PLAYER_MAXFRAGS = 400;	// in CTF frags are player points
 #else
 const int MP_PLAYER_MAXFRAGS = 100;
@@ -99,7 +99,7 @@ const int MP_PLAYER_MAXFRAGS = 100;
 const int MP_PLAYER_MAXWINS	= 100;
 const int MP_PLAYER_MAXPING	= 999;
 
-#ifdef CTF
+#if 1 // previously CTF
 const int MP_CTF_MAXPOINTS = 25;
 #endif
 
@@ -119,7 +119,7 @@ typedef enum {
 	SND_TWO,
 	SND_ONE,
 	SND_SUDDENDEATH,
-#ifdef CTF	
+#if 1 // previously CTF	
 	SND_FLAG_CAPTURED_YOURS,
 	SND_FLAG_CAPTURED_THEIRS,
 	SND_FLAG_RETURN,
@@ -182,7 +182,7 @@ public:
 
 	static const char *GlobalSoundStrings[ SND_COUNT ];
 	void			PlayGlobalSound( int to, snd_evt_t evt, const char *shader = NULL );
-#ifdef CTF
+#if 1 // previously CTF
 	void			PlayTeamSound( int toTeam, snd_evt_t evt, const char *shader = NULL );	// sound that's sent only to member of toTeam team
 #endif
 
@@ -203,7 +203,7 @@ public:
 		MSG_TELEFRAGGED,
 		MSG_JOINTEAM,
 		MSG_HOLYSHIT,
-#ifdef CTF
+#if 1 // previously CTF
 		MSG_POINTLIMIT,
 
 		MSG_FLAGTAKEN,
@@ -285,7 +285,7 @@ public:
 	void			ClientReadWarmupTime( const idBitMsg &msg );
 
 	void			ServerClientConnect( int clientNum );
-#ifdef CTF    
+#if 1 // previously CTF    
     void            ClearHUDStatus( void );
     int             GetFlagPoints( int team );	// Team points in CTF
 	void			SetFlagMsg( bool b );		// allow flag event messages to be sent
@@ -368,7 +368,7 @@ private:
 	gameType_t		lastGameType;			// for restarts
 	int				startFragLimit;			// synchronize to clients in initial state, set on -> GAMEON
 
-#ifdef CTF
+#if 1 // previously CTF
 	idItemTeam *	teamFlags[ 2 ];
 	int				teamPoints[ 2 ];
 
@@ -383,7 +383,7 @@ private:
 	// updates the passed gui with current score information
 	void			UpdateRankColor( idUserInterface *gui, const char *mask, int i, const idVec3 &vec );
 	void			UpdateScoreboard( idUserInterface *scoreBoard, idPlayer *player );
-#ifdef CTF    
+#if 1 // previously CTF    
 	void			UpdateCTFScoreboard( idUserInterface *scoreBoard, idPlayer *player );    
 #endif
 
@@ -400,7 +400,7 @@ private:
 	idPlayer *		FragLimitHit( void );
 	idPlayer *		FragLeader( void );
 	bool			TimeLimitHit( void );
-#ifdef CTF
+#if 1 // previously CTF
 	bool			PointLimitHit( void );
 	// return team with most points
 	int				WinningTeam( void );
@@ -433,13 +433,13 @@ private:
 	void			DumpTourneyLine( void );
 	void			SuddenRespawn( void );
 
-#ifdef CTF
+#if 1 // previously CTF
 	void			FindTeamFlags( void );
 #endif
    
 public:
 
-#ifdef CTF    
+#if 1 // previously CTF    
 	idItemTeam *	GetTeamFlag( int team );
     flagStatus_t    GetFlagStatus( int team );
 	void			TeamScoreCTF( int team, int delta );
@@ -452,11 +452,11 @@ public:
 	void			ReloadScoreboard();
 #endif
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	idStr			GetBestGametype( const char* map, const char* gametype );
 #endif
 
-/* #ifdef CTF ... merge the below IsGametypeFlagBased */
+/* #if 1 // previously CTF ... merge the below IsGametypeFlagBased */
 bool            IsGametypeFlagBased( void );
 bool            IsGametypeTeamBased( void );
 /* #endif CTF */

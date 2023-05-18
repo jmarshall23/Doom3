@@ -297,7 +297,7 @@ void idItem::Spawn( void ) {
 		PostEventMS( &EV_Touch, 0, ent, NULL );
 	}
 
-#ifdef CTF
+#if 1 // previously CTF
 	// idItemTeam does not rotate and bob
 	if ( spawnArgs.GetBool( "spin" ) || (gameLocal.isMultiplayer && !this->IsType( idItemTeam::Type ) ) ) {
 		spin = true;
@@ -644,7 +644,7 @@ bool idItemPowerup::GiveToPlayer( idPlayer *player ) {
 	return true;
 }
 
-#ifdef CTF
+#if 1 // previously CTF
 
 
 /*
@@ -1421,7 +1421,7 @@ void idObjective::Event_CamShot( ) {
 			fullView.width = SCREEN_WIDTH;
 			fullView.height = SCREEN_HEIGHT;
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 			// HACK : always draw sky-portal view if there is one in the map, this isn't real-time
 			if ( gameLocal.portalSkyEnt.GetEntity() && g_enablePortalSky.GetBool() ) {
 				renderView_t	portalView = fullView;
@@ -1616,10 +1616,10 @@ idMoveableItem::idMoveableItem() {
 	trigger = NULL;
 	smoke = NULL;
 	smokeTime = 0;
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	nextSoundTime = 0;
 #endif
-#ifdef CTF
+#if 1 // previously CTF
 	repeatSmoke = false;
 #endif
 }
@@ -1647,7 +1647,7 @@ void idMoveableItem::Save( idSaveGame *savefile ) const {
 
 	savefile->WriteParticle( smoke );
 	savefile->WriteInt( smokeTime );
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	savefile->WriteInt( nextSoundTime );
 #endif
 }
@@ -1665,7 +1665,7 @@ void idMoveableItem::Restore( idRestoreGame *savefile ) {
 
 	savefile->ReadParticle( smoke );
 	savefile->ReadInt( smokeTime );
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	savefile->ReadInt( nextSoundTime );
 #endif
 }
@@ -1680,7 +1680,7 @@ void idMoveableItem::Spawn( void ) {
 	float density, friction, bouncyness, tsize;
 	idStr clipModelName;
 	idBounds bounds;
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	SetTimeState ts( timeGroup );
 #endif
 
@@ -1729,7 +1729,7 @@ void idMoveableItem::Spawn( void ) {
 
 	smoke = NULL;
 	smokeTime = 0;
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	nextSoundTime = 0;
 #endif
 	const char *smokeName = spawnArgs.GetString( "smoke_trail" );
@@ -1739,7 +1739,7 @@ void idMoveableItem::Spawn( void ) {
 		BecomeActive( TH_UPDATEPARTICLES );
 	}
 
-#ifdef CTF
+#if 1 // previously CTF
 	repeatSmoke = spawnArgs.GetBool( "repeatSmoke", "0" );
 #endif
 }
@@ -1760,7 +1760,7 @@ void idMoveableItem::Think( void ) {
 	
 	if ( thinkFlags & TH_UPDATEPARTICLES ) {
 		if ( !gameLocal.smokeParticles->EmitSmoke( smoke, smokeTime, gameLocal.random.CRandomFloat(), GetPhysics()->GetOrigin(), GetPhysics()->GetAxis(), timeGroup /*_D3XP*/ ) ) {
-#ifdef CTF
+#if 1 // previously CTF
 			if ( !repeatSmoke ) {
 				smokeTime = 0;
 				BecomeInactive( TH_UPDATEPARTICLES );
@@ -1777,7 +1777,7 @@ void idMoveableItem::Think( void ) {
 	Present();
 }
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 /*
 =================
 idMoveableItem::Collide
@@ -2119,7 +2119,7 @@ void idObjectiveComplete::Event_Trigger( idEntity *activator ) {
 				player->hud->SetStateString( "objective", "2");
 
 				player->hud->SetStateString( "objectivetext", spawnArgs.GetString( "objectivetext" ) );
-#ifdef _D3XP
+#if 1 // previously _D3XP
 				player->hud->SetStateString( "objectivecompletetitle", spawnArgs.GetString( "objectivetitle" ) );
 #else
 				player->hud->SetStateString( "objectivetitle", spawnArgs.GetString( "objectivetitle" ) );

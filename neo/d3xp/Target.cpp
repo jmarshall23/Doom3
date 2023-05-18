@@ -789,7 +789,7 @@ void idTarget_SetInfluence::Save( idSaveGame *savefile ) const {
 	savefile->WriteBool( soundFaded );
 	savefile->WriteBool( restoreOnTrigger );
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	savefile->WriteInt( savedGuiList.Num() );
 	for( i = 0; i < savedGuiList.Num(); i++ ) {
 		for(int j = 0; j < MAX_RENDERENTITY_GUI; j++) {
@@ -855,7 +855,7 @@ void idTarget_SetInfluence::Restore( idRestoreGame *savefile ) {
 	savefile->ReadBool( soundFaded );
 	savefile->ReadBool( restoreOnTrigger );
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	savefile->ReadInt( num );
 	for( i = 0; i < num; i++ ) {
 		SavedGui_t temp;
@@ -935,7 +935,7 @@ void idTarget_SetInfluence::Event_GatherEntities() {
 	lightList.Clear();
 	guiList.Clear();
 	soundList.Clear();
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	savedGuiList.Clear();
 #endif
 
@@ -966,7 +966,7 @@ void idTarget_SetInfluence::Event_GatherEntities() {
 			}
 			if ( guis && ent->GetRenderEntity() && ent->GetRenderEntity()->gui[ 0 ] && ent->spawnArgs.FindKey( "gui_demonic" ) ) {
 				guiList.Append( ent->entityNumber );
-#ifdef _D3XP
+#if 1 // previously _D3XP
 				SavedGui_t temp;
 				savedGuiList.Append(temp);
 #endif
@@ -1106,7 +1106,7 @@ void idTarget_SetInfluence::Event_Activate( idEntity *activator ) {
 
 		for ( j = 0; j < MAX_RENDERENTITY_GUI; j++ ) {
 			if ( ent->GetRenderEntity()->gui[ j ] && ent->spawnArgs.FindKey( j == 0 ? "gui_demonic" : va( "gui_demonic%d", j+1 ) ) ) {
-#ifdef _D3XP
+#if 1 // previously _D3XP
 				//Backup the old one
 				savedGuiList[i].gui[j] = ent->GetRenderEntity()->gui[ j ];
 #endif
@@ -1233,7 +1233,7 @@ void idTarget_SetInfluence::Event_RestoreInfluence() {
 		update = false;
 		for( j = 0; j < MAX_RENDERENTITY_GUI; j++ ) {
 			if ( ent->GetRenderEntity()->gui[ j ] ) {
-#ifdef _D3XP
+#if 1 // previously _D3XP
 				ent->GetRenderEntity()->gui[ j ] = savedGuiList[i].gui[j];
 #else
 				ent->GetRenderEntity()->gui[ j ] = uiManager->FindGui( ent->spawnArgs.GetString( j == 0 ? "gui" : va( "gui%d", j+1 ) ) );

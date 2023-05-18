@@ -49,7 +49,7 @@ const char *idMultiplayerGame::GlobalSoundStrings[] = {
 	"sound/feedback/two.wav",
 	"sound/feedback/one.wav",
 	"sound/feedback/sudden_death.wav",
-#ifdef CTF
+#if 1 // previously CTF
 	"sound/ctf/flag_capped_yours.wav",
 	"sound/ctf/flag_capped_theirs.wav",
 	"sound/ctf/flag_return.wav",
@@ -113,7 +113,7 @@ idMultiplayerGame::idMultiplayerGame() {
 	msgmodeGui = NULL;
 	lastGameType = GAME_SP;
 
-#ifdef CTF
+#if 1 // previously CTF
 	teamFlags[0] = NULL;
 	teamFlags[1] = NULL;
 
@@ -180,7 +180,7 @@ void idMultiplayerGame::Reset() {
 	Clear();
 	assert( !scoreBoard && !spectateGui && !guiChat && !mainGui && !mapList );
 
-#ifdef CTF
+#if 1 // previously CTF
     // CTF uses its own scoreboard
     if ( IsGametypeFlagBased() )
         scoreBoard = uiManager->FindGui( "guis/ctfscoreboard.gui", true, false, true );
@@ -315,12 +315,12 @@ void idMultiplayerGame::ClearGuis() {
 
 	}	
     
-#ifdef CTF
+#if 1 // previously CTF
     ClearHUDStatus();
 #endif	
 }
 
-#ifdef CTF
+#if 1 // previously CTF
 /*
 ================
 idMultiplayerGame::ClearHUDStatus
@@ -451,7 +451,7 @@ idMultiplayerGame::UpdateScoreboard
 void idMultiplayerGame::UpdateScoreboard( idUserInterface *scoreBoard, idPlayer *player ) {
 	int i, j, iline, k;
 	idStr gameinfo;
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	idStr livesinfo;
 	idStr timeinfo;
 #endif
@@ -569,7 +569,7 @@ void idMultiplayerGame::UpdateScoreboard( idUserInterface *scoreBoard, idPlayer 
 
 	// clear remaining lines (empty slots)
 	iline++;
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	while ( iline < MAX_CLIENTS ) { //Max players is now 8
 #else
 	while ( iline < 5 ) {
@@ -591,7 +591,7 @@ void idMultiplayerGame::UpdateScoreboard( idUserInterface *scoreBoard, idPlayer 
 		} else {
 			livesinfo = va( "%s: %i", common->GetLanguageDict()->GetString( "#str_04264" ), gameLocal.serverInfo.GetInt( "si_fragLimit" ) );
 		}
-#ifdef CTF
+#if 1 // previously CTF
 	} else if ( gameLocal.gameType != GAME_CTF ) {
 #else
 	} else {
@@ -610,7 +610,7 @@ void idMultiplayerGame::UpdateScoreboard( idUserInterface *scoreBoard, idPlayer 
 	scoreBoard->Redraw( gameLocal.time );
 }
 
-#ifdef CTF 
+#if 1 // previously CTF 
 /*
 ================
 idMultiplayerGame::UpdateCTFScoreboard
@@ -954,7 +954,7 @@ idPlayer *idMultiplayerGame::FragLimitHit() {
 	int fragLimit		= gameLocal.serverInfo.GetInt( "si_fragLimit" );
 	idPlayer *leader;
 
-#ifdef CTF
+#if 1 // previously CTF
 	if ( IsGametypeFlagBased() ) /* CTF */
 		return NULL;
 #endif
@@ -1016,7 +1016,7 @@ bool idMultiplayerGame::TimeLimitHit() {
 	return false;
 }
 
-#ifdef CTF
+#if 1 // previously CTF
 
 /*
 ================
@@ -1190,7 +1190,7 @@ void idMultiplayerGame::UpdateWinsLosses( idPlayer *winner ) {
 			}
 		}
 	}
-#ifdef CTF
+#if 1 // previously CTF
 	else if ( IsGametypeFlagBased() ) { /* CTF */
 		int winteam = WinningTeam();
 
@@ -1218,7 +1218,7 @@ void idMultiplayerGame::UpdateWinsLosses( idPlayer *winner ) {
 	}
 }
 
-#ifdef CTF
+#if 1 // previously CTF
 /*
 ================
 idMultiplayerGame::TeamScoreCTF
@@ -1414,7 +1414,7 @@ void idMultiplayerGame::NewState( gameState_t news, idPlayer *player ) {
 			outMsg.WriteBits( 0, 1 );
 			networkSystem->ServerSendReliableMessage( -1, outMsg );
 
-#ifdef CTF
+#if 1 // previously CTF
 			teamPoints[0] = 0;
 			teamPoints[1] = 0;
 
@@ -1458,7 +1458,7 @@ void idMultiplayerGame::NewState( gameState_t news, idPlayer *player ) {
 			break;
 		}
 		case GAMEREVIEW: {
-#ifdef CTF
+#if 1 // previously CTF
 			SetFlagMsg( false );
 #endif
 			nextState = INACTIVE;	// used to abort a game. cancel out any upcoming state change
@@ -1472,7 +1472,7 @@ void idMultiplayerGame::NewState( gameState_t news, idPlayer *player ) {
 				static_cast<idPlayer *>(ent)->ServerSpectate( true );
 			}
 			UpdateWinsLosses( player );
-#ifdef CTF
+#if 1 // previously CTF
 			SetFlagMsg( true );
 #endif
 			break;
@@ -1495,7 +1495,7 @@ void idMultiplayerGame::NewState( gameState_t news, idPlayer *player ) {
 
 			break;
 		}
-#ifdef CTF
+#if 1 // previously CTF
 		case WARMUP: {
 			teamPoints[0] = 0;
 			teamPoints[1] = 0;
@@ -1663,7 +1663,7 @@ void idMultiplayerGame::ExecuteVote( void ) {
 			break;
 		case VOTE_TIMELIMIT:
 			si_timeLimit.SetInteger( atoi( voteValue ) );
-#ifdef _D3XP
+#if 1 // previously _D3XP
 			needRestart = gameLocal.NeedRestart();
 			cmdSystem->BufferCommandText( CMD_EXEC_NOW, "rescanSI" );
 			if ( needRestart ) {
@@ -1673,7 +1673,7 @@ void idMultiplayerGame::ExecuteVote( void ) {
 			break;
 		case VOTE_FRAGLIMIT:
 			si_fragLimit.SetInteger( atoi( voteValue ) );
-#ifdef _D3XP
+#if 1 // previously _D3XP
 			needRestart = gameLocal.NeedRestart();
 			cmdSystem->BufferCommandText( CMD_EXEC_NOW, "rescanSI" );
 			if ( needRestart ) {
@@ -1694,7 +1694,7 @@ void idMultiplayerGame::ExecuteVote( void ) {
 			break;
 		case VOTE_SPECTATORS:
 			si_spectators.SetBool( !si_spectators.GetBool() );
-#ifdef _D3XP
+#if 1 // previously _D3XP
 			needRestart = gameLocal.NeedRestart();
 			cmdSystem->BufferCommandText( CMD_EXEC_NOW, "rescanSI" );
 			if ( needRestart ) {
@@ -1823,7 +1823,7 @@ void idMultiplayerGame::Run() {
 					cmdSystem->BufferCommandText( CMD_EXEC_APPEND, "serverMapRestart\n" );
 					return;
 				}
-#ifdef CTF
+#if 1 // previously CTF
 				// make sure flags are returned
 				if ( IsGametypeFlagBased() ) {
 					idItemTeam * flag;
@@ -1879,7 +1879,7 @@ void idMultiplayerGame::Run() {
 			break;
 		}
 		case GAMEON: {
-#ifdef CTF
+#if 1 // previously CTF
 			if ( IsGametypeFlagBased() ) { /* CTF */
 				// totally different logic branch for CTF
 				if ( PointLimitHit() ) {
@@ -1933,7 +1933,7 @@ void idMultiplayerGame::Run() {
 			break;
 		}
 		case SUDDENDEATH: {
-#ifdef CTF
+#if 1 // previously CTF
 			if ( IsGametypeFlagBased() ) { /* CTF */
 				int team = WinningTeam();
 				if ( team != -1 ) {
@@ -2074,7 +2074,7 @@ idUserInterface* idMultiplayerGame::StartMenu( void ) {
 		}
 		mainGui->SetStateString( "kickChoices", kickList );
 
-#ifdef CTF
+#if 1 // previously CTF
 		const char *gametype = gameLocal.serverInfo.GetString( "si_gameType" );
 		const char *map	= gameLocal.serverInfo.GetString( "si_map" );			// what if server changes this strings while user in UI?
 		int num = declManager->GetNumDecls( DECL_MAPDEF );
@@ -2280,7 +2280,7 @@ const char* idMultiplayerGame::HandleGuiCommands( const char *_menuCommand ) {
 				if ( voteIndex == VOTE_KICK	) {
 					vote_clientNum = kickVoteMap[ atoi(	voteValue )	];
 					ClientCallVote(	voteIndex, va( "%d", vote_clientNum	) );
-#ifdef CTF
+#if 1 // previously CTF
 				} else if ( voteIndex == VOTE_GAMETYPE ) {
 					// send the actual gametype index, not an index in the choice list
 					int i;
@@ -2546,7 +2546,7 @@ void idMultiplayerGame::UpdateHud( idPlayer *player, idUserInterface *hud ) {
 			}
 		}
 	}
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	for ( i = ( gameState == GAMEON ? numRankedPlayers : 0 ) ; i < MAX_CLIENTS; i++ ) {
 #else
 	for ( i = ( gameState == GAMEON ? numRankedPlayers : 0 ) ; i < 5; i++ ) {
@@ -2556,7 +2556,7 @@ void idMultiplayerGame::UpdateHud( idPlayer *player, idUserInterface *hud ) {
 		hud->SetStateInt( va( "rank%i", i+1 ), 0 );
 	}
 
-#ifdef CTF
+#if 1 // previously CTF
     if ( IsGametypeFlagBased() )
         hud->SetStateInt( "self_team", player->team );
     else
@@ -2577,7 +2577,7 @@ void idMultiplayerGame::DrawScoreBoard( idPlayer *player ) {
 			playerState[ player->entityNumber ].scoreBoardUp = true;
 		}
         
-#ifdef CTF
+#if 1 // previously CTF
         if ( IsGametypeFlagBased() )
             UpdateCTFScoreboard( scoreBoard, player );
         else
@@ -2669,7 +2669,7 @@ void idMultiplayerGame::DrawChat() {
 	}
 }
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 //D3XP: Adding one to frag count to allow for the negative flag in numbers greater than 255
 const int ASYNC_PLAYER_FRAG_BITS = -(idMath::BitsForInteger( MP_PLAYER_MAXFRAGS - MP_PLAYER_MINFRAGS )+1);	// player can have negative frags
 #else
@@ -2703,7 +2703,7 @@ void idMultiplayerGame::WriteToSnapshot( idBitMsgDelta &msg ) const {
 		msg.WriteBits( playerState[i].ingame, 1 );
 	}
 
-#ifdef CTF
+#if 1 // previously CTF
     msg.WriteShort( teamPoints[0] );
     msg.WriteShort( teamPoints[1] );
     msg.WriteShort( player_red_flag );
@@ -2742,7 +2742,7 @@ void idMultiplayerGame::ReadFromSnapshot( const idBitMsgDelta &msg ) {
 		playerState[i].ingame = msg.ReadBits( 1 ) != 0;
 	}
 
-#ifdef CTF    
+#if 1 // previously CTF    
     teamPoints[0] = msg.ReadShort();
     teamPoints[1] = msg.ReadShort();
 
@@ -2794,7 +2794,7 @@ void idMultiplayerGame::PlayGlobalSound( int to, snd_evt_t evt, const char *shad
 	}
 }
 
-#ifdef CTF
+#if 1 // previously CTF
 /*
 ================
 idMultiplayerGame::PlayTeamSound
@@ -2874,7 +2874,7 @@ void idMultiplayerGame::PrintMessageEvent( int to, msg_evt_t evt, int parm1, int
 		case MSG_HOLYSHIT:
 			AddChatLine( common->GetLanguageDict()->GetString( "#str_06732" ) );
 			break;
-#ifdef CTF
+#if 1 // previously CTF
 		case MSG_POINTLIMIT:
 			AddChatLine( common->GetLanguageDict()->GetString( "#str_11100" ), parm1 ? common->GetLanguageDict()->GetString( "#str_11110" ) : common->GetLanguageDict()->GetString( "#str_11111"  ) );
 			break;
@@ -3451,12 +3451,12 @@ void idMultiplayerGame::ServerCallVote( int clientNum, const idBitMsg &msg ) {
 			break;
 		case VOTE_GAMETYPE:
 			vote_gameTypeIndex = strtol( value, NULL, 10 );
-#ifdef CTF
+#if 1 // previously CTF
 			assert( vote_gameTypeIndex > 0 && vote_gameTypeIndex < GAME_COUNT );
 			strcpy( value, si_gameTypeArgs[ vote_gameTypeIndex ] );
 #endif
 
-/*#ifdef CTF
+/*#if 1 // previously CTF
 			assert( vote_gameTypeIndex >= 0 && vote_gameTypeIndex <= 4 );
 #else
 			assert( vote_gameTypeIndex >= 0 && vote_gameTypeIndex <= 3 );
@@ -3474,7 +3474,7 @@ void idMultiplayerGame::ServerCallVote( int clientNum, const idBitMsg &msg ) {
 				case 3:
 					strcpy( value, "Last Man" );
 					break;
-#ifdef CTF
+#if 1 // previously CTF
 				case 4:
 					strcpy( value, "CTF" );
 					break;
@@ -3615,14 +3615,14 @@ void idMultiplayerGame::MapRestart( void ) {
 		nextStateSwitch = 0;
 	}
 
-#ifdef CTF
+#if 1 // previously CTF
 	teamPoints[0] = 0;
 	teamPoints[1] = 0;
 
     ClearHUDStatus();    
 #endif
 
-#ifdef CTF
+#if 1 // previously CTF
 	// still balance teams in CTF
 	if ( g_balanceTDM.GetBool() && lastGameType != GAME_TDM && lastGameType != GAME_CTF && gameLocal.mpGame.IsGametypeTeamBased() ) {
 #else
@@ -3673,7 +3673,7 @@ void idMultiplayerGame::SwitchToTeam( int clientNum, int oldteam, int newteam ) 
 		playerState[ clientNum ].teamFragCount = 0;
         
 	}
-#ifdef CTF
+#if 1 // previously CTF
 	if ( ( gameState == GAMEON || ( IsGametypeFlagBased() && gameState == SUDDENDEATH ) ) && oldteam != -1 ) {
 #else
 	if ( gameState == GAMEON && oldteam != -1 ) {
@@ -3685,13 +3685,13 @@ void idMultiplayerGame::SwitchToTeam( int clientNum, int oldteam, int newteam ) 
 			p->SetPrivateCameraView( NULL );
 		}
 		p->Kill( true, true );
-#ifdef CTF
+#if 1 // previously CTF
         if ( IsGametypeFlagBased() )
             p->DropFlag();
 #endif        
 		CheckAbortGame();
 	}
-#ifdef CTF
+#if 1 // previously CTF
 	else if ( IsGametypeFlagBased() && oldteam != -1 ) {
 		idPlayer *p = static_cast<idPlayer *>( gameLocal.entities[ clientNum ] );
 		p->DropFlag();
@@ -4142,11 +4142,11 @@ void idMultiplayerGame::ClientReadWarmupTime( const idBitMsg &msg ) {
 }
 
 /*
-#ifdef CTF
+#if 1 // previously CTF
 
     Threewave note:
 	The below IsGametype...() functions were implemented for CTF,
-	but we did not #ifdef CTF them, because doing so would clutter
+	but we did not #if 1 // previously CTF them, because doing so would clutter
 	the codebase substantially.  Please consider them part of the merged
 	CTF code.
 */
@@ -4165,7 +4165,7 @@ bool idMultiplayerGame::IsGametypeTeamBased( void ) /* CTF */
     case GAME_TOURNEY:
     case GAME_LASTMAN:
         return false;
-#ifdef CTF
+#if 1 // previously CTF
     case GAME_CTF:
 #endif
     case GAME_TDM:
@@ -4193,7 +4193,7 @@ bool idMultiplayerGame::IsGametypeFlagBased( void )  {
     case GAME_TDM:        
         return false;
 
-#ifdef CTF
+#if 1 // previously CTF
     case GAME_CTF:
         return true;
 #endif
@@ -4205,7 +4205,7 @@ bool idMultiplayerGame::IsGametypeFlagBased( void )  {
     return false;
     
 }
-#ifdef CTF
+#if 1 // previously CTF
 
 /*
 ================
@@ -4353,7 +4353,7 @@ void idMultiplayerGame::ReloadScoreboard() {
 
 #endif
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 idStr idMultiplayerGame::GetBestGametype( const char* map, const char* gametype ) {
 	
 	int num = declManager->GetNumDecls( DECL_MAPDEF );

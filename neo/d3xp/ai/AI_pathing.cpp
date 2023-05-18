@@ -1808,7 +1808,7 @@ void idAI::idle_followPathEntities( idEntity* pathnode )
 		if( scriptObject.GetFunction( nodeaction ) )
 		{
 
-			//#ifdef _D3XP
+			//#if 1 // previously _D3XP
 			// trigger an entity right when the path corner is accepted
 			idStr pretriggername;
 			idEntity* pretriggerent;

@@ -66,7 +66,7 @@ typedef enum {
 	ESC_GUI			// set an explicit GUI
 } escReply_t;
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 #define TIME_GROUP1		0
 #define TIME_GROUP2		1
 #endif

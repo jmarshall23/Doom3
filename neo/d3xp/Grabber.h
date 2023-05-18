@@ -25,7 +25,7 @@ If you have questions concerning this license or the applicable additional terms
 
 ===========================================================================
 */
-#ifdef _D3XP
+#if 1 // previously _D3XP
 
 /*
 ===============================================================================

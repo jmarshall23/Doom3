@@ -161,7 +161,7 @@ public:
 	void				Spawn( void );
 	void				Killed( idEntity *inflictor, idEntity *attacker, int damage, const idVec3 &dir, int location );
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	virtual void		Hide( void );
 	virtual void		Show( void );
 #endif
@@ -295,7 +295,7 @@ private:
 	void					Event_Footstep( void );
 	void					Event_LaunchMissiles( const char *projectilename, const char *sound, const char *launchjoint, const char *targetjoint, int numshots, int framedelay );
 	void					Event_LaunchMissilesUpdate( int launchjoint, int targetjoint, int numshots, int framedelay );
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	void					Event_SetAnimation( const char *animName );
 	void					Event_GetAnimationLength();
 #endif
@@ -771,7 +771,6 @@ private:
 	idList<idVec3>		lastTargetPos;
 };
 
-#ifdef _D3XP
 /*
 ===============================================================================
 
@@ -891,7 +890,5 @@ public:
 	void				Event_PostSpawn();
 	void				Event_Activate( idEntity *activator );
 };
-
-#endif /* _D3XP */
 
 #endif /* !__GAME_MISC_H__ */

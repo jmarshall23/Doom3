@@ -1572,7 +1572,7 @@ idElevator
 */
 const idEventDef EV_PostArrival( "postArrival", NULL );
 const idEventDef EV_GotoFloor( "gotoFloor", "d" );
-#ifdef _D3XP
+#if 1 // previously _D3XP
 const idEventDef EV_SetGuiStates( "setGuiStates" );
 #endif
 
@@ -1583,7 +1583,7 @@ CLASS_DECLARATION( idMover, idElevator )
 	EVENT( EV_PostArrival,			idElevator::Event_PostFloorArrival )
 	EVENT( EV_GotoFloor,			idElevator::Event_GotoFloor )
 	EVENT( EV_Touch,				idElevator::Event_Touch )
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	EVENT( EV_SetGuiStates,			idElevator::Event_SetGuiStates )
 #endif
 END_CLASS
@@ -1978,7 +1978,7 @@ void idElevator::Event_PostFloorArrival() {
 	}
 }
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 void idElevator::Event_SetGuiStates() {
 	SetGuiStates( ( currentFloor == 1 ) ? guiBinaryMoverStates[0] : guiBinaryMoverStates[1] );
 }
@@ -2130,7 +2130,7 @@ idMover_Binary::idMover_Binary() {
 	updateStatus = 0;
 	areaPortal = 0;
 	blocked = false;
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	playerOnly = false;
 #endif
 	fl.networkSync = true;
@@ -2211,7 +2211,7 @@ void idMover_Binary::Save( idSaveGame *savefile ) const {
 		savefile->WriteInt( gameRenderWorld->GetPortalState( areaPortal ) );
 	}
 	savefile->WriteBool( blocked );
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	savefile->WriteBool( playerOnly );
 #endif
 
@@ -2275,7 +2275,7 @@ void idMover_Binary::Restore( idRestoreGame *savefile ) {
 		gameLocal.SetPortalState( areaPortal, portalState );
 	}
 	savefile->ReadBool( blocked );
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	savefile->ReadBool( playerOnly );
 #endif
 
@@ -2587,7 +2587,7 @@ void idMover_Binary::Event_OpenPortal( void ) {
 		if ( slave->areaPortal ) {
 			slave->SetPortalState( true );
 		}
-#ifdef _D3XP
+#if 1 // previously _D3XP
 		if ( slave->playerOnly ) {
 			gameLocal.SetAASAreaState( slave->GetPhysics()->GetAbsBounds(), AREACONTENTS_CLUSTERPORTAL, false );
 		}
@@ -2610,7 +2610,7 @@ void idMover_Binary::Event_ClosePortal( void ) {
 			if ( slave->areaPortal ) {
 				slave->SetPortalState( false );
 			}
-#ifdef _D3XP
+#if 1 // previously _D3XP
 			if ( slave->playerOnly ) {
 				gameLocal.SetAASAreaState( slave->GetPhysics()->GetAbsBounds(), AREACONTENTS_CLUSTERPORTAL, true );
 			}
@@ -3280,7 +3280,7 @@ void idDoor::Spawn( void ) {
 	spawnArgs.GetBool( "crusher", "0", crusher );
 	spawnArgs.GetBool( "start_open", "0", start_open );
 	spawnArgs.GetBool( "no_touch", "0", noTouch );
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	spawnArgs.GetBool( "player_only", "0", playerOnly );
 #endif
 
@@ -3342,7 +3342,7 @@ void idDoor::Spawn( void ) {
 		// start closed
 		ProcessEvent( &EV_Mover_ClosePortal );
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 		if ( playerOnly ) {
 			gameLocal.SetAASAreaState( GetPhysics()->GetAbsBounds(), AREACONTENTS_CLUSTERPORTAL, true );
 		}
@@ -3618,7 +3618,7 @@ bool idDoor::IsNoTouch( void ) {
 	return noTouch;
 }
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 /*
 ================
 idDoor::AllowPlayerOnly
@@ -3861,11 +3861,11 @@ void idDoor::Event_Touch( idEntity *other, trace_t *trace ) {
 
 	if ( trigger && trace->c.id == trigger->GetId() ) {
 		if ( !IsNoTouch() && !IsLocked() && GetMoverState() != MOVER_1TO2 ) {
-#ifdef _D3XP
+#if 1 // previously _D3XP
 			if ( AllowPlayerOnly( other ) ) {
 #endif
 				Use( this, other );
-#ifdef _D3XP
+#if 1 // previously _D3XP
 			}
 #endif
 		}

@@ -77,7 +77,7 @@ const idEventDef AI_SetNextState( "setNextState", "s" );
 const idEventDef AI_SetState( "setState", "s" );
 const idEventDef AI_GetState( "getState", NULL, 's' );
 const idEventDef AI_GetHead( "getHead", NULL, 'e' );
-#ifdef _D3XP
+#if 1 // previously _D3XP
 const idEventDef EV_SetDamageGroupScale( "setDamageGroupScale", "sf" );
 const idEventDef EV_SetDamageGroupScaleAll( "setDamageGroupScaleAll", "f" );
 const idEventDef EV_GetDamageGroupScale( "getDamageGroupScale", "s", 'f' );
@@ -128,7 +128,7 @@ CLASS_DECLARATION( idAFEntity_Gibbable, idActor )
 	EVENT( AI_SetState,					idActor::Event_SetState )
 	EVENT( AI_GetState,					idActor::Event_GetState )
 	EVENT( AI_GetHead,					idActor::Event_GetHead )
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	EVENT( EV_SetDamageGroupScale,		idActor::Event_SetDamageGroupScale )
 	EVENT( EV_SetDamageGroupScaleAll,	idActor::Event_SetDamageGroupScaleAll )
 	EVENT( EV_GetDamageGroupScale,		idActor::Event_GetDamageGroupScale )
@@ -187,7 +187,7 @@ idActor::idActor( void ) {
 	enemyNode.SetOwner( this );
 	enemyList.SetOwner( this );
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	damageCap = -1;
 #endif
 }
@@ -426,7 +426,7 @@ void idActor::SetupHead( void ) {
 			sndKV = spawnArgs.MatchPrefix( "snd_", sndKV );
 		}
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 		// copy slowmo param to the head
 		args.SetBool( "slowmo", spawnArgs.GetBool("slowmo", "1") );
 #endif
@@ -437,7 +437,7 @@ void idActor::SetupHead( void ) {
 		headEnt->SetBody( this, headModel, damageJoint );
 		head = headEnt;
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 		idStr xSkin;
 		if ( spawnArgs.GetString( "skin_head_xray", "", xSkin ) ) {
 			headEnt->xraySkin = declManager->FindSkin( xSkin.c_str() );
@@ -616,7 +616,7 @@ void idActor::Save( idSaveGame *savefile ) const {
 		savefile->WriteString( "" );
 	}
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	savefile->WriteInt(damageCap);
 #endif
 
@@ -729,7 +729,7 @@ void idActor::Restore( idRestoreGame *savefile ) {
 		idealState = GetScriptFunction( statename );
 	}
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	savefile->ReadInt(damageCap);
 #endif
 }
@@ -778,7 +778,7 @@ void idActor::Show( void ) {
 		if ( ent->GetBindMaster() == this ) {
 			ent->Show();
 			if ( ent->IsType( idLight::Type ) ) {
-#ifdef _D3XP
+#if 1 // previously _D3XP
 				if(!spawnArgs.GetBool("lights_off", "0")) {
 					static_cast<idLight *>( ent )->On();
 				}
@@ -1986,7 +1986,7 @@ void idActor::Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &dir
 		attacker = gameLocal.world;
 	}
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	SetTimeState ts( timeGroup );
 
 	// Helltime boss is immune to all projectiles except the helltime killer
@@ -2028,7 +2028,7 @@ void idActor::Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &dir
 	if ( damage > 0 ) {
 		health -= damage;
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 		//Check the health against any damage cap that is currently set
 		if(damageCap >= 0 && health < damageCap) {
 			health = damageCap;
@@ -3253,7 +3253,7 @@ void idActor::Event_GetHead( void ) {
 	idThread::ReturnEntity( head.GetEntity() );
 }
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 /*
 ================
 idActor::Event_SetDamageGroupScale

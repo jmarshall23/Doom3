@@ -188,7 +188,7 @@ void idPlayerStart::TeleportPlayer( idPlayer *player ) {
 	const char *viewName = spawnArgs.GetString( "visualView", "" );
 	idEntity *ent = viewName ? gameLocal.FindEntity( viewName ) : NULL;
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	SetTimeState ts( player->timeGroup );
 #endif
 
@@ -559,7 +559,7 @@ void idDamagable::Killed( idEntity *inflictor, idEntity *attacker, int damage, c
 	BecomeBroken( attacker );
 }
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 /*
 ================
 idDamagable::Hide
@@ -909,7 +909,7 @@ const idEventDef EV_LaunchMissiles( "launchMissiles", "ssssdf" );
 const idEventDef EV_LaunchMissilesUpdate( "<launchMissiles>", "dddd" );
 const idEventDef EV_AnimDone( "<AnimDone>", "d" );
 const idEventDef EV_StartRagdoll( "startRagdoll" );
-#ifdef _D3XP
+#if 1 // previously _D3XP
 const idEventDef EV_SetAnimation( "setAnimation", "s" );
 const idEventDef EV_GetAnimationLength( "getAnimationLength", NULL, 'f' );
 #endif
@@ -924,7 +924,7 @@ CLASS_DECLARATION( idAFEntity_Gibbable, idAnimated )
 	EVENT( EV_FootstepRight,		idAnimated::Event_Footstep )
 	EVENT( EV_LaunchMissiles,		idAnimated::Event_LaunchMissiles )
 	EVENT( EV_LaunchMissilesUpdate,	idAnimated::Event_LaunchMissilesUpdate )
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	EVENT( EV_SetAnimation,			idAnimated::Event_SetAnimation )
 	EVENT( EV_GetAnimationLength,	idAnimated::Event_GetAnimationLength )
 #endif
@@ -1357,7 +1357,7 @@ void idAnimated::Event_LaunchMissiles( const char *projectilename, const char *s
 	ProcessEvent( &EV_LaunchMissilesUpdate, launch, target, numshots - 1, framedelay );
 }
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 /*
 =====================
 idAnimated::Event_SetAnimation
@@ -3206,7 +3206,7 @@ void idPhantomObjects::Think( void ) {
 	}
 }
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 /*
 ===============================================================================
 

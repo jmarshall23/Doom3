@@ -511,7 +511,7 @@ void idEntityFx::Run( int time ) {
 				} else if ( fxaction.trackOrigin ) {
 					useAction->renderEntity.origin = GetPhysics()->GetOrigin() + fxaction.offset;
 					useAction->renderEntity.axis = fxaction.explicitAxis ? fxaction.axis : GetPhysics()->GetAxis();
-#ifdef _D3XP
+#if 1 // previously _D3XP
 					gameRenderWorld->UpdateEntityDef( useAction->modelDefHandle, &useAction->renderEntity );
 #endif
 				}
@@ -542,7 +542,7 @@ void idEntityFx::Run( int time ) {
 				}
 				break;
 			}
-#ifdef _D3XP
+#if 1 // previously _D3XP
 			case FX_SHOCKWAVE: {
 				if ( gameLocal.isClient ) {
 					useAction->shakeStarted = true;

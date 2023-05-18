@@ -146,7 +146,7 @@ typedef enum {
 	FC_DISABLE_LEG_IK,
 	FC_RECORDDEMO,
 	FC_AVIGAME
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	, FC_LAUNCH_PROJECTILE, 
 	FC_TRIGGER_FX,
 	FC_START_EMITTER,

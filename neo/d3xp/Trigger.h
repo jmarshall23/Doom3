@@ -86,7 +86,7 @@ public:
 	void				Save( idSaveGame *savefile ) const;
 	void				Restore( idRestoreGame *savefile );
 
-#ifdef CTF    
+#if 1 // previously CTF    
 protected:
 #else
 private:
@@ -289,7 +289,7 @@ private:
 	void				Event_Trigger( idEntity *activator );
 };
 
-#ifdef CTF
+#if 1 // previously CTF
 /*
 ===============================================================================
 

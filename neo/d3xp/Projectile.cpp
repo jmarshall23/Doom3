@@ -49,7 +49,7 @@ const idEventDef EV_Fizzle( "<fizzle>", NULL );
 const idEventDef EV_RadiusDamage( "<radiusdmg>", "e" );
 const idEventDef EV_GetProjectileState( "getProjectileState", NULL, 'd' );
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 const idEventDef EV_CreateProjectile( "projectileCreateProjectile", "evv" );
 const idEventDef EV_LaunchProjectile( "projectileLaunchProjectile", "vvv" );
 const idEventDef EV_SetGravity( "setGravity", "f" );
@@ -61,7 +61,7 @@ CLASS_DECLARATION( idEntity, idProjectile )
 	EVENT( EV_Touch,				idProjectile::Event_Touch )
 	EVENT( EV_RadiusDamage,			idProjectile::Event_RadiusDamage )
 	EVENT( EV_GetProjectileState,	idProjectile::Event_GetProjectileState )
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	EVENT( EV_CreateProjectile,		idProjectile::Event_CreateProjectile )
 	EVENT( EV_LaunchProjectile,		idProjectile::Event_LaunchProjectile )
 	EVENT( EV_SetGravity,			idProjectile::Event_SetGravity )
@@ -136,7 +136,7 @@ void idProjectile::Save( idSaveGame *savefile ) const {
 	savefile->WriteParticle( smokeFly );
 	savefile->WriteInt( smokeFlyTime );
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	savefile->WriteInt( originalTimeGroup );
 #endif
 
@@ -173,7 +173,7 @@ void idProjectile::Restore( idRestoreGame *savefile ) {
 	savefile->ReadParticle( smokeFly );
 	savefile->ReadInt( smokeFlyTime );
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	savefile->ReadInt( originalTimeGroup );
 #endif
 
@@ -194,7 +194,7 @@ void idProjectile::Restore( idRestoreGame *savefile ) {
 		gameLocal.smokeParticles->EmitSmoke( smokeFly, gameLocal.time, gameLocal.random.RandomFloat(), GetPhysics()->GetOrigin(), GetPhysics()->GetAxis(), timeGroup /*_D3XP*/ );
 	}
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	if ( lightDefHandle >= 0 ) {
 		lightDefHandle = gameRenderWorld->AddLightDef( &renderLight );
 	}
@@ -261,7 +261,7 @@ void idProjectile::Create( idEntity *owner, const idVec3 &start, const idVec3 &d
 
 	damagePower = 1.0f;
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	if(spawnArgs.GetBool("reset_time_offset", "0")) {
 		renderEntity.shaderParms[ SHADERPARM_TIMEOFFSET ] = -MS2SEC( gameLocal.time );
 	}
@@ -390,7 +390,7 @@ void idProjectile::Launch( const idVec3 &start, const idVec3 &dir, const idVec3 
 		clipMask |= CONTENTS_PROJECTILE;
 	}
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	if ( !idStr::Cmp( this->GetEntityDefName(), "projectile_helltime_killer" ) ) {
 		contents = CONTENTS_MOVEABLECLIP;
 		clipMask = CONTENTS_MOVEABLECLIP;
@@ -452,7 +452,7 @@ void idProjectile::Launch( const idVec3 &start, const idVec3 &dir, const idVec3 
 		smokeFlyTime = gameLocal.time;
 	}
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	originalTimeGroup = timeGroup;
 #endif
 
@@ -492,7 +492,7 @@ void idProjectile::Think( void ) {
 	if ( smokeFly != NULL && smokeFlyTime && !IsHidden() ) {
 		idVec3 dir = -GetPhysics()->GetLinearVelocity();
 		dir.Normalize();
-#ifdef _D3XP
+#if 1 // previously _D3XP
 		SetTimeState ts(originalTimeGroup);
 #endif
 		if ( !gameLocal.smokeParticles->EmitSmoke( smokeFly, smokeFlyTime, gameLocal.random.RandomFloat(), GetPhysics()->GetOrigin(), dir.ToMat3(), timeGroup /*_D3XP*/ ) ) {
@@ -872,7 +872,7 @@ void idProjectile::Explode( const trace_t &collision, idEntity *ignore ) {
 		}
 	}
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	// If the explosion is in liquid, spawn a particle splash
 	idVec3 testOrg = GetPhysics()->GetOrigin();
 	int testC = gameLocal.clip.Contents( testOrg, NULL, mat3_identity, CONTENTS_WATER, this );
@@ -910,7 +910,7 @@ void idProjectile::Explode( const trace_t &collision, idEntity *ignore ) {
 	// explosion light
 	light_shader = spawnArgs.GetString( "mtr_explode_light_shader" );
 
-#ifdef CTF    
+#if 1 // previously CTF    
     if ( gameLocal.mpGame.IsGametypeFlagBased() && gameLocal.serverInfo.GetBool("si_midnight") )
     {
         light_shader = "lights/midnight_grenade";
@@ -924,7 +924,7 @@ void idProjectile::Explode( const trace_t &collision, idEntity *ignore ) {
 		renderLight.lightRadius[1] =
 		renderLight.lightRadius[2] = spawnArgs.GetFloat( "explode_light_radius" );
 
-#ifdef CTF
+#if 1 // previously CTF
         // Midnight ctf
         if ( gameLocal.mpGame.IsGametypeFlagBased() && gameLocal.serverInfo.GetBool("si_midnight") )
         {
@@ -942,7 +942,7 @@ void idProjectile::Explode( const trace_t &collision, idEntity *ignore ) {
 		renderLight.shaderParms[SHADERPARM_ALPHA] = 1.0f;
 		renderLight.shaderParms[SHADERPARM_TIMEOFFSET] = -MS2SEC( gameLocal.time );
 
-#ifdef CTF
+#if 1 // previously CTF
         // Midnight ctf
         if ( gameLocal.mpGame.IsGametypeFlagBased() && gameLocal.serverInfo.GetBool("si_midnight") )
         {
@@ -1099,7 +1099,7 @@ void idProjectile::Event_Touch( idEntity *other, trace_t *trace ) {
 		return;
 	}
 
-#ifdef CTF 
+#if 1 // previously CTF 
 	// Projectiles do not collide with flags
 	if ( other->IsType( idItemTeam::Type ) )
 		return;
@@ -1118,7 +1118,7 @@ void idProjectile::Event_Touch( idEntity *other, trace_t *trace ) {
 	}
 }
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 /*
 ================
 idProjectile::CatchProjectile
@@ -1394,12 +1394,12 @@ bool idProjectile::ClientReceiveEvent( int event, int time, const idBitMsg &msg 
 ===============================================================================
 */
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 const idEventDef EV_SetEnemy( "setEnemy", "E" );
 #endif
 
 CLASS_DECLARATION( idProjectile, idGuidedProjectile )
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	EVENT( EV_SetEnemy,		idGuidedProjectile::Event_SetEnemy )
 #endif
 END_CLASS
@@ -1615,7 +1615,7 @@ void idGuidedProjectile::Launch( const idVec3 &start, const idVec3 &dir, const i
 	UpdateVisuals();
 }
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 void idGuidedProjectile::SetEnemy( idEntity *ent ) {
 	enemy = ent;
 }
@@ -1991,7 +1991,7 @@ void idBFGProjectile::Think( void ) {
 				continue;
 			}
 			idPlayer *player = ( beamTargets[i].target.GetEntity()->IsType( idPlayer::Type ) ) ? static_cast<idPlayer*>( beamTargets[i].target.GetEntity() ) : NULL;
-#ifdef _D3XP
+#if 1 // previously _D3XP
 			// Major hack for end boss.  :(
 			idAnimatedEntity	*beamEnt;
 			idVec3				org;
@@ -2023,7 +2023,7 @@ void idBFGProjectile::Think( void ) {
 			beamTargets[i].renderEntity.shaderParms[ SHADERPARM_ALPHA ] = 1.0f;
 			if ( gameLocal.time > nextDamageTime ) {
 				bool bfgVision = true;
-#ifdef _D3XP
+#if 1 // previously _D3XP
 				if ( damageFreq && *(const char *)damageFreq && beamTargets[i].target.GetEntity() && ( forceDamage || beamTargets[i].target.GetEntity()->CanDamage( GetPhysics()->GetOrigin(), org ) ) ) {
 #else
 				if ( damageFreq && *(const char *)damageFreq && beamTargets[i].target.GetEntity() && beamTargets[i].target.GetEntity()->CanDamage( GetPhysics()->GetOrigin(), org ) ) {
@@ -2156,7 +2156,7 @@ void idBFGProjectile::Launch( const idVec3 &start, const idVec3 &dir, const idVe
 		beamTargets.Append( bt );
 	}
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	// Major hack for end boss.  :(
 	idAnimatedEntity *maledict = static_cast<idAnimatedEntity*>(gameLocal.FindEntity( "monster_boss_d3xp_maledict_1" ));
 
@@ -2336,7 +2336,7 @@ void idDebris::Create( idEntity *owner, const idVec3 &start, const idMat3 &axis 
 	smokeFly = NULL;
 	smokeFlyTime = 0;
 	sndBounce = NULL;
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	noGrab = true;
 #endif
 	UpdateVisuals();

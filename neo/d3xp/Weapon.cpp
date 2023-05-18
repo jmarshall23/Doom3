@@ -3738,7 +3738,7 @@ void idWeapon::Event_LaunchProjectiles(int num_projectiles, float spread, float 
 	// avoid all ammo considerations on an MP client
 	if (!gameLocal.isClient) {
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 
 		int ammoAvail = owner->inventory.HasAmmo(ammoType, ammoRequired);
 		if ((clipSize != 0) && (ammoClip.Get() <= 0)) {
@@ -3765,7 +3765,7 @@ void idWeapon::Event_LaunchProjectiles(int num_projectiles, float spread, float 
 			}
 		}
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 		if (clipSize == 0) {
 			//Weapons with a clip size of 0 launch strait from inventory without moving to a clip
 #endif
@@ -3773,12 +3773,12 @@ void idWeapon::Event_LaunchProjectiles(int num_projectiles, float spread, float 
 			//use it now.
 			owner->inventory.UseAmmo(ammoType, (powerAmmo) ? dmgPower : ammoRequired);
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 		}
 #endif
 
 		if (clipSize && ammoRequired) {
-#ifdef _D3XP
+#if 1 // previously _D3XP
 			ammoClip -= powerAmmo ? dmgPower : ammoRequired;
 #else
 			ammoClip -= powerAmmo ? dmgPower : 1;
@@ -3896,7 +3896,7 @@ void idWeapon::Event_LaunchProjectiles(int num_projectiles, float spread, float 
 		}
 
 		// toss the brass
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	//	if (brassDelay >= 0)
 #endif
 			//PostEventMS(&EV_Weapon_EjectBrass, brassDelay);

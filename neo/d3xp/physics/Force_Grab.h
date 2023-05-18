@@ -29,7 +29,7 @@ If you have questions concerning this license or the applicable additional terms
 #ifndef __FORCE_GRAB_H__
 #define __FORCE_GRAB_H__
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 
 /*
 ===============================================================================

@@ -53,7 +53,7 @@ typedef struct {
 
 
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 class WarpPolygon_t {
 public:
 	idVec4					outer1;
@@ -84,7 +84,7 @@ public:
 
 
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 
 class idPlayerView;
 class FullscreenFXManager;
@@ -425,7 +425,7 @@ public:
 	idPlayer *			player;
 	renderView_t		view;
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	FullscreenFXManager	*fxManager;
 
 public:

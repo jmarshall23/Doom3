@@ -33,7 +33,7 @@ If you have questions concerning this license or the applicable additional terms
 
 // _D3XP : rename all gameLocal.time to gameLocal.slow.time for merge!
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 static int MakePowerOfTwo( int num ) {
 	int		pot;
 	for (pot = 1 ; pot < num ; pot<<=1) {
@@ -71,7 +71,7 @@ idPlayerView::idPlayerView() {
 	fadeToColor.Zero();
 	fadeColor.Zero();
 	shakeAng.Zero();
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	fxManager = NULL;
 
 	if ( !fxManager ) {
@@ -133,7 +133,7 @@ void idPlayerView::Save( idSaveGame *savefile ) const {
 	savefile->WriteObject( player );
 	savefile->WriteRenderView( view );
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	if ( fxManager ) {
 		fxManager->Save( savefile );
 	}
@@ -190,7 +190,7 @@ void idPlayerView::Restore( idRestoreGame *savefile ) {
 	savefile->ReadObject( reinterpret_cast<idClass *&>( player ) );
 	savefile->ReadRenderView( view );
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	if ( fxManager ) {
 		fxManager->Restore( savefile );
 	}
@@ -478,7 +478,7 @@ void idPlayerView::SingleView( idUserInterface *hud, const renderView_t *view ) 
 	renderView_t	hackedView = *view;
 	hackedView.viewaxis = hackedView.viewaxis * ShakeAxis();
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	if ( gameLocal.portalSkyEnt.GetEntity() && gameLocal.IsPortalSkyAcive() && g_enablePortalSky.GetBool() ) {
 		renderView_t	portalView = hackedView;
 		portalView.vieworg = gameLocal.portalSkyEnt.GetEntity()->GetPhysics()->GetOrigin();
@@ -517,7 +517,7 @@ void idPlayerView::SingleView( idUserInterface *hud, const renderView_t *view ) 
 		return;
 	}
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	if ( !hud ) {
 		return;
 	}
@@ -615,7 +615,7 @@ assumes: color.w is 0 or 1
 =================
 */
 void idPlayerView::Fade( idVec4 color, int time ) {
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	SetTimeState ts( player->timeGroup );
 #endif
 
@@ -654,7 +654,7 @@ void idPlayerView::ScreenFade() {
 		return;
 	}
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	SetTimeState ts( player->timeGroup );
 #endif
 
@@ -693,7 +693,7 @@ void idPlayerView::RenderPlayerView( idUserInterface *hud ) {
 	}	
 }
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 /*
 ===================
 idPlayerView::WarpVision

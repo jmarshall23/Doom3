@@ -583,7 +583,7 @@ void idGameLocal::ServerWriteSnapshot( int clientNum, int sequence, idBitMsg &ms
 	numSourceAreas = gameRenderWorld->BoundsInAreas( spectated->GetPlayerPhysics()->GetAbsBounds(), sourceAreas, idEntity::MAX_PVS_AREAS );
 	pvsHandle = gameLocal.pvs.SetupCurrentPVS( sourceAreas, numSourceAreas, PVS_NORMAL );
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	// Add portalSky areas to PVS
 	if ( portalSkyEnt.GetEntity() ) {
 		pvsHandle_t	otherPVS, newPVS;
@@ -1128,7 +1128,7 @@ void idGameLocal::ClientReadSnapshot( int clientNum, int sequence, const int gam
 	numSourceAreas = gameRenderWorld->BoundsInAreas( spectated->GetPlayerPhysics()->GetAbsBounds(), sourceAreas, idEntity::MAX_PVS_AREAS );
 	pvsHandle = gameLocal.pvs.SetupCurrentPVS( sourceAreas, numSourceAreas, PVS_NORMAL );
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	// Add portalSky areas to PVS
 	if ( portalSkyEnt.GetEntity() ) {
 		pvsHandle_t	otherPVS, newPVS;
@@ -1188,7 +1188,7 @@ void idGameLocal::ClientReadSnapshot( int clientNum, int sequence, const int gam
 					common->DWarning( "client thinks map entity 0x%x (%s) is stale, sequence 0x%x", ent->entityNumber, ent->name.c_str(), sequence );
 				} else {
 					ent->FreeModelDef();
-#ifdef CTF
+#if 1 // previously CTF
 					// possible fix for left over lights on CTF flag
 					ent->FreeLightDef();
 #endif
@@ -1433,7 +1433,7 @@ void idGameLocal::ClientProcessReliableMessage( int clientNum, const idBitMsg &m
 			break;
 		}
 		case GAME_RELIABLE_MESSAGE_RESTART: {
-#ifdef _D3XP
+#if 1 // previously _D3XP
 			int newServerInfo = msg.ReadBits(1);
 			if(newServerInfo) {
 				idDict info;
@@ -1536,7 +1536,7 @@ gameReturn_t idGameLocal::ClientPrediction( int clientNum, const usercmd_t *clie
 		isNewFrame = false;
 	}
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	slow.Set( time, previousTime, msec, framenum, realClientTime );
 	fast.Set( time, previousTime, msec, framenum, realClientTime );
 #endif

@@ -39,20 +39,20 @@ class idSaveGame;
 class idRestoreGame;
 
 #define MAX_STRING_LEN		128
-#ifdef _D3XP
+#if 1 // previously _D3XP
 #define MAX_GLOBALS			296608			// in bytes
 #else
 #define MAX_GLOBALS			196608			// in bytes
 #endif
 #define MAX_STRINGS			1024
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 #define MAX_FUNCS			3584
 #else
 #define MAX_FUNCS			3072
 #endif
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 #define MAX_STATEMENTS		131072			// statement_t - 18 bytes last I checked
 #else
 #define MAX_STATEMENTS		81920			// statement_t - 18 bytes last I checked

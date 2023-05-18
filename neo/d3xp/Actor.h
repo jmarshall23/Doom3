@@ -53,7 +53,7 @@ extern const idEventDef AI_AnimDone;
 extern const idEventDef AI_SetBlendFrames;
 extern const idEventDef AI_GetBlendFrames;
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 extern const idEventDef AI_SetState;
 #endif
 
@@ -227,7 +227,7 @@ public:
 	bool					AnimDone(int channel, int blendFrames);
 	virtual void			SpawnGibs( const idVec3 &dir, const char *damageDefName );
 	idAnimState&			GetAnimStateVar(int channel);
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	idEntity*				GetHeadEntity() { return head.GetEntity(); };
 #endif
 
@@ -288,7 +288,7 @@ protected:
 
 	idList<idAttachInfo>	attachments;
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	int						damageCap;
 #endif
 
@@ -348,7 +348,7 @@ public:
 	void					Event_SetState( const char *name );
 	void					Event_GetState( void );
 	void					Event_GetHead( void );
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	void					Event_SetDamageGroupScale( const char* groupName, float scale);
 	void					Event_SetDamageGroupScaleAll( float scale );
 	void					Event_GetDamageGroupScale( const char* groupName );

@@ -52,7 +52,7 @@ const int	LAND_RETURN_TIME = 300;
 const int	FOCUS_TIME = 300;
 const int	FOCUS_GUI_TIME = 500;
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 const int MAX_WEAPONS = 32;
 #else
 const int MAX_WEAPONS = 16;
@@ -95,7 +95,7 @@ enum {
 	INVISIBILITY,
 	MEGAHEALTH,
 	ADRENALINE,
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	INVULNERABILITY,
 	HELLTIME,
 	ENVIROSUIT,
@@ -121,7 +121,7 @@ enum {
 	INFLUENCE_LEVEL3,			// slow player movement
 };
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 typedef struct {
 	int ammo;
 	int rechargeTime;
@@ -145,7 +145,7 @@ public:
 	int						clip[ MAX_WEAPONS ];
 	int						powerupEndTime[ MAX_POWERUPS ];
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	RechargeAmmo_t			rechargeAmmo[ AMMO_NUMTYPES ];
 #endif
 
@@ -203,7 +203,7 @@ public:
 	bool					UseAmmo( ammo_t type, int amount );
 	int						HasAmmo( const char *weapon_classname, bool includeClip = false, idPlayer* owner = NULL );			// _D3XP
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	bool					HasEmptyClipCannotRefill(const char *weapon_classname, idPlayer* owner);
 #endif
 
@@ -215,7 +215,7 @@ public:
 	idList<idItemInfo>		pickupItemNames;
 	idList<idObjectiveInfo>	objectiveNames;
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	void					InitRechargeAmmo(idPlayer *owner);
 	void					RechargeAmmo(idPlayer *owner);
 	bool					CanGive( idPlayer *owner, const idDict &spawnArgs, const char *statname, const char *value, int *idealWeapon );
@@ -240,7 +240,7 @@ public:
 		EVENT_ABORT_TELEPORTER,
 		EVENT_POWERUP,
 		EVENT_SPECTATE,
-#ifdef _D3XP
+#if 1 // previously _D3XP
 		EVENT_PICKUPNAME,
 #endif
 		EVENT_MAXEVENTS
@@ -297,7 +297,7 @@ public:
 	int						weapon_soulcube;
 	int						weapon_pda;
 	int						weapon_fists;
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	int						weapon_bloodstone;
 	int						weapon_bloodstone_active1;
 	int						weapon_bloodstone_active2;
@@ -325,7 +325,7 @@ public:
 	idEntityPtr<idProjectile> soulCubeProjectile;
 
 	// mp stuff
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	static idVec3			colorBarTable[ 8 ];
 #else
 	static idVec3			colorBarTable[ 5 ];
@@ -349,7 +349,7 @@ public:
 	int						tourneyLine;		// client side - our spot in the wait line. 0 means no info.
 	int						spawnedTime;		// when client first enters the game
 
-#ifdef CTF    
+#if 1 // previously CTF    
 	bool					carryingFlag;		// is the player carrying the flag?
 #endif    
     
@@ -372,7 +372,7 @@ public:
 
 	idDragEntity			dragEntity;
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	idFuncMountedObject	*	mountedObject;
 	idEntityPtr<idLight>	enviroSuitLight;
 
@@ -514,7 +514,7 @@ public:
 	int						GetBaseHeartRate( void );
 	void					UpdateAir( void );
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	void					UpdatePowerupHud();
 #endif
 
@@ -585,7 +585,7 @@ public:
 	virtual	void			HidePlayerIcons( void );
 	bool					NeedsIcon( void );
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	void					StartHealthRecharge(int speed);
 	void					StopHealthRecharge();
 
@@ -597,7 +597,7 @@ public:
 	void					PlayHelltimeStopSound();
 #endif
 
-#ifdef CTF
+#if 1 // previously CTF
 	void					DropFlag( void );	// drop CTF item
 	void					ReturnFlag();
 	virtual void			FreeModelDef( void );
@@ -700,7 +700,7 @@ private:
 	idVec3					smoothedOrigin;
 	idAngles				smoothedAngles;
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	idHashTable<WeaponToggle_t>	weaponToggles;
 
 	int						hudPowerup;
@@ -765,7 +765,7 @@ private:
 	void					ExtractEmailInfo( const idStr &email, const char *scan, idStr &out );
 	void					UpdateObjectiveInfo( void );
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	bool					WeaponAvailable( const char* name );
 #endif
 
@@ -789,7 +789,7 @@ public:
 	void					Event_LevelTrigger( void );
 	void					Event_Gibbed( void );
 
-#ifdef _D3XP //BSM: Event to remove inventory items. Useful with powercells.
+#if 1 // previously _D3XP //BSM: Event to remove inventory items. Useful with powercells.
 	void					Event_GiveInventoryItem( const char* name );
 	void					Event_RemoveInventoryItem( const char* name );
 

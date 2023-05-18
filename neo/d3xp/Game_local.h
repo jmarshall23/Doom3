@@ -181,7 +181,7 @@ typedef enum {
 typedef struct {
 	idEntity	*ent;
 	int			dist;
-#ifdef CTF
+#if 1 // previously CTF
 	int			team;			
 #endif    
 } spawnSpot_t;
@@ -241,7 +241,7 @@ private:
 	int						spawnId;
 };
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 struct timeState_t {
 	int					time;
 	int					previousTime;
@@ -346,7 +346,7 @@ public:
 	idEntityPtr<idEntity>	lastGUIEnt;				// last entity with a GUI, used by Cmd_NextGUI_f
 	int						lastGUI;				// last GUI on the lastGUIEnt
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	idEntityPtr<idEntity>	portalSkyEnt;
 	bool					portalSkyActive;
 
@@ -471,7 +471,7 @@ public:
 
 	bool					InPlayerPVS( idEntity *ent ) const;
 	bool					InPlayerConnectedArea( idEntity *ent ) const;
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	pvsHandle_t				GetPlayerPVS()			{ return playerPVS; };
 #endif
 
@@ -601,7 +601,7 @@ private:
 	idStaticList<idEntity *, MAX_GENTITIES> initialSpots;
 	int						currentInitialSpot;
 
-#ifdef CTF
+#if 1 // previously CTF
 	idStaticList<spawnSpot_t, MAX_GENTITIES> teamSpawnSpots[2];
 	idStaticList<idEntity *, MAX_GENTITIES> teamInitialSpots[2];
 	int						teamCurrentInitialSpot[2];
@@ -782,7 +782,7 @@ const int	CINEMATIC_SKIP_DELAY	= SEC2MS( 2.0f );
 #include "physics/Force.h"
 #include "physics/Force_Constant.h"
 #include "physics/Force_Drag.h"
-#ifdef _D3XP
+#if 1 // previously _D3XP
 #include "physics/Force_Grab.h"
 #endif
 #include "physics/Force_Field.h"
@@ -802,7 +802,7 @@ const int	CINEMATIC_SKIP_DELAY	= SEC2MS( 2.0f );
 
 #include "Entity.h"
 #include "GameEdit.h"
-#ifdef _D3XP
+#if 1 // previously _D3XP
 #include "Grabber.h"
 #endif
 #include "AF.h"

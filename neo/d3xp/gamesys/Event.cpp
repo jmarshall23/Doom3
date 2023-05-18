@@ -215,7 +215,7 @@ const idEventDef *idEventDef::FindEvent( const char *name ) {
 
 static idLinkList<idEvent> FreeEvents;
 static idLinkList<idEvent> EventQueue;
-#ifdef _D3XP
+#if 1 // previously _D3XP
 static idLinkList<idEvent> FastEventQueue;
 #endif
 static idEvent EventPool[ MAX_EVENTS ];
@@ -398,7 +398,7 @@ void idEvent::Schedule( idClass *obj, const idTypeInfo *type, int time ) {
 
 	eventNode.Remove();
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	if ( obj->IsType( idEntity::Type ) && ( ( (idEntity*)(obj) )->timeGroup == TIME_GROUP2 ) ) {
 		event = FastEventQueue.Next();
 		while( ( event != NULL ) && ( this->time >= event->time ) ) {
@@ -451,7 +451,7 @@ void idEvent::CancelEvents( const idClass *obj, const idEventDef *evdef ) {
 		}
 	}
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	for( event = FastEventQueue.Next(); event != NULL; event = next ) {
 		next = event->eventNode.Next();
 		if ( event->object == obj ) {
@@ -584,7 +584,7 @@ void idEvent::ServiceEvents( void ) {
 	}
 }
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 /*
 ================
 idEvent::ServiceFastEvents
@@ -803,7 +803,7 @@ void idEvent::Save( idSaveGame *savefile ) {
 		event = event->eventNode.Next();
 	}
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	// Save the Fast EventQueue
 	savefile->WriteInt( FastEventQueue.Num() );
 
@@ -913,7 +913,7 @@ void idEvent::Restore( idRestoreGame *savefile ) {
 		}
 	}
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	// Restore the Fast EventQueue
 	savefile->ReadInt( num );
 

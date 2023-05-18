@@ -69,7 +69,7 @@ const char *idGameLocal::sufaceTypeNames[ MAX_SURFACE_TYPES ] = {
 	"ricochet", "surftype10", "surftype11", "surftype12", "surftype13", "surftype14", "surftype15"
 };
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 // List of all defs used by the player that will stay on the fast timeline
 static char* fastEntityList[] = {
 	"player_doommarine",
@@ -277,7 +277,7 @@ void idGameLocal::Clear( void ) {
 
 	memset( lagometer, 0, sizeof( lagometer ) );
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	portalSkyEnt			= NULL;
 	portalSkyActive			= false;
 
@@ -339,7 +339,7 @@ void idGameLocal::Init( void ) {
 	InitConsoleCommands();
 
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	if(!g_xp_bind_run_once.GetBool()) {
 		//The default config file contains remapped controls that support the XP weapons
 		//We want to run this once after the base doom config file has run so we can
@@ -566,7 +566,7 @@ void idGameLocal::SaveGame( idFile *f ) {
 	savegame.WriteInt( previousTime );
 	savegame.WriteInt( time );
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	savegame.WriteInt( msec );
 #endif
 
@@ -584,7 +584,7 @@ void idGameLocal::SaveGame( idFile *f ) {
 	savegame.WriteBool( isNewFrame );
 	savegame.WriteFloat( clientSmoothing );
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	portalSkyEnt.Save( &savegame );
 	savegame.WriteBool( portalSkyActive );
 
@@ -904,7 +904,7 @@ void idGameLocal::LoadMap( const char *mapName, int randseed ) {
 	// clear the sound system
 	gameSoundWorld->ClearAllSoundEmitters();
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	// clear envirosuit sound fx
 	gameSoundWorld->SetEnviroSuit( false );
 	gameSoundWorld->SetSlowmo( false );
@@ -972,7 +972,7 @@ void idGameLocal::LoadMap( const char *mapName, int randseed ) {
 	sessionCommand = "";
 	nextGibTime		= 0;
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	portalSkyEnt			= NULL;
 	portalSkyActive			= false;
 
@@ -1047,7 +1047,7 @@ void idGameLocal::LocalMapRestart( ) {
 	// clear the sound system
 	if ( gameSoundWorld ) {
 		gameSoundWorld->ClearAllSoundEmitters();
-#ifdef _D3XP
+#if 1 // previously _D3XP
 		// clear envirosuit sound fx
 		gameSoundWorld->SetEnviroSuit( false );
 		gameSoundWorld->SetSlowmo( false );
@@ -1095,7 +1095,7 @@ void idGameLocal::MapRestart( ) {
 	int			i;
 	const idKeyValue *keyval, *keyval2;
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	if ( isMultiplayer && isServer ) {
 		char buf[ MAX_STRING_CHARS ];
 		idStr gametype;
@@ -1141,7 +1141,7 @@ void idGameLocal::MapRestart( ) {
 		}
 	}
 
-#ifdef CTF
+#if 1 // previously CTF
 	if ( isMultiplayer ) {
 		gameLocal.mpGame.ReloadScoreboard();
 		//		gameLocal.mpGame.Reset();	// force reconstruct the GUIs when reloading maps, different gametypes have different GUIs
@@ -1451,7 +1451,7 @@ bool idGameLocal::InitFromSaveGame( const char *mapName, idRenderWorld *renderWo
 	savegame.ReadInt( previousTime );
 	savegame.ReadInt( time );
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	savegame.ReadInt( msec );
 #endif
 
@@ -1469,7 +1469,7 @@ bool idGameLocal::InitFromSaveGame( const char *mapName, idRenderWorld *renderWo
 	savegame.ReadBool( isNewFrame );
 	savegame.ReadFloat( clientSmoothing );
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	portalSkyEnt.Restore( &savegame );
 	savegame.ReadBool( portalSkyActive );
 
@@ -1673,7 +1673,7 @@ void idGameLocal::DumpOggSounds( void ) {
 				soundName = soundShader->GetSound( j );
 				soundName.BackSlashesToSlashes();
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 				// D3XP :: don't add sounds that are in Doom 3's pak files
 				if ( fileSystem->FileIsInPAK( soundName ) ) {
 					continue;
@@ -1992,7 +1992,7 @@ void idGameLocal::SpawnPlayer( int clientNum ) {
 
 	args.SetInt( "spawn_entnum", clientNum );
 	args.Set( "name", va( "player%d", clientNum + 1 ) );
-#ifdef CTF
+#if 1 // previously CTF
 	if ( isMultiplayer && gameType != GAME_CTF )
 		args.Set( "classname", "player_doommarine_mp" );
 	else if ( isMultiplayer && gameType == GAME_CTF )
@@ -2171,7 +2171,7 @@ void idGameLocal::SetupPlayerPVS( void ) {
 			playerConnectedAreas = newPVS;
 		}
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 		// if portalSky is preset, then merge into pvs so we get rotating brushes, etc
 		if ( portalSkyEnt.GetEntity() ) {
 			idEntity *skyEnt = portalSkyEnt.GetEntity();
@@ -2339,7 +2339,7 @@ void idGameLocal::SortActiveEntityList( void ) {
 	sortPushers = false;
 }
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 /*
 ================
 idGameLocal::RunTimeGroup2
@@ -2387,7 +2387,7 @@ gameReturn_t idGameLocal::RunFrame( const usercmd_t *clientCmds ) {
 
 	player = GetLocalPlayer();
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	ComputeSlowMsec();
 
 	slow.Get( time, previousTime, msec, framenum, realClientTime );
@@ -2422,7 +2422,7 @@ gameReturn_t idGameLocal::RunFrame( const usercmd_t *clientCmds ) {
 		time += msec;
 		realClientTime = time;
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 		slow.Set( time, previousTime, msec, framenum, realClientTime );
 #endif
 
@@ -2504,7 +2504,7 @@ gameReturn_t idGameLocal::RunFrame( const usercmd_t *clientCmds ) {
 			} else {
 				num = 0;
 				for( ent = activeEntities.Next(); ent != NULL; ent = ent->activeNode.Next() ) {
-#ifdef _D3XP
+#if 1 // previously _D3XP
 					if ( ent->timeGroup != TIME_GROUP1 ) {
 						continue;
 					}
@@ -2515,7 +2515,7 @@ gameReturn_t idGameLocal::RunFrame( const usercmd_t *clientCmds ) {
 			}
 		}
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 		RunTimeGroup2();
 #endif
 
@@ -2541,7 +2541,7 @@ gameReturn_t idGameLocal::RunFrame( const usercmd_t *clientCmds ) {
 		// service any pending events
 		idEvent::ServiceEvents();
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 		// service pending fast events
 		fast.Get( time, previousTime, msec, framenum, realClientTime );
 		idEvent::ServiceFastEvents();
@@ -3291,7 +3291,7 @@ bool idGameLocal::SpawnEntityDef( const idDict &args, idEntity **ent, bool setDe
 
 	spawnArgs.SetDefaults( &def->dict );
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	if ( !spawnArgs.FindKey( "slowmo" ) ) {
 		bool slowmo = true;
 
@@ -3393,7 +3393,7 @@ bool idGameLocal::InhibitEntitySpawn( idDict &spawnArgs ) {
 		spawnArgs.GetBool( "not_medium", "0", result );
 	} else {
 		spawnArgs.GetBool( "not_hard", "0", result );
-#ifdef _D3XP
+#if 1 // previously _D3XP
 		if ( !result && g_skill.GetInteger() == 3 ) {
 			spawnArgs.GetBool( "not_nightmare", "0", result );
 		}
@@ -3808,7 +3808,7 @@ idGameLocal::GetAlertEntity
 ============
 */
 idActor *idGameLocal::GetAlertEntity( void ) {
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	int timeGroup = 0;
 	if ( lastAIAlertTime && lastAIAlertEntity.GetEntity() ) {
 		timeGroup = lastAIAlertEntity.GetEntity()->timeGroup;
@@ -4387,7 +4387,7 @@ prepare for a sequence of initial player spawns
 void idGameLocal::RandomizeInitialSpawns( void ) {
 	spawnSpot_t	spot;
 	int i, j;
-#ifdef CTF
+#if 1 // previously CTF
 	int k;
 #endif
     
@@ -4398,7 +4398,7 @@ void idGameLocal::RandomizeInitialSpawns( void ) {
 	}
 	spawnSpots.Clear();
 	initialSpots.Clear();
-#ifdef CTF
+#if 1 // previously CTF
 	teamSpawnSpots[0].Clear();
 	teamSpawnSpots[1].Clear();
 	teamInitialSpots[0].Clear();
@@ -4408,7 +4408,7 @@ void idGameLocal::RandomizeInitialSpawns( void ) {
 	spot.dist = 0;
 	spot.ent = FindEntityUsingDef( NULL, "info_player_deathmatch" );
 	while( spot.ent ) {
-#ifdef CTF
+#if 1 // previously CTF
 		spot.ent->spawnArgs.GetInt( "team", "-1", spot.team );
 
 		if ( mpGame.IsGametypeFlagBased() ) /* CTF */
@@ -4421,7 +4421,7 @@ void idGameLocal::RandomizeInitialSpawns( void ) {
 #endif        
 		spawnSpots.Append( spot );
 		if ( spot.ent->spawnArgs.GetBool( "initial" ) ) {
-#ifdef CTF
+#if 1 // previously CTF
 			if ( mpGame.IsGametypeFlagBased() ) /* CTF */
 			{
 				assert( spot.team == 0 || spot.team == 1 );
@@ -4434,7 +4434,7 @@ void idGameLocal::RandomizeInitialSpawns( void ) {
 		spot.ent = FindEntityUsingDef( spot.ent, "info_player_deathmatch" );
 	}
 
-#ifdef CTF
+#if 1 // previously CTF
 	if ( mpGame.IsGametypeFlagBased() ) /* CTF */
 	{
 		if ( !teamSpawnSpots[0].Num() )
@@ -4452,7 +4452,7 @@ void idGameLocal::RandomizeInitialSpawns( void ) {
 		return;
 	}
 
-#ifdef CTF
+#if 1 // previously CTF
 	if ( mpGame.IsGametypeFlagBased() ) /* CTF */
 	{
 		common->Printf( "red team : %d spawns (%d initials)\n", teamSpawnSpots[ 0 ].Num(), teamInitialSpots[ 0 ].Num() );
@@ -4485,7 +4485,7 @@ void idGameLocal::RandomizeInitialSpawns( void ) {
 		}
 	}
 
-#ifdef CTF
+#if 1 // previously CTF
 	for ( k = 0; k < 2; k++ )
 	for ( i = 0; i < teamInitialSpots[ k ].Num(); i++ ) {
 		j = random.RandomInt( teamInitialSpots[ k ].Num() );
@@ -4504,7 +4504,7 @@ void idGameLocal::RandomizeInitialSpawns( void ) {
 	// reset the counter
 	currentInitialSpot = 0;
 
-#ifdef CTF
+#if 1 // previously CTF
 	teamCurrentInitialSpot[0] = 0;
 	teamCurrentInitialSpot[1] = 0;
 #endif
@@ -4526,7 +4526,7 @@ idEntity *idGameLocal::SelectInitialSpawnPoint( idPlayer *player ) {
 	float			dist;
 	bool			alone;
 
-#ifdef CTF
+#if 1 // previously CTF
 	if ( !isMultiplayer || !spawnSpots.Num() || ( mpGame.IsGametypeFlagBased() && ( !teamSpawnSpots[0].Num() || !teamSpawnSpots[1].Num() ) ) ) { /* CTF */
 #else
 	if ( !isMultiplayer || !spawnSpots.Num() ) {
@@ -4538,7 +4538,7 @@ idEntity *idGameLocal::SelectInitialSpawnPoint( idPlayer *player ) {
 		return spot.ent;
 	}
 
-#ifdef CTF
+#if 1 // previously CTF
 	bool useInitialSpots = false;
 	if ( mpGame.IsGametypeFlagBased() ) { /* CTF */
 		assert( player->team == 0 || player->team == 1 );
@@ -4551,7 +4551,7 @@ idEntity *idGameLocal::SelectInitialSpawnPoint( idPlayer *player ) {
 	if ( player->spectating ) {
 		// plain random spot, don't bother
 		return spawnSpots[ random.RandomInt( spawnSpots.Num() ) ].ent;
-#ifdef CTF
+#if 1 // previously CTF
 	} else if ( useInitialSpots ) {
 		if ( mpGame.IsGametypeFlagBased() ) { /* CTF */
 			assert( player->team == 0 || player->team == 1 );
@@ -4573,7 +4573,7 @@ idEntity *idGameLocal::SelectInitialSpawnPoint( idPlayer *player ) {
 			}
 		}
 		if ( alone ) {
-#ifdef CTF
+#if 1 // previously CTF
 			if ( mpGame.IsGametypeFlagBased() ) /* CTF */
 			{
 				assert( player->team == 0 || player->team == 1 );
@@ -4584,7 +4584,7 @@ idEntity *idGameLocal::SelectInitialSpawnPoint( idPlayer *player ) {
 			return spawnSpots[ random.RandomInt( spawnSpots.Num() ) ].ent;
 		}
 
-#ifdef CTF
+#if 1 // previously CTF
 		if ( mpGame.IsGametypeFlagBased() ) /* CTF */
 		{
 			// TODO : make as reusable method, same code as below
@@ -4673,7 +4673,7 @@ void idGameLocal::UpdateServerInfoFlags() {
 	} else if ( ( idStr::Icmp( serverInfo.GetString( "si_gameType" ), "Last Man" ) == 0 ) ) {
 		gameType = GAME_LASTMAN;
 	}
-#ifdef CTF
+#if 1 // previously CTF
 	else if ( ( idStr::Icmp( serverInfo.GetString( "si_gameType" ), "CTF" ) == 0 ) ) {
 		gameType = GAME_CTF;
 	}
@@ -4728,7 +4728,7 @@ void idGameLocal::ThrottleUserInfo( void ) {
 	mpGame.ThrottleUserInfo();
 }
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 /*
 =================
 idPlayer::SetPortalSkyEnt

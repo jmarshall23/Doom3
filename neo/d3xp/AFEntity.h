@@ -222,13 +222,13 @@ public:
 	void					Restore( idRestoreGame *savefile );
 	virtual void			Present( void );
 	virtual	void			Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &dir, const char *damageDefName, const float damageScale, const int location );
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	void					SetThrown( bool isThrown );
 	virtual bool			Collide( const trace_t &collision, const idVec3 &velocity );
 #endif
 	virtual void			SpawnGibs( const idVec3 &dir, const char *damageDefName );
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	bool					IsGibbed() { return gibbed; };
 #endif
 
@@ -237,7 +237,7 @@ protected:
 	int						skeletonModelDefHandle;
 	bool					gibbed;
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	bool					wasThrown;
 #endif
 
@@ -421,7 +421,7 @@ public:
 	void					Spawn( void );
 	virtual void			Think( void );
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	float					force;
 	float					velocity;
 	float					steerAngle;
@@ -434,7 +434,7 @@ private:
 	float					wheelAngles[6];
 };
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 /*
 ===============================================================================
 
@@ -524,7 +524,7 @@ private:
 	void					Event_StopFingers( void );
 };
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 
 /** 
 * idHarvestable contains all of the code required to turn an entity into a harvestable

@@ -399,7 +399,7 @@ void idTrigger_Multi::TriggerAction( idEntity *activator ) {
 	} else {
 		// we can't just remove (this) here, because this is a touch function
 		// called while looping through area links...
-#ifdef _D3XP
+#if 1 // previously _D3XP
 		// If the player spawned inside the trigger, the player Spawn function called Think directly,
 		// allowing for multiple triggers on a trigger_once.  Increasing the nextTriggerTime prevents it.
 		nextTriggerTime = gameLocal.time + 99999;
@@ -1003,7 +1003,7 @@ void idTrigger_Hurt::Event_Touch( idEntity *other, trace_t *trace ) {
 	const char *damage;
 
 	if ( on && other && gameLocal.time >= nextTime ) {
-#ifdef _D3XP
+#if 1 // previously _D3XP
 		bool playerOnly = spawnArgs.GetBool( "playerOnly" );
 		if ( playerOnly ) {
 			if ( !other->IsType( idPlayer::Type ) ) {
@@ -1013,7 +1013,7 @@ void idTrigger_Hurt::Event_Touch( idEntity *other, trace_t *trace ) {
 #endif
 		damage = spawnArgs.GetString( "def_damage", "damage_painTrigger" );
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 		idVec3 dir = vec3_origin;
 		if(spawnArgs.GetBool("kick_from_center", "0")) {
 			dir = other->GetPhysics()->GetOrigin() - GetPhysics()->GetOrigin();
@@ -1215,7 +1215,7 @@ void idTrigger_Touch::Disable( void ) {
 	BecomeInactive( TH_THINK );
 }
 
-#ifdef CTF
+#if 1 // previously CTF
 /*
 ===============================================================================
 

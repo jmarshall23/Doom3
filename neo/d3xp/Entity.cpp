@@ -105,7 +105,7 @@ const idEventDef EV_StartFx( "startFx", "s" );
 const idEventDef EV_HasFunction( "hasFunction", "s", 'd' );
 const idEventDef EV_CallFunction( "callFunction", "s" );
 const idEventDef EV_SetNeverDormant( "setNeverDormant", "d" );
-#ifdef _D3XP
+#if 1 // previously _D3XP
 const idEventDef EV_SetGui ( "setGui", "ds" );
 const idEventDef EV_PrecacheGui ( "precacheGui", "s" );
 const idEventDef EV_GetGuiParm ( "getGuiParm", "ds", 's' );
@@ -179,7 +179,7 @@ ABSTRACT_DECLARATION( idClass, idEntity )
 	EVENT( EV_HasFunction,			idEntity::Event_HasFunction )
 	EVENT( EV_CallFunction,			idEntity::Event_CallFunction )
 	EVENT( EV_SetNeverDormant,		idEntity::Event_SetNeverDormant )
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	EVENT( EV_SetGui,				idEntity::Event_SetGui )
 	EVENT( EV_PrecacheGui,			idEntity::Event_PrecacheGui )
 	EVENT( EV_GetGuiParm,			idEntity::Event_GetGuiParm )
@@ -437,7 +437,7 @@ idEntity::idEntity() {
 
 	mpGUIState = -1;
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	memset( &xrayEntity, 0, sizeof( xrayEntity ) );
 
 	timeGroup = TIME_GROUP1;
@@ -491,7 +491,7 @@ void idEntity::Spawn( void ) {
 
 	renderEntity.entityNum = entityNumber;
 	
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	noGrab = spawnArgs.GetBool( "noGrab", "0" );
 
 	xraySkin = NULL;
@@ -594,7 +594,7 @@ void idEntity::Spawn( void ) {
 		ConstructScriptObject();
 	}
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	// determine time group
 	DetermineTimeGroup( spawnArgs.GetBool( "slowmo", "1" ) );
 #endif
@@ -649,7 +649,7 @@ idEntity::~idEntity( void ) {
 	FreeModelDef();
 	FreeSoundEmitter( false );
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	if ( xrayEntityHandle != -1) {
 		gameRenderWorld->FreeEntityDef( xrayEntityHandle );
 		xrayEntityHandle = -1;
@@ -696,7 +696,7 @@ void idEntity::Save( idSaveGame *savefile ) const {
 	LittleBitField( &flags, sizeof( flags ) );
 	savefile->Write( &flags, sizeof( flags ) );
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	savefile->WriteInt( timeGroup );
 	savefile->WriteBool( noGrab );
 	savefile->WriteRenderEntity( xrayEntity );
@@ -779,7 +779,7 @@ void idEntity::Restore( idRestoreGame *savefile ) {
 	savefile->Read( &fl, sizeof( fl ) );
 	LittleBitField( &fl, sizeof( fl ) );
 	
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	savefile->ReadInt( timeGroup );
 	savefile->ReadBool( noGrab );
 	savefile->ReadRenderEntity( xrayEntity );
@@ -1267,7 +1267,7 @@ idEntity::UpdateModel
 ================
 */
 void idEntity::UpdateModel( void ) {
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	renderEntity.timeGroup = timeGroup;
 #endif
 
@@ -1286,7 +1286,7 @@ void idEntity::UpdateModel( void ) {
 	// ensure that we call Present this frame
 	BecomeActive( TH_UPDATEVISUALS );
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	// If the entity has an xray skin, go ahead and add it
 	if ( xraySkin != NULL ) {
 		xrayEntity = renderEntity;
@@ -1528,7 +1528,7 @@ bool idEntity::UpdateRenderEntity( renderEntity_s *renderEntity, const renderVie
 
 	idAnimator *animator = GetAnimator();
 	if ( animator ) {
-#ifdef _D3XP
+#if 1 // previously _D3XP
 		SetTimeState ts( timeGroup );
 #endif
 
@@ -3089,7 +3089,7 @@ void idEntity::Damage( idEntity *inflictor, idEntity *attacker, const idVec3 &di
 		return;
 	}
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	SetTimeState ts( timeGroup );
 #endif
 
@@ -3558,7 +3558,7 @@ bool idEntity::HandleGuiCommands( idEntity *entityGui, const char *cmds ) {
 				continue;
 			}
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 
 			if ( !token.Icmp( "martianbuddycomplete" ) ) {
 				gameLocal.GetLocalPlayer()->GiveEmail( "MartianBuddyGameComplete" );
@@ -3750,7 +3750,7 @@ bool idEntity::TouchTriggers( void ) const {
 			continue;
 		}
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 		SetTimeState ts( ent->timeGroup );
 #endif
 
@@ -4500,7 +4500,7 @@ idEntity::Event_SetKey
 */
 void idEntity::Event_SetKey( const char *key, const char *value ) {
 	spawnArgs.Set( key, value );
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	UpdateChangeableSpawnArgs( NULL );
 #endif
 }
@@ -4765,7 +4765,7 @@ void idEntity::Event_SetNeverDormant( int enable ) {
 	dormantStart = 0;
 }
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 /*
 ================
 idEntity::Event_SetGui
@@ -5116,7 +5116,7 @@ bool idEntity::ClientReceiveEvent( int event, int time, const idBitMsg &msg ) {
 	return false;
 }
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 /*
 ================
 idEntity::DetermineTimeGroup
@@ -5456,7 +5456,7 @@ void idAnimatedEntity::AddLocalDamageEffect( jointHandle_t jointNum, const idVec
 	idVec3 origin, dir;
 	idMat3 axis;
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	SetTimeState ts( timeGroup );
 #endif
 

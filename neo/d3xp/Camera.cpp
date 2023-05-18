@@ -562,7 +562,7 @@ void idCameraAnim::GetViewParms( renderView_t *view ) {
 		return;
 	}
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	SetTimeState ts( timeGroup );
 #endif
 

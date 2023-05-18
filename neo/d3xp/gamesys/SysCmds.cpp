@@ -355,7 +355,7 @@ void Cmd_Give_f( const idCmdArgs &args ) {
 		return;
 	}
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	if ( idStr::Icmp( name, "invulnerability" ) == 0 ) {
 		if ( args.Argc() > 2 ) {
 			player->GivePowerUp( INVULNERABILITY, atoi( args.Argv( 2 ) ) );
@@ -608,7 +608,7 @@ static void Cmd_Say( bool team, const idCmdArgs &args ) {
 			name = player->GetUserInfo()->GetString( "ui_name", "player" );
 		}
 
-#ifdef CTF
+#if 1 // previously CTF
         // Append the player's location to team chat messages in CTF
         if ( gameLocal.mpGame.IsGametypeFlagBased() && team && player ) {
             idLocationEntity *locationEntity = gameLocal.LocationForPoint( player->GetEyePosition() );
@@ -2020,7 +2020,7 @@ static void Cmd_RecordViewNotes_f( const idCmdArgs &args ) {
 	idStr str = args.Argv(1);
 	str.SetFileExtension( ".txt" );
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	idFile *file = fileSystem->OpenFileAppend( str, false, "fs_cdpath" );
 #else
 	idFile *file = fileSystem->OpenFileAppend( str );
@@ -2265,7 +2265,7 @@ void Cmd_NextGUI_f( const idCmdArgs &args ) {
 	player->Teleport( origin, angles, NULL );
 }
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 void Cmd_SetActorState_f( const idCmdArgs &args ) {
 
 	if ( args.Argc() != 3 ) {
@@ -2427,7 +2427,7 @@ void idGameLocal::InitConsoleCommands( void ) {
 	cmdSystem->AddCommand( "nextGUI",				Cmd_NextGUI_f,				CMD_FL_GAME|CMD_FL_CHEAT,	"teleport the player to the next func_static with a gui" );
 	cmdSystem->AddCommand( "testid",				Cmd_TestId_f,				CMD_FL_GAME|CMD_FL_CHEAT,	"output the string for the specified id." );
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	cmdSystem->AddCommand( "setActorState",			Cmd_SetActorState_f,		CMD_FL_GAME|CMD_FL_CHEAT,	"Manually sets an actors script state", idGameLocal::ArgCompletion_EntityName );
 #endif
 }

@@ -1421,7 +1421,7 @@ void idPVS::ReadPVS( const pvsHandle_t handle, const idBitMsg &msg ) {
 #endif
 
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 /*
 ================
 idPVS::CheckAreasForPortalSky

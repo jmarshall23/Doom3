@@ -29,7 +29,7 @@ If you have questions concerning this license or the applicable additional terms
 #include "precompiled.h"
 #pragma hdrstop
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 
 #include "../Game_local.h"
 

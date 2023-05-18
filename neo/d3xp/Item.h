@@ -59,7 +59,7 @@ public:
 		EVENT_PICKUP = idEntity::EVENT_MAXEVENTS,
 		EVENT_RESPAWN,
 		EVENT_RESPAWNFX,
-#ifdef CTF
+#if 1 // previously CTF
         EVENT_TAKEFLAG,
         EVENT_DROPFLAG,
         EVENT_FLAGRETURN,
@@ -165,7 +165,7 @@ public:
 
 	void					Spawn( void );
 	virtual void			Think( void );
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	virtual bool			Collide( const trace_t &collision, const idVec3 &velocity );
 #endif
 	virtual bool			Pickup( idPlayer *player );
@@ -176,7 +176,7 @@ public:
 	virtual void			WriteToSnapshot( idBitMsgDelta &msg ) const;
 	virtual void			ReadFromSnapshot( const idBitMsgDelta &msg );
 
-#ifdef CTF    
+#if 1 // previously CTF    
 protected:
 #else
 private:
@@ -186,10 +186,10 @@ private:
 	const idDeclParticle *	smoke;
 	int						smokeTime;
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	int						nextSoundTime;
 #endif
-#ifdef CTF
+#if 1 // previously CTF
 	bool					repeatSmoke;	// never stop updating the particles
 #endif
 
@@ -199,7 +199,7 @@ private:
 	void					Event_Gib( const char *damageDefName );
 };
 
-#ifdef CTF
+#if 1 // previously CTF
 
 class idItemTeam : public idMoveableItem {
 public:

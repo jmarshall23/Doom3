@@ -944,7 +944,7 @@ bool idClass::ProcessEventArgPtr( const idEventDef *ev, int *data ) {
 	assert( ev );
 	assert( idEvent::initialized );
 
-#ifdef _D3XP
+#if 1 // previously _D3XP
 	SetTimeState ts;
 
 	if ( IsType( idEntity::Type ) ) {
